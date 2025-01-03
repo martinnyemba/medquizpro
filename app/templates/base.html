@@ -1,291 +1,170 @@
 <!-- templates/base.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
+    <!-- Essential Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MedQuizPro - Interactive learning platform for medical students">
-    <meta name="keywords" content="MedQuizPro, medical education, medical study, healthcare learning">
+    <meta name="description" content="MedQuizPro - Interactive medical learning platform for healthcare professionals">
+    <meta name="keywords" content="MedQuizPro, medical education, medical study, healthcare learning, medical quizzes">
     <meta name="author" content="MedQuizPro Platform">
     <meta name="theme-color" content="#198754">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Dynamic Title -->
     <title>{% block title %}{% endblock %} - MedQuizPro</title>
 
-    <!-- Open Graph / Social Media Meta Tags -->
+    <!-- Social Media Meta Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="MedQuizPro - Interactive Learning Platform">
+    <meta property="og:title" content="MedQuizPro - Interactive Medical Learning Platform">
     <meta property="og:description" content="Enhance your medical knowledge through interactive quizzes and study groups">
     <meta property="og:image" content="{{ url_for('static', filename='images/og-image.jpg', _external=True) }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta name="twitter:card" content="summary_large_image">
 
-    <!-- CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="{{ url_for('static', filename='fonts/custom-font.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Core Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
 
+    <!-- Page-specific styles -->
     {% block styles %}{% endblock %}
 
-    <!-- Custom CSS for green theme -->
-    <style>
-        :root {
-            --bs-primary: #198754;
-            --bs-primary-rgb: 25, 135, 84;
-            --bs-link-color: #15693f;
-            --bs-link-hover-color: #0f4f2f;
-            --primary-color: #2D3B55;
-            --accent-color: #4CAF50;
-            --text-color: #333;
-            --background-color: #fff;
-            --font-family-sans-serif: 'Poppins', system-ui, -apple-system, sans-serif;
-            --font-family-heading: 'Ubuntu', system-ui, -apple-system, sans-serif;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Core Theme Styles -->
 
-        /* Typography */
-        body {
-            font-family: var(--font-family-sans-serif);
-            font-weight: 400;
-        }
-
-        h1, h2, h3, h4, h5, h6, .navbar-brand {
-            font-family: var(--font-family-heading);
-            font-weight: 500;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--primary-color);
-            padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo svg {
-            margin-right: 0.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            position: relative;
-        }
-
-        .nav-links a:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: var(--accent-color);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover:after {
-            width: 100%;
-        }
-
-        .user-menu {
-            position: relative;
-        }
-
-        .user-menu-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-        }
-
-        .user-menu-content {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            min-width: 200px;
-            display: none;
-            padding: 0.5rem 0;
-        }
-
-        .user-menu-content.active {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        .user-menu-content a {
-            color: var(--text-color);
-            padding: 0.5rem 1rem;
-            display: block;
-            transition: background-color 0.3s;
-        }
-
-        .user-menu-content a:hover {
-            background-color: #f5f5f5;
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: white;
-            transition: 0.3s;
-        }
-
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--primary-color);
-                flex-direction: column;
-                padding: 1rem;
-                gap: 1rem;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .user-menu-content {
-                position: static;
-                box-shadow: none;
-                background: transparent;
-            }
-
-            .user-menu-content a {
-                color: white;
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Footer */
-        .footer {
-            background-color: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-
-        /* High contrast focus states for accessibility */
-        *:focus {
-            outline: 3px solid #15693f !important;
-            outline-offset: 2px;
-        }
-    </style>
 </head>
 <body>
-    <!-- Skip to main content link for accessibility -->
-    <a href="#main-content" class="visually-hidden-focusable bg-light text-dark p-3 position-absolute">
-        Skip to main content
-    </a>
+    <!-- Skip Navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
-            <a href="{{ url_for('main.index') }}" class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <a href="{{ url_for('main.index') }}" class="logo" aria-label="MedQuizPro Home">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                 </svg>
-                MedQuizPro
+                <span>MedQuizPro</span>
             </a>
 
-            <div class="hamburger">
+            <button class="hamburger ms-5 align-items-end" aria-label="Toggle navigation menu" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
 
-            <div class="nav-links ms-4">
+            <div class="nav-links">
+                <!-- Public Navigation -->
                 <a href="{{ url_for('main.index') }}">Home</a>
                 <a href="{{ url_for('main.about') }}">About</a>
                 <a href="{{ url_for('main.contact') }}">Contact</a>
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('quiz.list_quizzes') }}">Quizzes</a>
-                <a href="{{ url_for('auth.study_groups') }}">Study Groups</a>
 
-                <div class="user-menu">
-                    <button class="user-menu-btn">
-                        {{ current_user.username }}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 9l6 6 6-6"/>
-                        </svg>
-                    </button>
-                    <div class="user-menu-content">
-                        <a href="{{ url_for('auth.profile') }}">Profile</a>
-                        <a href="{{ url_for('auth.achievements') }}">Achievements</a>
-                        {% if current_user.is_admin %}
-                        <a href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
-                        {% endif %}
-                        <li><hr class="dropdown-divider"></li>
-                        <a href="{{ url_for('auth.logout') }}">Logout</a>
+                {% if current_user.is_authenticated %}
+                    <!-- Learning Section -->
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-btn" aria-expanded="false">
+                            Learning
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-content" role="menu">
+                            <a href="{{ url_for('quiz.list_quizzes') }}" role="menuitem">Browse Quizzes</a>
+                            <a href="{{ url_for('auth.study_groups') }}" role="menuitem">Study Groups</a>
+                            <a href="#" role="menuitem">Learning Path</a>
+                            <a href="#" role="menuitem">Progress Tracker</a>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Contribution Section -->
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-btn" aria-expanded="false">
+                            Contribute
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-content" role="menu">
+                            <a href="{{ url_for('submission.submit_question') }}" role="menuitem">Submit Question</a>
+                            <a href="{{ url_for('submission.my_submissions') }}" role="menuitem">My Submissions</a>
+                            <a href="#" role="menuitem">Community Forum</a>
+                            <a href="#" role="menuitem">Resource Library</a>
+                        </div>
+                    </div>
+
+                    <!-- User Menu -->
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-btn" aria-expanded="false">
+                            <img src="{{ current_user.avatar_url or url_for('static', filename='images/default-avatar.png') }}"
+                                 alt=""
+                                 class="avatar-img"
+                                 width="24"
+                                 height="24">
+                            <span>{{ current_user.username }}</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-content" role="menu">
+                            <div class="user-info" role="presentation">
+                                <p class="user-name">{{ current_user.full_name }}</p>
+                                <p class="user-email">{{ current_user.email }}</p>
+                            </div>
+                            <hr class="dropdown-divider" role="separator">
+                            <a href="{{ url_for('auth.profile') }}" role="menuitem">
+                                <i class="fas fa-user fa-fw"></i> Profile
+                            </a>
+                            <a href="{{ url_for('auth.achievements') }}" role="menuitem">
+                                <i class="fas fa-trophy fa-fw"></i> Achievements
+                            </a>
+                            <a href="#" role="menuitem">
+                                <i class="fas fa-cog fa-fw"></i> Settings
+                            </a>
+
+                            {% if current_user.is_admin %}
+                                <hr class="dropdown-divider" role="separator">
+                                <div class="dropdown-header" role="presentation">Admin Controls</div>
+                                <a href="{{ url_for('admin.dashboard') }}" role="menuitem">
+                                    <i class="fas fa-tachometer-alt fa-fw"></i> Dashboard
+                                </a>
+                                <a href="{{ url_for('admin.quiz_management') }}" role="menuitem">
+                                    <i class="fas fa-tasks fa-fw"></i> Manage Quizzes
+                                </a>
+                                <a href="{{ url_for('admin.user_management') }}" role="menuitem">
+                                    <i class="fas fa-users fa-fw"></i> Manage Users
+                                </a>
+                                <a href="{{ url_for('submission.review_submissions') }}" role="menuitem">
+                                    <i class="fas fa-check-square fa-fw"></i> Review Submissions
+                                </a>
+                                <a href="{{ url_for('admin.reports') }}" role="menuitem">
+                                    <i class="fas fa-chart-bar fa-fw"></i> Reports
+                                </a>
+                                <a href="{{ url_for('admin.settings') }}" role="menuitem">
+                                    <i class="fas fa-cogs fa-fw"></i> System Settings
+                                </a>
+                            {% endif %}
+
+                            <hr class="dropdown-divider" role="separator">
+                            <a href="{{ url_for('auth.logout') }}" role="menuitem" class="text-danger">
+                                <i class="fas fa-sign-out-alt fa-fw"></i> Logout
+                            </a>
+                        </div>
+                    </div>
                 {% else %}
-                <a href="{{ url_for('auth.login') }}">Login</a>
-                <a href="{{ url_for('auth.register') }}">Register</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register</a>
                 {% endif %}
             </div>
         </div>
@@ -296,9 +175,13 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm">
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                        </button>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -306,58 +189,107 @@
     </div>
 
     <!-- Main Content -->
-    <main id="main-content" class="container mt-4 mb-5">
+    <main id="main-content" class="container">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer mt-auto py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-start">
-                    <span class="text-muted">© {{ now.year }} MedQuizPro. All rights reserved.</span>
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <section class="footer-section">
+                <h4>About MedQuizPro</h4>
+                <p>Empowering healthcare professionals with interactive learning tools and comprehensive medical education resources.</p>
+                <div class="social-links mt-3">
+                    <a href="#" aria-label="Follow us on Twitter" class="me-2">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" aria-label="Connect with us on LinkedIn" class="me-2">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" aria-label="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
                 </div>
-                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-                    <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
-                    <a href="#" class="text-muted text-decoration-none me-3">Terms of Use</a>
-                    <a href="#" class="text-muted text-decoration-none">Contact</a>
-                </div>
-            </div>
+            </section>
+
+            <section class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('main.about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </section>
+
+            <section class="footer-section">
+                <h4>Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Community Guidelines</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                    <li><a href="#">Partner Program</a></li>
+                    <li><a href="#">Sitemap</a></li>
+                </ul>
+            </section>
+
+            <section class="footer-section">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">GDPR Compliance</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="footer-bottom text-center py-3">
+            <p class="mb-0">&copy; {{ now.year }} MedQuizPro. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Navigation JavaScript -->
+    <!-- App JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Page-specific JavaScript -->
+    {% block scripts %}{% endblock %}
+
+    <!-- User Tracking (with privacy-first approach) -->
+    {% if current_user.has_consented_to_analytics %}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const userMenuBtn = document.querySelector('.user-menu-btn');
-            const userMenuContent = document.querySelector('.user-menu-content');
-            const hamburger = document.querySelector('.hamburger');
-            const navLinks = document.querySelector('.nav-links');
-
-            if (userMenuBtn) {
-                userMenuBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    userMenuContent.classList.toggle('active');
+        // Initialize privacy-respecting analytics
+        window.addEventListener('load', function() {
+            // Custom analytics implementation
+            const sendPageView = () => {
+                fetch('/api/analytics/pageview', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        path: window.location.pathname,
+                        referrer: document.referrer,
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    })
                 });
-            }
+            };
 
-            document.addEventListener('click', function() {
-                if (userMenuContent) {
-                    userMenuContent.classList.remove('active');
-                }
-            });
+            // Send initial pageview
+            sendPageView();
 
-            hamburger.addEventListener('click', function() {
-                navLinks.classList.toggle('active');
-                const spans = hamburger.querySelectorAll('span');
-                spans.forEach(span => span.classList.toggle('active'));
-            });
+            // Track client-side navigation if using a SPA approach
+            document.addEventListener('spa:navigation', sendPageView);
         });
     </script>
-
-    {% block scripts %}{% endblock %}
+    {% endif %}
 </body>
 </html>
-

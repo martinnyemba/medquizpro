@@ -1,0 +1,25 @@
+<!-- templates/email/welcome.html -->
+{% extends "email/base.html" %}
+
+{% block title %}Welcome to Medical Quiz!{% endblock %}
+
+{% block content %}
+<p>Dear {{ user.username }},</p>
+
+<p>Welcome to Medical Quiz! We're excited to have you join our community of medical professionals dedicated to continuous learning and improvement.</p>
+
+<h3>Getting Started</h3>
+<ul>
+    <li>Browse available quizzes in your field</li>
+    <li>Track your progress</li>
+    <li>Earn achievements</li>
+    <li>Connect with other professionals</li>
+</ul>
+
+<p><a href="{{ url_for('quiz.list_quizzes', _external=True) }}" class="button">Start Your First Quiz</a></p>
+
+<p>If you have any questions, feel free to reach out to our support team.</p>
+
+<p>Best regards,<br>The Medical Quiz Team</p>
+{% endblock %}
+

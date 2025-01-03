@@ -1,0 +1,52 @@
+# templates/reports/report_form.html
+{% extends "base.html" %}
+
+{% block title %}Report {{ item_type|title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Report {{ item_type|title }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <div class="form-group">
+                            <label>Item being reported:</label>
+                            {% if item_type == 'quiz' %}
+                                <p class="form-control-static">Quiz: {{ item.title }}</p>
+                            {% elif item_type == 'question' %}
+                                <p class="form-control-static">Question from: {{ item.quiz.title }}</p>
+                            {% elif item_type == 'user' %}
+                                <p class="form-control-static">User: {{ item.username }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.reason.label }}
+                            {{ form.reason(class="form-control") }}
+                            {% for error in form.reason.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.description.label }}
+                            {{ form.description(class="form-control", rows=5) }}
+                            {% for error in form.description.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

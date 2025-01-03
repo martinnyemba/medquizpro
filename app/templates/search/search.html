@@ -1,0 +1,96 @@
+# templates/search/search.html
+{% extends "base.html" %}
+
+{% block title %}Search Quizzes{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Search Quizzes</h2>
+
+    <!-- Search Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="searchForm" method="GET" class="row">
+                <div class="col-md-6">
+                    {{ form.query(class="form-control", placeholder="Search quizzes...") }}
+                </div>
+                <div class="col-md-2">
+                    {{ form.filter_course(class="form-control") }}
+                </div>
+                <div class="col-md-2">
+                    {{ form.filter_profession(class="form-control") }}
+                </div>
+                <div class="col-md-2">
+                    {{ form.filter_difficulty(class="form-control") }}
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <div class="float-right">
+                        Sort by:
+                        <select name="sort_by" class="form-control-sm">
+                            <option value="newest">Newest First</option>
+                            <option value="popularity">Most Popular</option>
+                            <option value="difficulty_asc">Easiest First</option>
+                            <option value="difficulty_desc">Hardest First</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div id="searchResults">
+        {% include 'search/_results.html' %}
+    </div>
+
+    <!-- Pagination -->
+    <div id="searchPagination">
+        {% include 'search/_pagination.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const form = document.getElementById('searchForm');
+const resultsDiv = document.getElementById('searchResults');
+const paginationDiv = document.getElementById('searchPagination');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    updateResults(new URLSearchParams(new FormData(form)).toString());
+});
+
+document.querySelectorAll('select[name]').forEach(select => {
+    select.addEventListener('change', function() {
+        form.dispatchEvent(new Event('submit'));
+    });
+});
+
+function updateResults(queryString) {
+    fetch(`/search?${queryString}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        resultsDiv.innerHTML = data.html;
+        paginationDiv.innerHTML = data.pagination;
+        history.pushState({}, '', `?${queryString}`);
+    });
+}
+
+// Handle pagination clicks
+document.addEventListener('click', function(e) {
+    if (e.target.matches('.page-link')) {
+        e.preventDefault();
+        const url = new URL(e.target.href);
+        updateResults(url.searchParams.toString());
+    }
+});
+</script>
+{% endblock %}

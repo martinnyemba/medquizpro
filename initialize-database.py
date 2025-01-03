@@ -21,7 +21,7 @@ def create_users():
         }
     ]
 
-    professions = ['doctor', 'nurse', 'pharmacist', 'clinical_officer', 'medical_licentiate', 'scientist']
+    professions = ['doctor', 'nurse', 'pharmacist', 'clinical_officer', 'medical_licentiate']
     institutions = ['City General Hospital', 'Rural Health Center', 'University Medical Center',
                     'Community Clinic', 'Regional Hospital']
 

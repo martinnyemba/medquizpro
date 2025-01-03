@@ -1,0 +1,296 @@
+<!-- templates/admin/dashboard.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Admin Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+                    onclick="generateReport()">Export Report</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <i class="fas fa-calendar"></i> This week
+        </button>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Total Users</h6>
+                        <h2 class="mb-0">{{ stats.total_users }}</h2>
+                    </div>
+                    <i class="fas fa-users fa-2x"></i>
+                </div>
+                <small>{{ stats.new_users_today }} new today</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Active Quizzes</h6>
+                        <h2 class="mb-0">{{ stats.active_quizzes }}</h2>
+                    </div>
+                    <i class="fas fa-tasks fa-2x"></i>
+                </div>
+                <small>{{ stats.quizzes_today }} taken today</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Avg Score</h6>
+                        <h2 class="mb-0">{{ "%.1f"|format(stats.avg_score) }}%</h2>
+                    </div>
+                    <i class="fas fa-chart-line fa-2x"></i>
+                </div>
+                <small>Based on {{ stats.total_attempts }} attempts</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Pass Rate</h6>
+                        <h2 class="mb-0">{{ "%.1f"|format(stats.pass_rate) }}%</h2>
+                    </div>
+                    <i class="fas fa-graduation-cap fa-2x"></i>
+                </div>
+                <small>Last 7 days</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Recent Activity</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in recent_activity %}
+                    <tr>
+                        <td>
+                            {{ activity.completed_at.strftime('%Y-%m-%d %H:%M') if activity.completed_at else activity.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </td>
+                        <td>{{ activity.user.username }}</td>
+                        <td>{{ activity.action }}</td>
+                        <td>{{ activity.details }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row">
+    <!-- User Registration Chart -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">User Registrations</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="registrationChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Completion Chart -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Quiz Completions</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="completionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Performance by Profession -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Performance by Profession</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Profession</th>
+                        <th>Users</th>
+                        <th>Quizzes Taken</th>
+                        <th>Avg Score</th>
+                        <th>Pass Rate</th>
+                        <th>Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in profession_stats %}
+                    <tr>
+                        <td>{{ stat.profession|title }}</td>
+                        <td>{{ stat.users }}</td>
+                        <td>{{ stat.quizzes_taken }}</td>
+                        <td>{{ "%.1f"|format(stat.avg_score) }}%</td>
+                        <td>{{ "%.1f"|format(stat.pass_rate) }}%</td>
+                        <td>
+                            <span class="sparkline">{{ stat.trend|join(',') }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+.nav-link.active {
+    color: #007bff;
+}
+
+.nav-link:hover {
+    color: #007bff;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.sparkline {
+    display: inline-block;
+    height: 20px;
+    width: 100px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-sparkline"></script>
+<script>
+// Registration Chart
+const regCtx = document.getElementById('registrationChart').getContext('2d');
+new Chart(regCtx, {
+    type: 'line',
+    data: {
+        labels: {{ reg_dates|tojson }},
+        datasets: [{
+            label: 'New Users',
+            data: {{ reg_counts|tojson }},
+            borderColor: 'rgba(75, 192, 192, 1)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Quiz Completion Chart
+const compCtx = document.getElementById('completionChart').getContext('2d');
+new Chart(compCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ quiz_dates|tojson }},
+        datasets: [{
+            label: 'Completed Quizzes',
+            data: {{ completion_counts|tojson }},
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Initialize sparklines
+$(function() {
+    $('.sparkline').sparkline('html', {
+        type: 'line',
+        width: '100px',
+        height: '20px',
+        lineColor: '#007bff',
+        fillColor: 'rgba(0, 123, 255, 0.1)',
+        spotColor: '#dc3545',
+        minSpotColor: '#dc3545',
+        maxSpotColor: '#28a745',
+        highlightSpotColor: '#ffc107',
+        highlightLineColor: '#17a2b8',
+        spotRadius: 2,
+        drawNormalOnTop: false
+    });
+});
+
+function generateReport() {
+    // Implement report generation logic
+    alert('Generating report...');
+}
+</script>
+{% endblock %}

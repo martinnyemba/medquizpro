@@ -1,0 +1,519 @@
+<!-- templates/quiz/list.html -->
+{% extends "base.html" %}
+
+{% block title %}Available Quizzes{% endblock %}
+
+{% block content %}
+<section class="quiz-list-section py-5">
+    <div class="container">
+        <!-- Header Section -->
+        <div class="section-header mb-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="display-6 mb-3">
+                        <i class="fas fa-tasks text-primary me-2"></i>
+                        Available Quizzes
+                    </h2>
+                    <p class="text-muted mb-lg-0">Enhance your medical knowledge through our comprehensive quiz collection</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                        <i class="fas fa-filter me-2"></i>
+                        Filter Quizzes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="collapse mb-5" id="filterCollapse">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="GET" action="{{ url_for('quiz.list_quizzes') }}" id="filterForm" class="quiz-filter-form">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select name="course" id="course" class="form-select" aria-label="Select Course">
+                                        <option value="">All Courses</option>
+                                        {% for course in courses %}
+                                        <option value="{{ course[0] }}"
+                                                {{ 'selected' if current_filters.course == course[0] }}>
+                                            {{ course[0]|title }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="course">Course</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select name="difficulty" id="difficulty" class="form-select" aria-label="Select Difficulty">
+                                        <option value="">All Levels</option>
+                                        {% for difficulty in difficulty_levels %}
+                                        <option value="{{ difficulty[0] }}"
+                                                {{ 'selected' if current_filters.difficulty == difficulty[0] }}>
+                                            {{ difficulty[0]|title }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="difficulty">Difficulty</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select name="profession" id="profession" class="form-select" aria-label="Select Profession">
+                                        <option value="all">All Professions</option>
+                                        <option value="{{ current_user.profession }}"
+                                                {{ 'selected' if current_filters.profession == current_user.profession }}>
+                                            My Profession Only
+                                        </option>
+                                    </select>
+                                    <label for="profession">Profession</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-actions text-center mt-4">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-search me-2"></i> Apply Filters
+                            </button>
+                            <a href="{{ url_for('quiz.list_quizzes') }}" class="btn btn-outline-secondary px-4 ms-2">
+                                <i class="fas fa-undo me-2"></i> Reset
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Filters Display -->
+        {% if current_filters.course or current_filters.difficulty or current_filters.profession %}
+        <div class="active-filters mb-4">
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <span class="text-muted me-2">Active Filters:</span>
+                {% if current_filters.course %}
+                <span class="badge bg-primary rounded-pill">
+                    Course: {{ current_filters.course|title }}
+                    <a href="{{ url_for('quiz.list_quizzes',
+                               difficulty=current_filters.difficulty,
+                               profession=current_filters.profession) }}"
+                       class="text-white text-decoration-none ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </span>
+                {% endif %}
+                {% if current_filters.difficulty %}
+                <span class="badge bg-info rounded-pill">
+                    Difficulty: {{ current_filters.difficulty|title }}
+                    <a href="{{ url_for('quiz.list_quizzes',
+                               course=current_filters.course,
+                               profession=current_filters.profession) }}"
+                       class="text-white text-decoration-none ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </span>
+                {% endif %}
+                {% if current_filters.profession and current_filters.profession != 'all' %}
+                <span class="badge bg-success rounded-pill">
+                    {{ current_filters.profession|title }} Only
+                    <a href="{{ url_for('quiz.list_quizzes',
+                               course=current_filters.course,
+                               difficulty=current_filters.difficulty) }}"
+                       class="text-white text-decoration-none ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Quiz Grid -->
+        <div class="row g-4">
+            {% for quiz in quizzes.items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="quiz-card card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="quiz-header mb-3">
+                            <h5 class="card-title mb-2">{{ quiz.title }}</h5>
+                            <div class="quiz-badges">
+                                <span class="badge bg-primary">{{ quiz.course|title }}</span>
+                                <span class="badge bg-info">{{ quiz.difficulty_level|title }}</span>
+                                {% if quiz.profession == 'all' %}
+                                    <span class="badge bg-success">All Professions</span>
+                                {% else %}
+                                    <span class="badge bg-warning">{{ quiz.profession|title }} Only</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <p class="card-text text-muted mb-4">{{ quiz.description|truncate(100) }}</p>
+
+                        <div class="quiz-stats row g-3 mb-4">
+                            <div class="col-4 text-center">
+                                <div class="stat-item p-2 rounded bg-light">
+                                    <i class="fas fa-clock text-primary mb-2"></i>
+                                    <h6 class="mb-0">{{ quiz.time_limit }}m</h6>
+                                    <small class="text-muted">Time</small>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="stat-item p-2 rounded bg-light">
+                                    <i class="fas fa-question-circle text-info mb-2"></i>
+                                    <h6 class="mb-0">{{ quiz.total_questions }}</h6>
+                                    <small class="text-muted">Questions</small>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                {% set attempts_left = quiz.max_attempts -
+                                   current_user.quiz_results.filter_by(quiz_id=quiz.id).count() %}
+                                <div class="stat-item p-2 rounded bg-light">
+                                    <i class="fas fa-redo text-success mb-2"></i>
+                                    <h6 class="mb-0">{{ attempts_left }}</h6>
+                                    <small class="text-muted">Attempts</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-meta d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-users text-muted me-1"></i>
+                                    <small class="text-muted">{{ quiz.total_attempts }} attempts</small>
+                                </div>
+                                <div>
+                                    <i class="fas fa-star text-warning me-1"></i>
+                                    <small class="text-muted">{{ "%.1f"|format(quiz.average_score) }}%</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if attempts_left > 0 %}
+                        <a href="{{ url_for('quiz.take_quiz', quiz_id=quiz.id) }}"
+                           class="btn btn-primary w-100">
+                            <i class="fas fa-play me-2"></i> Start Quiz
+                        </a>
+                        {% else %}
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="fas fa-lock me-2"></i> No Attempts Left
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h4>No Quizzes Found</h4>
+                        <p class="text-muted">Try adjusting your filters or check back later for new quizzes.</p>
+                        <a href="{{ url_for('quiz.list_quizzes') }}" class="btn btn-primary">
+                            Clear Filters
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if quizzes.pages > 1 %}
+        <nav aria-label="Quiz navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {{ 'disabled' if not quizzes.has_prev }}">
+                    <a class="page-link" href="{{ url_for('quiz.list_quizzes', page=quizzes.prev_num) if quizzes.has_prev else '#' }}"
+                       aria-label="Previous">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+
+                {% for page in quizzes.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                    {% if page %}
+                        <li class="page-item {{ 'active' if page == quizzes.page }}">
+                            <a class="page-link" href="{{ url_for('quiz.list_quizzes', page=page) }}">{{ page }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <li class="page-item {{ 'disabled' if not quizzes.has_next }}">
+                    <a class="page-link" href="{{ url_for('quiz.list_quizzes', page=quizzes.next_num) if quizzes.has_next else '#' }}"
+                       aria-label="Next">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Quiz List Section */
+.quiz-list-section {
+    min-height: calc(100vh - 250px);
+}
+
+/* Filter Form */
+.quiz-filter-form .form-floating > .form-select {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+}
+
+/* Quiz Cards */
+.quiz-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1) !important;
+}
+
+.quiz-badges .badge {
+    padding: 0.5em 1em;
+    font-weight: 500;
+}
+
+.quiz-stats .stat-item {
+    transition: background-color 0.3s ease;
+}
+
+.quiz-card:hover .stat-item {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.quiz-meta {
+    font-size: 0.875rem;
+}
+
+/* Pagination */
+.pagination .page-link {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 0.25rem;
+    border: none;
+    color: var(--bs-primary);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/* Active Filters */
+.active-filters .badge {
+    padding: 0.5em 1em;
+    font-weight: 500;
+}
+
+.active-filters .badge a:hover {
+    opacity: 0.8;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 3rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    .quiz-card:hover {
+        transform: none;
+    }
+
+    .quiz-stats .stat-item {
+        padding: 0.5rem !important;
+    }
+
+    .pagination .page-link {
+        width: 35px;
+        height: 35px;
+        font-size: 0.875rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-submit form when filters change
+document.querySelectorAll('#filterForm select').forEach(select => {
+    select.addEventListener('change', () => {
+        document.getElementById('filterForm').submit();
+    });
+});
+
+// Initialize tooltips
+const tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+tooltips.map(tooltip => new bootstrap.Tooltip(tooltip));
+
+// Filter collapse state persistence
+const filterCollapse = document.getElementById('filterCollapse');
+const filterState = localStorage.getItem('filterCollapseState');
+
+if (filterState === 'show') {
+    filterCollapse.classList.add('show');
+}
+
+filterCollapse.addEventListener('shown.bs.collapse', () => {
+    localStorage.setItem('filterCollapseState', 'show');
+});
+
+filterCollapse.addEventListener('hidden.bs.collapse', () => {
+    localStorage.setItem('filterCollapseState', 'hide');
+});
+
+// Animate stats on scroll
+const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.quiz-stats').forEach(stat => {
+    statsObserver.observe(stat);
+});
+
+// Quiz card hover effects
+document.querySelectorAll('.quiz-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        if (window.innerWidth >= 768) {
+            const stats = card.querySelectorAll('.stat-item');
+            stats.forEach((stat, index) => {
+                stat.style.transitionDelay = `${index * 0.1}s`;
+                stat.classList.add('stat-hover');
+            });
+        }
+    });
+
+    card.addEventListener('mouseleave', () => {
+        if (window.innerWidth >= 768) {
+            const stats = card.querySelectorAll('.stat-item');
+            stats.forEach(stat => {
+                stat.style.transitionDelay = '0s';
+                stat.classList.remove('stat-hover');
+            });
+        }
+    });
+});
+
+// Add loading state to buttons
+document.querySelectorAll('.btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        if (!this.disabled && !this.classList.contains('no-loading')) {
+            const spinner = document.createElement('span');
+            spinner.className = 'spinner-border spinner-border-sm ms-2';
+            spinner.setAttribute('role', 'status');
+            spinner.setAttribute('aria-hidden', 'true');
+
+            this.appendChild(spinner);
+            this.disabled = true;
+
+            // Reset button state after timeout (in case of error)
+            setTimeout(() => {
+                if (this.contains(spinner)) {
+                    this.removeChild(spinner);
+                    this.disabled = false;
+                }
+            }, 5000);
+        }
+    });
+});
+
+// Handle filter form submission with animation
+const filterForm = document.getElementById('filterForm');
+filterForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const submitButton = this.querySelector('button[type="submit"]');
+    const spinner = submitButton.querySelector('.spinner-border');
+
+    if (!spinner) {
+        const newSpinner = document.createElement('span');
+        newSpinner.className = 'spinner-border spinner-border-sm ms-2';
+        newSpinner.setAttribute('role', 'status');
+        newSpinner.setAttribute('aria-hidden', 'true');
+        submitButton.appendChild(newSpinner);
+    }
+
+    submitButton.disabled = true;
+
+    // Simulate loading state before submission
+    setTimeout(() => {
+        this.submit();
+    }, 500);
+});
+
+// Add smooth scrolling for pagination
+document.querySelectorAll('.pagination .page-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        if (!this.parentElement.classList.contains('disabled')) {
+            const href = this.getAttribute('href');
+            if (href && href !== '#') {
+                const spinner = document.createElement('span');
+                spinner.className = 'spinner-border spinner-border-sm';
+                spinner.setAttribute('role', 'status');
+                spinner.setAttribute('aria-hidden', 'true');
+
+                this.innerHTML = '';
+                this.appendChild(spinner);
+            }
+        }
+    });
+});
+
+// Handle quiz card keyboard navigation
+document.querySelectorAll('.quiz-card').forEach(card => {
+    const startButton = card.querySelector('.btn-primary');
+    if (startButton) {
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                startButton.click();
+            }
+        });
+    }
+});
+
+// Add animation class when elements come into view
+const animateOnScroll = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            animateOnScroll.unobserve(entry.target);
+        }
+    });
+}, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+});
+
+document.querySelectorAll('.quiz-card, .stat-item').forEach(element => {
+    animateOnScroll.observe(element);
+});
+</script>
+{% endblock %}

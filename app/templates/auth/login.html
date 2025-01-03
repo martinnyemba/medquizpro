@@ -1,0 +1,257 @@
+<!-- templates/auth/login.html -->
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="login-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <!-- Welcome Message -->
+                <div class="text-center mb-4">
+                    <h2 class="display-6 mb-2">Welcome Back!</h2>
+                    <p class="text-muted">Access your personalized medical learning experience</p>
+                </div>
+
+                <!-- Login Card -->
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-4 p-md-5">
+                        <!-- Social Login Options -->
+                        <div class="social-login text-center mb-4">
+                            <h6 class="text-muted mb-3">Login with</h6>
+                            <div class="d-flex justify-content-center gap-3">
+                                <button class="btn btn-outline-light social-btn" title="Login with Google">
+                                    <i class="fab fa-google text-danger"></i>
+                                </button>
+                                <button class="btn btn-outline-light social-btn" title="Login with Apple">
+                                    <i class="fab fa-apple"></i>
+                                </button>
+                                <button class="btn btn-outline-light social-btn" title="Login with LinkedIn">
+                                    <i class="fab fa-linkedin text-primary"></i>
+                                </button>
+                            </div>
+                            <div class="divider my-4">
+                                <span class="divider-text">or</span>
+                            </div>
+                        </div>
+
+                        <!-- Login Form -->
+                        <form method="POST" action="" class="login-form" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <!-- Username Field -->
+                            <div class="form-floating mb-3">
+                                {{ form.username(class="form-control" ~ (' is-invalid' if form.username.errors else ''),
+                                   placeholder="Username", id="username") }}
+                                {{ form.username.label(for="username") }}
+                                {% for error in form.username.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="form-floating mb-3 password-field">
+                                {{ form.password(class="form-control" ~ (' is-invalid' if form.password.errors else ''),
+                                   placeholder="Password", id="password", type="password") }}
+                                {{ form.password.label(for="password") }}
+                                <button type="button" class="btn btn-link password-toggle"
+                                        onclick="togglePassword('password')" aria-label="Toggle password visibility">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                                {% for error in form.password.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Remember Me & Forgot Password -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    {{ form.remember_me(class="form-check-input", id="remember") }}
+                                    {{ form.remember_me.label(class="form-check-label", for="remember") }}
+                                </div>
+                                <a href="{{ url_for('auth.reset_password_request') }}"
+                                   class="text-primary text-decoration-none forgot-password">
+                                    Forgot Password?
+                                </a>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary w-100 btn-lg mb-4">
+                                <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                                <i class="fas fa-sign-in-alt me-2"></i> Login
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Register Link -->
+                    <div class="card-footer bg-light text-center py-4 border-0">
+                        <p class="mb-0">
+                            Don't have an account?
+                            <a href="{{ url_for('auth.register') }}" class="text-primary text-decoration-none">
+                                Create one now <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Login Section Styles */
+.login-section {
+    min-height: calc(100vh - 250px);
+    display: flex;
+    align-items: center;
+}
+
+/* Social Login Buttons */
+.social-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    background: white;
+}
+
+.social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.social-btn i {
+    font-size: 1.2rem;
+}
+
+/* Divider */
+.divider {
+    position: relative;
+    text-align: center;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+.divider-text {
+    background: white;
+    padding: 0 1rem;
+    color: #6c757d;
+    position: relative;
+    font-size: 0.9rem;
+}
+
+/* Form Styling */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: var(--bs-primary);
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Password Field */
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 0.5rem;
+    z-index: 5;
+}
+
+.password-toggle:hover {
+    color: var(--bs-primary);
+}
+
+/* Loading State */
+.btn-primary:disabled {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    opacity: 0.65;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 2rem !important;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .social-btn {
+        background: #2b2b2b;
+        border-color: #404040;
+    }
+
+    .divider-text {
+        background: #1a1a1a;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Password Toggle Functionality
+function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleBtn = document.querySelector('.password-toggle i');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleBtn.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleBtn.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+// Form Submission Handler
+document.querySelector('.login-form').addEventListener('submit', function(e) {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const spinner = submitBtn.querySelector('.spinner-border');
+
+    // Show loading state
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    // Form will submit normally
+});
+
+// Social Login Buttons Animation
+document.querySelectorAll('.social-btn').forEach(btn => {
+    btn.addEventListener('mouseover', function() {
+        this.style.transform = 'translateY(-2px)';
+    });
+
+    btn.addEventListener('mouseout', function() {
+        this.style.transform = 'translateY(0)';
+    });
+});
+</script>
+{% endblock %}

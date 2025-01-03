@@ -1,0 +1,322 @@
+<!-- templates/main/contact.html -->
+{% extends "base.html" %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<section class="contact-section py-5">
+    <div class="container">
+        <!-- Header -->
+        <div class="section-header text-center mb-5">
+            <h1 class="display-5 mb-3">Get in Touch</h1>
+            <p class="lead text-muted">Have questions? We'd love to hear from you. Send us a message and we'll get back to you as soon as possible.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-8">
+                <!-- Contact Methods -->
+                <div class="contact-methods mb-5">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="contact-method-card bg-white shadow-sm rounded-3 p-4 h-100 text-center">
+                                <div class="contact-icon mb-3">
+                                    <div class="icon-wrapper bg-primary bg-opacity-10 text-primary rounded-circle">
+                                        <i class="fas fa-envelope fa-2x"></i>
+                                    </div>
+                                </div>
+                                <h4 class="h5 mb-2">Email Us</h4>
+                                <p class="text-muted mb-2">For general inquiries</p>
+                                <a href="mailto:support@medicalquiz.com" class="text-primary text-decoration-none">
+                                    support@medicalquiz.com
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="contact-method-card bg-white shadow-sm rounded-3 p-4 h-100 text-center">
+                                <div class="contact-icon mb-3">
+                                    <div class="icon-wrapper bg-success bg-opacity-10 text-success rounded-circle">
+                                        <i class="fas fa-phone fa-2x"></i>
+                                    </div>
+                                </div>
+                                <h4 class="h5 mb-2">Call Us</h4>
+                                <p class="text-muted mb-2">Mon-Fri from 8am to 5pm</p>
+                                <a href="tel:+15551234567" class="text-success text-decoration-none">
+                                    +1 (555) 123-4567
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="contact-method-card bg-white shadow-sm rounded-3 p-4 h-100 text-center">
+                                <div class="contact-icon mb-3">
+                                    <div class="icon-wrapper bg-info bg-opacity-10 text-info rounded-circle">
+                                        <i class="fas fa-map-marker-alt fa-2x"></i>
+                                    </div>
+                                </div>
+                                <h4 class="h5 mb-2">Visit Us</h4>
+                                <p class="text-muted mb-2">Our office location</p>
+                                <address class="text-info mb-0">
+                                    123 Medical Center Dr.<br>
+                                    Healthcare City, HC 12345
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white p-4 border-0">
+                        <h4 class="mb-0">Send us a Message</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" id="contactForm" class="contact-form needs-validation" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form.name(class="form-control" ~ (' is-invalid' if form.name.errors else ''),
+                                           placeholder="Name", id="name") }}
+                                        {{ form.name.label(for="name") }}
+                                        {% for error in form.name.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form.email(class="form-control" ~ (' is-invalid' if form.email.errors else ''),
+                                           placeholder="Email", id="email", type="email") }}
+                                        {{ form.email.label(for="email") }}
+                                        {% for error in form.email.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        {{ form.subject(class="form-control" ~ (' is-invalid' if form.subject.errors else ''),
+                                           placeholder="Subject", id="subject") }}
+                                        {{ form.subject.label(for="subject") }}
+                                        {% for error in form.subject.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        {{ form.message(class="form-control" ~ (' is-invalid' if form.message.errors else ''),
+                                           placeholder="Message", id="message", style="height: 150px") }}
+                                        {{ form.message.label(for="message") }}
+                                        {% for error in form.message.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    Send Message
+                                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="mt-5">
+            <div class="location-map rounded-3 shadow-sm overflow-hidden">
+                <iframe class="w-100"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.7152203584424!2d-118.2437192!3d34.0522342!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDAzJzA4LjAiTiAxMTjCsDE0JzM3LjQiVw!5e0!3m2!1sen!2sus!4v1635959562415!5m2!1sen!2sus"
+                        style="border:0; height: 400px;"
+                        allowfullscreen=""
+                        loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Contact Section */
+.contact-section {
+    min-height: calc(100vh - 250px);
+}
+
+/* Contact Method Cards */
+.contact-method-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-method-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.icon-wrapper {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+}
+
+.contact-method-card:hover .icon-wrapper {
+    transform: scale(1.1);
+}
+
+/* Form Styling */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: var(--bs-primary);
+    opacity: 0.8;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Map Section */
+.location-map {
+    position: relative;
+}
+
+.location-map::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.1);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.location-map:hover::before {
+    opacity: 1;
+}
+
+/* Animations */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contact-method-card {
+    animation: slideUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.contact-method-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.contact-method-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.contact-method-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    .contact-method-card:hover {
+        transform: none;
+    }
+
+    .icon-wrapper {
+        width: 60px;
+        height: 60px;
+    }
+
+    .icon-wrapper i {
+        font-size: 1.5rem;
+    }
+}
+
+/* Dark Mode Support */
+{#@media (prefers-color-scheme: dark) {#}
+{#    .contact-method-card {#}
+{#        background-color: var(--bs-dark) !important;#}
+{#    }#}
+{#}#}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Form submission handling
+const contactForm = document.getElementById('contactForm');
+const submitButton = contactForm.querySelector('button[type="submit"]');
+const spinner = submitButton.querySelector('.spinner-border');
+
+contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (this.checkValidity()) {
+        submitButton.disabled = true;
+        spinner.classList.remove('d-none');
+
+        // Simulate form submission delay
+        setTimeout(() => {
+            this.submit();
+        }, 1000);
+    } else {
+        e.stopPropagation();
+        this.classList.add('was-validated');
+    }
+});
+
+// Intersection Observer for animations
+const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.contact-method-card').forEach(card => {
+    observer.observe(card);
+});
+
+// Input validation
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('blur', function() {
+        if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+});
+</script>
+{% endblock %}

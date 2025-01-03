@@ -1,0 +1,166 @@
+<!-- templates/submission/submit.html -->
+{% extends "base.html" %}
+
+{% block title %}Submit a Question{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Submit a Question</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        Your submission will be reviewed by our team.
+                        High-quality questions will be added to our question bank.
+                    </div>
+
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.course.label(class="form-label") }}
+                                    {{ form.course(class="form-control") }}
+                                    {% for error in form.course.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.difficulty_level.label(class="form-label") }}
+                                    {{ form.difficulty_level(class="form-control") }}
+                                    {% for error in form.difficulty_level.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form.content.label(class="form-label") }}
+                            {{ form.content(class="form-control", rows=3) }}
+                            <div class="form-text">Write your question clearly and concisely.</div>
+                            {% for error in form.content.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="options-section mb-4">
+                            <h5 class="mb-3">Answer Options</h5>
+                            <div class="row" id="optionsArea">
+                                {% for i in range(1, 5) %}
+                                <div class="col-md-6 option-group mb-3" id="optionGroup{{ i }}">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-grow-1">
+                                                    <label class="form-label" for="option{{ i }}">Option {{ i }}</label>
+                                                    {% if i == 1 %}
+                                                        {{ form.option1(class="form-control", id="option1") }}
+                                                    {% elif i == 2 %}
+                                                        {{ form.option2(class="form-control", id="option2") }}
+                                                    {% elif i == 3 %}
+                                                        {{ form.option3(class="form-control", id="option3") }}
+                                                    {% elif i == 4 %}
+                                                        {{ form.option4(class="form-control", id="option4") }}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="ms-3">
+                                                    <div class="form-check">
+                                                        <input type="radio"
+                                                               name="correct_answer"
+                                                               id="correct_{{ i }}"
+                                                               value="{{ i }}"
+                                                               class="form-check-input"
+                                                               {% if form.correct_answer.data == i|string %}checked{% endif %}>
+                                                        <label class="form-check-label" for="correct_{{ i }}">
+                                                            Correct Answer
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form.explanation.label(class="form-label") }}
+                            {{ form.explanation(class="form-control", rows=2) }}
+                            <div class="form-text">Provide an explanation for the correct answer.</div>
+                            {% for error in form.explanation.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form.reference.label(class="form-label") }}
+                            {{ form.reference(class="form-control") }}
+                            <div class="form-text">Optional: Cite your source or reference material.</div>
+                            {% for error in form.reference.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Question
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle radio button updates
+    const radioButtons = document.querySelectorAll('input[name="correct_answer"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Update visual feedback
+            document.querySelectorAll('.option-group .card').forEach(card => {
+                card.classList.remove('border-success');
+            });
+            if (this.checked) {
+                this.closest('.card').classList.add('border-success');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+.option-group .card {
+    transition: all 0.2s ease-in-out;
+    border-width: 2px;
+}
+
+.option-group .card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.option-group .card.border-success {
+    border-color: #198754;
+    background-color: #f8fff9;
+}
+
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+</style>
+{% endblock %}

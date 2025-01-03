@@ -1,0 +1,219 @@
+<!-- templates/quiz/analytics.html -->
+{% extends "base.html" %}
+
+{% block title %}Quiz Analytics - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container quiz-analytics">
+    <h2 class="mb-4">{{ quiz.title }} - Analytics</h2>
+
+    <!-- Overview Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-users text-primary mb-3" style="font-size: 2rem;"></i>
+                    <h5>Total Attempts</h5>
+                    <h3>{{ total_attempts }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line text-success mb-3" style="font-size: 2rem;"></i>
+                    <h5>Average Score</h5>
+                    <h3>{{ "%.1f"|format(avg_score) }}%</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-check-circle text-info mb-3" style="font-size: 2rem;"></i>
+                    <h5>Pass Rate</h5>
+                    <h3>{{ "%.1f"|format(pass_rate) }}%</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock text-warning mb-3" style="font-size: 2rem;"></i>
+                    <h5>Avg. Time</h5>
+                    <h3>{{ avg_time }} min</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Charts -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Score Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="scoreDistribution"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Performance by Profession</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="professionPerformance"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Analysis -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Question Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Success Rate</th>
+                            <th>Avg. Time</th>
+                            <th>Difficulty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in question_stats %}
+                        <tr>
+                            <td>{{ stat.question|truncate(50) }}</td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-{{ 'success' if stat.success_rate >= 70
+                                                                   else 'warning' if stat.success_rate >= 50
+                                                                   else 'danger' }}"
+                                         role="progressbar"
+                                         style="width: {{ stat.success_rate }}%">
+                                        {{ "%.1f"|format(stat.success_rate) }}%
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ stat.avg_time }} sec</td>
+                            <td>
+                                <span class="badge badge-{{ 'success' if stat.success_rate >= 70
+                                                         else 'warning' if stat.success_rate >= 50
+                                                         else 'danger' }}">
+                                    {{ 'Easy' if stat.success_rate >= 70
+                                       else 'Medium' if stat.success_rate >= 50
+                                       else 'Hard' }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profession Breakdown -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Performance by Profession</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Profession</th>
+                            <th>Total Attempts</th>
+                            <th>Average Score</th>
+                            <th>Pass Rate</th>
+                            <th>Avg. Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in profession_stats %}
+                        <tr>
+                            <td>{{ stat.profession|title }}</td>
+                            <td>{{ stat.attempts }}</td>
+                            <td>{{ "%.1f"|format(stat.avg_score) }}%</td>
+                            <td>{{ "%.1f"|format(stat.pass_rate) }}%</td>
+                            <td>{{ stat.avg_time }} min</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Score Distribution Chart
+const scoreCtx = document.getElementById('scoreDistribution').getContext('2d');
+new Chart(scoreCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ score_ranges|tojson }},
+        datasets: [{
+            label: 'Number of Students',
+            data: {{ score_distribution|tojson }},
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Students'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Score Range'
+                }
+            }
+        }
+    }
+});
+
+// Profession Performance Chart
+const professionCtx = document.getElementById('professionPerformance').getContext('2d');
+new Chart(professionCtx, {
+    type: 'radar',
+    data: {
+        labels: {{ profession_labels|tojson }},
+        datasets: [{
+            label: 'Average Score',
+            data: {{ profession_scores|tojson }},
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)'
+        }]
+    },
+    options: {
+        responsive: true,
+        scale: {
+            min: 0,
+            max: 100
+        }
+    }
+});
+</script>
+{% endblock %}

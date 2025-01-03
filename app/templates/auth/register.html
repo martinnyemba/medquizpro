@@ -1,0 +1,581 @@
+<!-- templates/auth/register.html -->
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<section class="register-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Welcome Message -->
+                <div class="text-center mb-4">
+                    <h2 class="display-6 mb-2">Join Medical Quiz</h2>
+                    <p class="text-muted">Create your account to start your medical learning journey</p>
+                </div>
+
+                <!-- Registration Card -->
+                <div class="card border-0 shadow-lg">
+                    <!-- Progress Steps -->
+                    <div class="card-header bg-white border-0 pt-4">
+                        <div class="registration-progress mb-2">
+                            <div class="progress-steps">
+                                <div class="step active" data-step="1">
+                                    <div class="step-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <span class="step-label">Account</span>
+                                </div>
+                                <div class="step" data-step="2">
+                                    <div class="step-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <span class="step-label">Contact</span>
+                                </div>
+                                <div class="step" data-step="3">
+                                    <div class="step-icon">
+                                        <i class="fas fa-stethoscope"></i>
+                                    </div>
+                                    <span class="step-label">Professional</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <!-- Registration Form -->
+                        <form method="POST" action="" class="registration-form needs-validation" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <!-- Step 1: Account Information -->
+                            <div class="form-step active" data-step="1">
+                                <div class="form-floating mb-3">
+                                    {{ form.username(class="form-control" ~ (' is-invalid' if form.username.errors else ''),
+                                       placeholder="Username", id="username") }}
+                                    {{ form.username.label(for="username") }}
+                                    <div class="form-text">Choose a unique username for your account.</div>
+                                    {% for error in form.username.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3 password-field">
+                                            {{ form.password(class="form-control" ~ (' is-invalid' if form.password.errors else ''),
+                                               placeholder="Password", id="password", type="password") }}
+                                            {{ form.password.label(for="password") }}
+                                            <button type="button" class="btn btn-link password-toggle"
+                                                    onclick="togglePassword('password')" aria-label="Toggle password visibility">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                            {% for error in form.password.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3 password-field">
+                                            {{ form.password2(class="form-control" ~ (' is-invalid' if form.password2.errors else ''),
+                                               placeholder="Confirm Password", id="password2", type="password") }}
+                                            {{ form.password2.label(for="password2") }}
+                                            <button type="button" class="btn btn-link password-toggle"
+                                                    onclick="togglePassword('password2')" aria-label="Toggle password visibility">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                            {% for error in form.password2.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Password Strength Indicator -->
+                                <div class="password-strength mb-4">
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="strength-text text-muted">Password Strength: <span>Not set</span></small>
+                                    </div>
+                                    <div class="password-requirements mt-2">
+                                        <small class="d-block text-muted">
+                                            <i class="fas fa-check-circle me-1"></i> At least 8 characters
+                                        </small>
+                                        <small class="d-block text-muted">
+                                            <i class="fas fa-check-circle me-1"></i> Mix of uppercase & lowercase letters
+                                        </small>
+                                        <small class="d-block text-muted">
+                                            <i class="fas fa-check-circle me-1"></i> At least one number
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Contact Information -->
+                            <div class="form-step" data-step="2">
+                                <div class="form-floating mb-3">
+                                    {{ form.email(class="form-control" ~ (' is-invalid' if form.email.errors else ''),
+                                       placeholder="Email", id="email", type="email") }}
+                                    {{ form.email.label(for="email") }}
+                                    <div class="form-text">We'll send a verification link to this email.</div>
+                                    {% for error in form.email.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Professional Information -->
+                            <div class="form-step" data-step="3">
+                                <div class="form-floating mb-4">
+                                    {{ form.profession(class="form-control" ~ (' is-invalid' if form.profession.errors else ''),
+                                       placeholder="Profession", id="profession") }}
+                                    {{ form.profession.label(for="profession") }}
+                                    <div class="form-text">Select your medical profession for personalized content.</div>
+                                    {% for error in form.profession.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <!-- Terms and Conditions -->
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="text-primary">Terms of Service</a> and
+                                        <a href="#" class="text-primary">Privacy Policy</a>
+                                    </label>
+                                    <div class="invalid-feedback">
+                                        You must agree to the terms and conditions.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-outline-primary prev-step" style="display: none;">
+                                    <i class="fas fa-arrow-left me-2"></i> Previous
+                                </button>
+                                <button type="button" class="btn btn-primary next-step">
+                                    Next <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                                <button type="submit" class="btn btn-success submit-btn" style="display: none;">
+                                    <i class="fas fa-user-plus me-2"></i> Create Account
+                                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Login Link -->
+                    <div class="card-footer bg-light text-center py-4 border-0">
+                        <p class="mb-0">
+                            Already have an account?
+                            <a href="{{ url_for('auth.login') }}" class="text-primary text-decoration-none">
+                                Login here <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Registration Section */
+.register-section {
+    min-height: calc(100vh - 250px);
+    display: flex;
+    align-items: center;
+}
+
+/* Progress Steps */
+.registration-progress {
+    padding: 0 1rem;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #e9ecef;
+    z-index: 1;
+}
+
+.step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 33.333%;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-icon {
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
+    background: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.step.completed .step-icon {
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.step.active .step-label {
+    color: var(--bs-primary);
+    font-weight: 500;
+}
+
+/* Form Steps */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+/* Password Field */
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 0.5rem;
+    z-index: 5;
+}
+
+.password-toggle:hover {
+    color: var(--bs-primary);
+}
+
+/* Password Strength */
+.password-strength .progress-bar {
+    transition: width 0.3s ease;
+}
+
+.password-requirements small i {
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.password-requirements small.valid i {
+    opacity: 1;
+    color: var(--bs-primary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 2rem !important;
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+    }
+
+    .step-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 0.875rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .step-icon {
+        background: #2b2b2b;
+    }
+
+    .progress-steps::before {
+        background: #404040;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Form Steps Navigation
+let currentStep = 1;
+const form = document.querySelector('.registration-form');
+const steps = document.querySelectorAll('.form-step');
+const progressSteps = document.querySelectorAll('.step');
+const prevBtn = document.querySelector('.prev-step');
+const nextBtn = document.querySelector('.next-step');
+const submitBtn = document.querySelector('.submit-btn');
+
+function updateStep(step) {
+    // Update form steps
+    steps.forEach(s => s.classList.remove('active'));
+    document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+
+    // Update progress steps
+    progressSteps.forEach(s => {
+        const stepNum = parseInt(s.dataset.step);
+        s.classList.remove('active', 'completed');
+        if (stepNum === step) {
+            s.classList.add('active');
+        } else if (stepNum < step) {
+            s.classList.add('completed');
+        }
+    });
+
+    // Update buttons
+    prevBtn.style.display = step > 1 ? 'block' : 'none';
+    nextBtn.style.display = step < 3 ? 'block' : 'none';
+    submitBtn.style.display = step === 3 ? 'block' : 'none';
+}
+
+prevBtn.addEventListener('click', () => {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStep(currentStep);
+    }
+});
+
+nextBtn.addEventListener('click', () => {
+    if (validateStep(currentStep)) {
+        if (currentStep < 3) {
+            currentStep++;
+            updateStep(currentStep);
+        }
+    }
+});
+
+// Password Strength
+const passwordInput = document.getElementById('password');
+const strengthBar = document.querySelector('.password-strength .progress-bar');
+const strengthText = document.querySelector('.strength-text span');
+const requirements = document.querySelectorAll('.password-requirements small');
+
+function checkPasswordStrength(password) {
+    let strength = 0;
+    const checks = [
+        password.length >= 8,
+        /[A-Z]/.test(password),
+        /[a-z]/.test(password),
+        /[0-9]/.test(password)
+    ];
+
+    checks.forEach((check, index) => {
+        if (check) {
+            strength += 25;
+            requirements[index]?.classList.add('valid');
+        } else {
+            requirements[index]?.classList.remove('valid');
+        }
+    });
+
+    strengthBar.style.width = `${strength}%`;
+    if (strength <= 25) {
+                strengthBar.className = 'progress-bar bg-danger';
+                strengthText.textContent = 'Weak';
+            } else if (strength <= 50) {
+                strengthBar.className = 'progress-bar bg-warning';
+                strengthText.textContent = 'Fair';
+            } else if (strength <= 75) {
+                strengthBar.className = 'progress-bar bg-info';
+                strengthText.textContent = 'Good';
+            } else {
+                strengthBar.className = 'progress-bar bg-success';
+                strengthText.textContent = 'Strong';
+            }
+}
+
+passwordInput.addEventListener('input', () => {
+    checkPasswordStrength(passwordInput.value);
+});
+
+// Password Toggle Functionality
+function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleBtn = passwordField.parentElement.querySelector('.password-toggle i');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleBtn.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleBtn.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+// Form Validation
+function validateStep(step) {
+    let isValid = true;
+    const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+    const inputs = currentStepElement.querySelectorAll('input, select');
+
+    inputs.forEach(input => {
+        if (input.hasAttribute('required') && !input.value) {
+            isValid = false;
+            input.classList.add('is-invalid');
+        } else {
+            input.classList.remove('is-invalid');
+        }
+
+        // Specific validation for each step
+        if (step === 1) {
+            if (input.id === 'password') {
+                if (input.value.length < 8) {
+                    isValid = false;
+                    input.classList.add('is-invalid');
+                }
+            }
+            if (input.id === 'password2') {
+                if (input.value !== passwordInput.value) {
+                    isValid = false;
+                    input.classList.add('is-invalid');
+                }
+            }
+        }
+        if (step === 2) {
+            if (input.id === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(input.value)) {
+                    isValid = false;
+                    input.classList.add('is-invalid');
+                }
+            }
+        }
+    });
+
+    return isValid;
+}
+
+// Form Submission
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    if (validateStep(currentStep)) {
+        const submitBtn = this.querySelector('.submit-btn');
+        const spinner = submitBtn.querySelector('.spinner-border');
+
+        // Show loading state
+        submitBtn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        try {
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Submit the form
+            this.submit();
+        } catch (error) {
+            console.error('Registration error:', error);
+            // Handle error case
+            submitBtn.disabled = false;
+            spinner.classList.add('d-none');
+        }
+    }
+});
+
+// Form Input Validation on Change
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('input', function() {
+        if (this.classList.contains('is-invalid')) {
+            validateStep(currentStep);
+        }
+    });
+});
+
+// Prevent form submission on enter
+form.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentStep < 3) {
+            nextBtn.click();
+        } else {
+            submitBtn.click();
+        }
+    }
+});
+
+// Password Match Validation
+const password2Input = document.getElementById('password2');
+password2Input.addEventListener('input', function() {
+    if (this.value !== passwordInput.value) {
+        this.classList.add('is-invalid');
+        this.nextElementSibling.textContent = 'Passwords do not match';
+    } else {
+        this.classList.remove('is-invalid');
+    }
+});
+
+// Initialize Password Strength Indicator
+if (passwordInput.value) {
+    checkPasswordStrength(passwordInput.value);
+}
+
+// Initialize Form State
+updateStep(currentStep);
+
+// Add animation classes for smooth transitions
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.closest('.form-floating').classList.add('focused');
+    });
+
+    input.addEventListener('blur', function() {
+        if (!this.value) {
+            this.closest('.form-floating').classList.remove('focused');
+        }
+    });
+});
+
+// Add touch ripple effect to buttons
+document.querySelectorAll('.btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        const ripple = document.createElement('div');
+        const rect = this.getBoundingClientRect();
+
+        ripple.className = 'ripple';
+        ripple.style.left = `${e.clientX - rect.left}px`;
+        ripple.style.top = `${e.clientY - rect.top}px`;
+
+        this.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+</script>
+{% endblock %}

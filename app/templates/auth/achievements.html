@@ -1,0 +1,353 @@
+<!-- templates/auth/achievements.html -->
+{% extends "base.html" %}
+
+{% block title %}My Achievements{% endblock %}
+
+{% block content %}
+<section class="achievements-section py-5">
+    <div class="container">
+        <!-- Header -->
+        <div class="section-header text-center mb-5">
+            <h2 class="display-6 mb-3">
+                <i class="fas fa-trophy text-warning me-2"></i>
+                My Achievements
+            </h2>
+            <p class="text-muted">Track your learning progress and milestones</p>
+        </div>
+
+        <!-- Achievement Stats Cards -->
+        <div class="row g-4 mb-5">
+            {% for type, achievements in achievement_groups.items() %}
+            <div class="col-md-4">
+                <div class="achievement-stat-card bg-white shadow-sm rounded-3 p-4 h-100">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3 rounded-circle
+                            {% if type == 'quiz_passed' %}bg-success bg-opacity-10 text-success
+                            {% elif type == 'streak' %}bg-warning bg-opacity-10 text-warning
+                            {% else %}bg-primary bg-opacity-10 text-primary{% endif %}">
+                            <i class="fas
+                                {% if type == 'quiz_passed' %}fa-award
+                                {% elif type == 'streak' %}fa-fire
+                                {% else %}fa-star{% endif %} fa-2x"></i>
+                        </div>
+                        <div>
+                            <h3 class="stat-value mb-1">{{ achievements|length }}</h3>
+                            <p class="stat-label mb-0 text-muted">{{ type|title|replace('_', ' ') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Achievement Timeline -->
+        <div class="achievements-timeline">
+            {% for achievement in achievements %}
+            <div class="timeline-item" data-aos="fade-{% if loop.index is even %}left{% else %}right{% endif %}">
+                <div class="timeline-marker
+                    {% if achievement.achievement_type == 'quiz_passed' %}bg-success
+                    {% elif achievement.achievement_type == 'streak' %}bg-warning
+                    {% else %}bg-primary{% endif %}">
+                    <i class="fas
+                        {% if achievement.achievement_type == 'quiz_passed' %}fa-award
+                        {% elif achievement.achievement_type == 'streak' %}fa-fire
+                        {% else %}fa-star{% endif %}"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">
+                                    {{ achievement.achievement_type|title|replace('_', ' ') }}
+                                </h5>
+                                <span class="badge
+                                    {% if achievement.achievement_type == 'quiz_passed' %}bg-success
+                                    {% elif achievement.achievement_type == 'streak' %}bg-warning
+                                    {% else %}bg-primary{% endif %} rounded-pill">
+                                    {% if achievement.achievement_data %}
+                                        {% if achievement.achievement_type == 'quiz_passed' %}
+                                            {{ achievement.achievement_data.score }}%
+                                        {% elif achievement.achievement_type == 'streak' %}
+                                            {{ achievement.achievement_data.days }} Days
+                                        {% endif %}
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            {% if achievement.description %}
+                            <p class="card-text text-muted mb-3">{{ achievement.description }}</p>
+                            {% endif %}
+
+                            <div class="achievement-meta d-flex align-items-center">
+                                <div class="achievement-date me-3">
+                                    <i class="far fa-calendar-alt text-muted me-2"></i>
+                                    <small class="text-muted">
+                                        {{ achievement.earned_at.strftime('%B %d, %Y') }}
+                                    </small>
+                                </div>
+                                <div class="achievement-time">
+                                    <i class="far fa-clock text-muted me-2"></i>
+                                    <small class="text-muted">
+                                        {{ achievement.earned_at.strftime('%I:%M %p') }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            {% if achievement.achievement_data and achievement.achievement_data.details %}
+                            <div class="achievement-details mt-3 p-3 bg-light rounded">
+                                <h6 class="mb-2">Achievement Details</h6>
+                                <ul class="list-unstyled mb-0">
+                                    {% for key, value in achievement.achievement_data.details.items() %}
+                                    <li class="mb-1">
+                                        <small>
+                                            <span class="text-muted">{{ key|title }}:</span>
+                                            <span class="fw-medium">{{ value }}</span>
+                                        </small>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="empty-state">
+                    <div class="empty-state-icon mb-4">
+                        <i class="fas fa-trophy fa-4x text-muted"></i>
+                    </div>
+                    <h4>No Achievements Yet</h4>
+                    <p class="text-muted mb-4">Complete quizzes and maintain streaks to earn achievements!</p>
+                    <a href="{{ url_for('quiz.list_quizzes') }}" class="btn btn-primary">
+                        Start a Quiz <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Achievement Section */
+.achievements-section {
+    min-height: calc(100vh - 250px);
+}
+
+/* Stat Cards */
+.achievement-stat-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.achievement-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+}
+
+/* Timeline */
+.achievements-timeline {
+    position: relative;
+    padding-top: 2rem;
+}
+
+.achievements-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    width: 2px;
+    background: var(--bs-primary);
+    opacity: 0.2;
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.5s ease;
+}
+
+.timeline-item.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.timeline-item:nth-child(even) {
+    transform: translateX(30px);
+}
+
+.timeline-marker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 2;
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+.timeline-content {
+    width: calc(50% - 50px);
+    margin-left: auto;
+    margin-right: 50px;
+}
+
+.timeline-item:nth-child(even) .timeline-content {
+    margin-left: 50px;
+    margin-right: auto;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 3rem;
+}
+
+.empty-state-icon {
+    opacity: 0.5;
+}
+
+/* Animations */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .achievements-timeline::before {
+        left: 20px;
+    }
+
+    .timeline-marker {
+        left: 20px;
+        transform: none;
+    }
+
+    .timeline-content {
+        width: calc(100% - 60px);
+        margin-left: 60px !important;
+        margin-right: 0 !important;
+    }
+
+    .timeline-item,
+    .timeline-item:nth-child(even) {
+        transform: translateX(-20px);
+    }
+
+    .achievement-stat-card:hover {
+        transform: none;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .timeline-marker {
+        border-color: var(--bs-dark);
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Intersection Observer for timeline items
+const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.timeline-item').forEach(item => {
+    observer.observe(item);
+});
+
+// Stats Counter Animation
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 50;
+    const duration = 1000;
+    const interval = duration / 50;
+
+    const counter = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(counter);
+        } else {
+            element.textContent = Math.round(current);
+        }
+    }, interval);
+}
+
+// Initialize counter animations with Intersection Observer
+const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const value = parseInt(entry.target.textContent);
+            animateCounter(entry.target, value);
+            statObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-value').forEach(stat => {
+    statObserver.observe(stat);
+});
+</script>
+{% endblock %}

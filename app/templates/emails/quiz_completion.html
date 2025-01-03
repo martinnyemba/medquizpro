@@ -1,0 +1,28 @@
+<!-- templates/email/quiz_completion.html -->
+{% extends "email/base.html" %}
+
+{% block title %}Quiz Results: {{ result.quiz.title }}{% endblock %}
+
+{% block content %}
+<p>Dear {{ user.username }},</p>
+
+<p>Here are your results for {{ result.quiz.title }}:</p>
+
+<div style="background-color: white; padding: 20px; border-radius: 5px; margin: 20px 0;">
+    <h3 style="margin-top: 0;">Score: {{ "%.1f"|format(result.score) }}%</h3>
+    <p>Time taken: {{ (result.time_taken / 60)|round|int }} minutes</p>
+    <p>Status:
+        {% if result.score >= result.quiz.passing_score %}
+        <span style="color: #28a745;">Passed</span>
+        {% else %}
+        <span style="color: #dc3545;">Failed</span>
+        {% endif %}
+    </p>
+</div>
+
+<p><a href="{{ url_for('quiz.view_result', result_id=result.id, _external=True) }}" class="button">View Detailed Results</a></p>
+
+<p>Keep up the great work!</p>
+
+<p>Best regards,<br>The Medical Quiz Team</p>
+{% endblock %}

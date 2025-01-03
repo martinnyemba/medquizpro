@@ -1,0 +1,109 @@
+<!-- templates/admin/quiz/create.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Create New Quiz</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.title.label }}
+                            {{ form.title(class="form-control") }}
+                            {% for error in form.title.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.course.label }}
+                            {{ form.course(class="form-control") }}
+                            {% for error in form.course.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.profession.label }}
+                            {{ form.profession(class="form-control") }}
+                            {% for error in form.profession.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.difficulty_level.label }}
+                            {{ form.difficulty_level(class="form-control") }}
+                            {% for error in form.difficulty_level.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.time_limit.label }}
+                            {{ form.time_limit(class="form-control") }}
+                            {% for error in form.time_limit.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.passing_score.label }}
+                            {{ form.passing_score(class="form-control") }}
+                            {% for error in form.passing_score.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.max_attempts.label }}
+                            {{ form.max_attempts(class="form-control") }}
+                            {% for error in form.max_attempts.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.tags.label }}
+                            {{ form.tags(class="form-control") }}
+                            <small class="form-text text-muted">Separate tags with commas</small>
+                            {% for error in form.tags.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.description.label }}
+                    {{ form.description(class="form-control", rows=3) }}
+                    {% for error in form.description.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.instructions.label }}
+                    {{ form.instructions(class="form-control", rows=3) }}
+                    {% for error in form.instructions.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="text-right">
+                    <a href="{{ url_for('admin.quiz_management') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create Quiz</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

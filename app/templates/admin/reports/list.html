@@ -1,0 +1,99 @@
+# templates/admin/reports/list.html
+{% extends "admin/base.html" %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Manage Reports</h2>
+
+    <div class="btn-group">
+        <a href="{{ url_for('reports.manage_reports', status='all') }}"
+           class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'all' }}">
+            All
+        </a>
+        <a href="{{ url_for('reports.manage_reports', status='pending') }}"
+           class="btn btn-outline-secondary {{ 'active' if request.args.get('status', 'pending') == 'pending' }}">
+            Pending
+        </a>
+        <a href="{{ url_for('reports.manage_reports', status='reviewed') }}"
+           class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'reviewed' }}">
+            Reviewed
+        </a>
+        <a href="{{ url_for('reports.manage_reports', status='resolved') }}"
+           class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'resolved' }}">
+            Resolved
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Reported Item</th>
+                <th>Reporter</th>
+                <th>Reason</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports.items %}
+            <tr>
+                <td>{{ report.reported_item_type|title }}</td>
+                <td>
+                    {% if report.reported_item_type == 'quiz' %}
+                        {% set item = Quiz.query.get(report.reported_item_id) %}
+                        {{ item.title if item else 'Deleted Quiz' }}
+                    {% elif report.reported_item_type == 'question' %}
+                        {% set item = Question.query.get(report.reported_item_id) %}
+                        Question from: {{ item.quiz.title if item else 'Deleted Quiz' }}
+                    {% elif report.reported_item_type == 'user' %}
+                        {% set item = User.query.get(report.reported_item_id) %}
+                        {{ item.username if item else 'Deleted User' }}
+                    {% endif %}
+                </td>
+                <td>{{ report.reporter.username }}</td>
+                <td>{{ report.reason }}</td>
+                <td>{{ report.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <span class="badge badge-{{ 'warning' if report.status == 'pending'
+                                              else 'info' if report.status == 'reviewed'
+                                              else 'success' }}">
+                        {{ report.status|title }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{{ url_for('reports.review_report', report_id=report.id) }}"
+                       class="btn btn-sm btn-primary">
+                        Review
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+{% if reports.pages > 1 %}
+<nav aria-label="Reports navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% for page in reports.iter_pages() %}
+            {% if page %}
+                <li class="page-item {{ 'active' if page == reports.page }}">
+                    <a class="page-link" href="{{ url_for('reports.manage_reports', page=page, status=request.args.get('status', 'pending')) }}">
+                        {{ page }}
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

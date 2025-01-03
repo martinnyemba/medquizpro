@@ -1,0 +1,648 @@
+<!-- templates/auth/profile.html -->
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<section class="profile-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Column: Profile Info & Achievements -->
+            <div class="col-lg-4">
+                <!-- Profile Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <!-- Profile Picture Section -->
+                        <div class="profile-picture-section text-center mb-4">
+                            <div class="profile-picture-wrapper position-relative d-inline-block">
+                                {% if current_user.profile_image %}
+                                    <img src="{{ current_user.profile_image }}"
+                                         class="rounded-circle profile-picture"
+                                         alt="Profile Picture">
+                                {% else %}
+                                    <div class="profile-initial-avatar rounded-circle d-flex align-items-center justify-content-center">
+                                        {{ current_user.username[0].upper() }}
+                                    </div>
+                                {% endif %}
+                                <button class="btn btn-sm btn-primary profile-picture-edit"
+                                        onclick="document.getElementById('profile-image-input').click()">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                                <input type="file" id="profile-image-input" class="d-none"
+                                       accept="image/*" onchange="handleProfileImageChange(this)">
+                            </div>
+                        </div>
+
+                        <!-- Profile Info -->
+                        <div class="profile-info">
+                            <h4 class="text-center mb-3">{{ current_user.username }}</h4>
+                            <div class="profile-badges text-center mb-4">
+                                <span class="badge bg-primary">{{ current_user.profession.title() }}</span>
+                                {% if current_user.specialization %}
+                                    <span class="badge bg-info">{{ current_user.specialization }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="profile-details">
+                                <div class="profile-detail-item d-flex align-items-center mb-3">
+                                    <div class="icon-wrapper me-3">
+                                        <i class="fas fa-calendar text-primary"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <small class="text-muted d-block">Member Since</small>
+                                        <span>{{ current_user.created_at.strftime('%B %d, %Y') }}</span>
+                                    </div>
+                                </div>
+
+                                {% if current_user.institution %}
+                                <div class="profile-detail-item d-flex align-items-center mb-3">
+                                    <div class="icon-wrapper me-3">
+                                        <i class="fas fa-university text-primary"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <small class="text-muted d-block">Institution</small>
+                                        <span>{{ current_user.institution }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if current_user.experience_years %}
+                                <div class="profile-detail-item d-flex align-items-center mb-3">
+                                    <div class="icon-wrapper me-3">
+                                        <i class="fas fa-briefcase text-primary"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <small class="text-muted d-block">Experience</small>
+                                        <span>{{ current_user.experience_years }} years</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if current_user.bio %}
+                                <div class="profile-detail-item d-flex align-items-start mb-3">
+                                    <div class="icon-wrapper me-3">
+                                        <i class="fas fa-quote-left text-primary"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <small class="text-muted d-block">About</small>
+                                        <span>{{ current_user.bio }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Achievements Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-trophy text-warning me-2"></i>
+                            Recent Achievements
+                        </h5>
+
+                        {% if achievements %}
+                        <div class="achievements-wrapper">
+                            {% for achievement in achievements[:5] %}
+                            <div class="achievement-item p-3 mb-3 rounded-3 bg-light">
+                                <div class="d-flex align-items-center">
+                                    <div class="achievement-icon me-3 rounded-circle">
+                                        {% if achievement.achievement_type == 'quiz_passed' %}
+                                            <i class="fas fa-award text-success"></i>
+                                        {% elif achievement.achievement_type == 'streak' %}
+                                            <i class="fas fa-fire text-warning"></i>
+                                        {% else %}
+                                            <i class="fas fa-star text-primary"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="achievement-details flex-grow-1">
+                                        <h6 class="mb-1">{{ achievement.achievement_type|title|replace('_', ' ') }}</h6>
+                                        <p class="text-muted small mb-0">
+                                            Earned {{ achievement.earned_at.strftime('%B %d, %Y') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if achievements|length > 5 %}
+                        <div class="text-center mt-4">
+                            <a href="{{ url_for('auth.achievements') }}"
+                               class="btn btn-outline-primary btn-sm">
+                                View All Achievements
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                                <h6 class="text-muted">No Achievements Yet</h6>
+                                <p class="text-muted small mb-0">Complete quizzes to earn achievements!</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Edit Profile & Statistics -->
+            <div class="col-lg-8">
+                <!-- Profile Edit Form -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-transparent border-0 p-4">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Edit Profile
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="" enctype="multipart/form-data" class="profile-edit-form">
+                            {{ form.hidden_tag() }}
+
+                            <!-- Personal Information -->
+                            <div class="form-section mb-4">
+                                <h6 class="form-section-title mb-3">Personal Information</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            {{ form.email(class="form-control" ~ (' is-invalid' if form.email.errors else ''),
+                                               placeholder="Email", id="email") }}
+                                            {{ form.email.label(for="email") }}
+                                            {% for error in form.email.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            {{ form.profession(class="form-control" ~ (' is-invalid' if form.profession.errors else ''),
+                                               placeholder="Profession", id="profession") }}
+                                            {{ form.profession.label(for="profession") }}
+                                            {% for error in form.profession.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            {{ form.specialization(class="form-control" ~ (' is-invalid' if form.specialization.errors else ''),
+                                               placeholder="Specialization", id="specialization") }}
+                                            {{ form.specialization.label(for="specialization") }}
+                                            {% for error in form.specialization.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            {{ form.institution(class="form-control" ~ (' is-invalid' if form.institution.errors else ''),
+                                               placeholder="Institution", id="institution") }}
+                                            {{ form.institution.label(for="institution") }}
+                                            {% for error in form.institution.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            {{ form.experience_years(class="form-control" ~ (' is-invalid' if form.experience_years.errors else ''),
+                                               placeholder="Years of Experience", id="experience_years") }}
+                                            {{ form.experience_years.label(for="experience_years") }}
+                                            {% for error in form.experience_years.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            {{ form.bio(class="form-control" ~ (' is-invalid' if form.bio.errors else ''),
+                                               placeholder="Bio", id="bio", style="height: 100px") }}
+                                            {{ form.bio.label(for="bio") }}
+                                            {% for error in form.bio.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password Change Section -->
+                            <div class="form-section mb-4">
+                                <h6 class="form-section-title mb-3">Change Password</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-floating password-field">
+                                            {{ form.current_password(class="form-control" ~ (' is-invalid' if form.current_password.errors else ''),
+                                               placeholder="Current Password", id="current_password", type="password") }}
+                                            {{ form.current_password.label(for="current_password") }}
+                                            <button type="button" class="btn btn-link password-toggle"
+                                                    onclick="togglePassword('current_password')">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                            {% for error in form.current_password.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating password-field">
+                                            {{ form.new_password(class="form-control" ~ (' is-invalid' if form.new_password.errors else ''),
+                                               placeholder="New Password", id="new_password", type="password") }}
+                                            {{ form.new_password.label(for="new_password") }}
+                                            <button type="button" class="btn btn-link password-toggle"
+                                                    onclick="togglePassword('new_password')">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                            {% for error in form.new_password.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating password-field">
+                                            {{ form.confirm_password(class="form-control" ~ (' is-invalid' if form.confirm_password.errors else ''),
+                                               placeholder="Confirm Password", id="confirm_password", type="password") }}
+                                            {{ form.confirm_password.label(for="confirm_password") }}
+                                            <button type="button" class="btn btn-link password-toggle"
+                                                    onclick="togglePassword('confirm_password')">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                            {% for error in form.confirm_password.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>
+                                    Save Changes
+                                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Quiz Statistics Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 p-4">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Quiz Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Stats Overview -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card bg-primary bg-opacity-10 rounded-3 p-3 text-center h-100">
+                                    <div class="stat-icon mb-2">
+                                        <i class="fas fa-tasks fa-2x text-primary"></i>
+                                    </div>
+                                    <h3 class="stat-value mb-1">{{ quiz_stats.quizzes_taken }}</h3>
+                                    <p class="stat-label mb-0 text-muted">Quizzes Taken</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card bg-success bg-opacity-10 rounded-3 p-3 text-center h-100">
+                                    <div class="stat-icon mb-2">
+                                        <i class="fas fa-percent fa-2x text-success"></i>
+                                    </div>
+                                    <h3 class="stat-value mb-1">{{ "%.1f"|format(quiz_stats.average_score) }}%</h3>
+                                    <p class="stat-label mb-0 text-muted">Average Score</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card bg-info bg-opacity-10 rounded-3 p-3 text-center h-100">
+                                    <div class="stat-icon mb-2">
+                                        <i class="fas fa-trophy fa-2x text-info"></i>
+                                    </div>
+                                    <h3 class="stat-value mb-1">{{ "%.1f"|format(quiz_stats.highest_score) }}%</h3>
+                                    <p class="stat-label mb-0 text-muted">Highest Score</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card bg-warning bg-opacity-10 rounded-3 p-3 text-center h-100">
+                                    <div class="stat-icon mb-2">
+                                        <i class="fas fa-clock fa-2x text-warning"></i>
+                                    </div>
+                                    <h3 class="stat-value mb-1">{{ quiz_stats.recent_activity|length }}</h3>
+                                    <p class="stat-label mb-0 text-muted">Recent Activities</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity Table -->
+                        {% if quiz_stats.recent_activity %}
+                        <div class="recent-activity-section">
+                            <h6 class="section-title mb-3">Recent Activity</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Quiz</th>
+                                            <th>Score</th>
+                                            <th>Completion Time</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for activity in quiz_stats.recent_activity %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="quiz-icon me-3">
+                                                        <i class="fas fa-clipboard-check text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">{{ activity.quiz.title }}</h6>
+                                                        <small class="text-muted">{{ activity.quiz.course }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {% if activity.score is not none %}
+                                                    <div class="score-badge
+                                                        {% if activity.score >= 90 %}bg-success
+                                                        {% elif activity.score >= 70 %}bg-primary
+                                                        {% elif activity.score >= 50 %}bg-warning
+                                                        {% else %}bg-danger{% endif %}
+                                                        bg-opacity-10 rounded-pill px-3 py-1 d-inline-block">
+                                                        <span class="{% if activity.score >= 90 %}text-success
+                                                            {% elif activity.score >= 70 %}text-primary
+                                                            {% elif activity.score >= 50 %}text-warning
+                                                            {% else %}text-danger{% endif %}">
+                                                            {{ "%.1f"|format(activity.score) }}%
+                                                        </span>
+                                                    </div>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Not Completed</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if activity.completion_time %}
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        {{ activity.completion_time }} mins
+                                                    </small>
+                                                {% else %}
+                                                    <small class="text-muted">--</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if activity.completed_at %}
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-calendar-alt text-muted me-2"></i>
+                                                        <div>
+                                                            <small class="d-block">
+                                                                {{ activity.completed_at.strftime('%b %d, %Y') }}
+                                                            </small>
+                                                            <small class="text-muted">
+                                                                {{ activity.completed_at.strftime('%I:%M %p') }}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <small class="text-muted">In Progress</small>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* Profile Section Styles */
+.profile-section {
+    min-height: calc(100vh - 250px);
+}
+
+/* Profile Picture */
+.profile-picture-wrapper {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1.5rem;
+}
+
+.profile-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 3px solid var(--bs-primary);
+}
+
+.profile-initial-avatar {
+    width: 100%;
+    height: 100%;
+    background: var(--bs-primary);
+    color: white;
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.profile-picture-edit {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bs-primary);
+    border: 3px solid white;
+    padding: 0;
+}
+
+/* Profile Details */
+.profile-detail-item .icon-wrapper {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/* Achievement Items */
+.achievement-item {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.achievement-item:hover {
+    transform: translateX(5px);
+    border-left-color: var(--bs-primary);
+}
+
+.achievement-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/* Form Section */
+.form-section-title {
+    color: var(--bs-gray-700);
+    position: relative;
+    padding-left: 1rem;
+}
+
+.form-section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: var(--bs-primary);
+    border-radius: 2px;
+}
+
+/* Password Fields */
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 0.5rem;
+    z-index: 5;
+}
+
+/* Stats Cards */
+.stat-card {
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-value {
+    font-weight: 600;
+    font-size: 1.75rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+}
+
+/* Activity Table */
+.quiz-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.score-badge {
+    font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .profile-picture-wrapper {
+        width: 120px;
+        height: 120px;
+    }
+
+    .stat-card {
+        transform: none !important;
+    }
+
+    .achievement-item:hover {
+        transform: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Password Toggle Functionality
+function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleBtn = passwordField.parentElement.querySelector('.password-toggle i');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleBtn.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleBtn.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+// Profile Image Upload
+function handleProfileImageChange(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const profilePicture = document.querySelector('.profile-picture') ||
+                                 document.querySelector('.profile-initial-avatar');
+
+            if (profilePicture.tagName === 'IMG') {
+                profilePicture.src = e.target.result;
+            } else {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'profile-picture rounded-circle';
+                img.alt = 'Profile Picture';
+                profilePicture.parentNode.replaceChild(img, profilePicture);
+            }
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Form Submission Handler
+document.querySelector('form').addEventListener('submit', function(e) {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const spinner = submitBtn.querySelector('.spinner-border');
+
+    if (spinner) {
+        submitBtn.disabled = true;
+        spinner.classList.remove('d-none');
+    }
+});
+
+// Initialize Tooltips
+const tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+tooltips.map(tooltip => new bootstrap.Tooltip(tooltip));
+</script>
+{% endblock %}

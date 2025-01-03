@@ -1,0 +1,284 @@
+<!-- templates/admin/submissions/review.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="card-title mb-0">Review Question Submissions</h2>
+                        <div class="submission-stats">
+                            <span class="badge bg-warning text-dark me-2">
+                                {{ submissions.total if request.args.get('status', 'pending') == 'pending' else pending_count }} Pending
+                            </span>
+                            <span class="badge bg-success me-2">
+                                {{ approved_count }} Approved
+                            </span>
+                            <span class="badge bg-danger">
+                                {{ rejected_count }} Rejected
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <div class="btn-group">
+                                <a href="{{ url_for('submission.review_submissions', status='pending') }}"
+                                   class="btn btn-outline-primary {{ 'active' if request.args.get('status', 'pending') == 'pending' }}">
+                                   <i class="fas fa-clock me-2"></i>Pending
+                                </a>
+                                <a href="{{ url_for('submission.review_submissions', status='approved') }}"
+                                   class="btn btn-outline-success {{ 'active' if request.args.get('status') == 'approved' }}">
+                                   <i class="fas fa-check me-2"></i>Approved
+                                </a>
+                                <a href="{{ url_for('submission.review_submissions', status='rejected') }}"
+                                   class="btn btn-outline-danger {{ 'active' if request.args.get('status') == 'rejected' }}">
+                                   <i class="fas fa-times me-2"></i>Rejected
+                                </a>
+                                <a href="{{ url_for('submission.review_submissions', status='all') }}"
+                                   class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'all' }}">
+                                   <i class="fas fa-list me-2"></i>All
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" onchange="window.location.href=this.value">
+                                <option value="{{ url_for('submission.review_submissions',
+                                         status=request.args.get('status', 'pending')) }}">All Courses</option>
+                                {% for course in courses %}
+                                    <option value="{{ url_for('submission.review_submissions',
+                                                 status=request.args.get('status', 'pending'),
+                                                 course=course) }}"
+                                            {{ 'selected' if request.args.get('course') == course }}>
+                                        {{ course|replace('_', ' ')|title }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if submissions.items %}
+        <div class="row">
+            {% for submission in submissions.items %}
+                <div class="col-12 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-primary me-2">{{ submission.course|replace('_', ' ')|title }}</span>
+                                <span class="badge bg-secondary me-2">{{ submission.difficulty_level|title }}</span>
+                                <span class="badge {{ {
+                                    'pending': 'bg-warning text-dark',
+                                    'approved': 'bg-success',
+                                    'rejected': 'bg-danger'
+                                }[submission.status] }}">{{ submission.status|title }}</span>
+                            </div>
+                            <small class="text-muted">
+                                Submitted by {{ submission.submitter.username }} on
+                                {{ submission.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            </small>
+                        </div>
+                        <div class="card-body">
+                            <div class="question-content mb-4">
+                                <h5 class="card-title">Question Content</h5>
+                                <p class="card-text">{{ submission.content }}</p>
+                            </div>
+
+                            <div class="options-section mb-4">
+                                <h5 class="card-title">Answer Options</h5>
+                                <div class="row g-3">
+                                    {% for option in submission.options %}
+                                        <div class="col-md-6">
+                                            <div class="card h-100 {{ 'border-success' if option == submission.correct_option_content }}">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="option-number me-2">{{ loop.index }}</span>
+                                                        <div class="flex-grow-1">{{ option }}</div>
+                                                        {% if option == submission.correct_option_content %}
+                                                            <i class="fas fa-check-circle text-success ms-2"></i>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            {% if submission.explanation %}
+                                <div class="explanation-section mb-4">
+                                    <h5 class="card-title">Explanation</h5>
+                                    <p class="card-text bg-light p-3 rounded">{{ submission.explanation }}</p>
+                                </div>
+                            {% endif %}
+
+                            {% if submission.reference %}
+                                <div class="reference-section mb-4">
+                                    <h5 class="card-title">Reference</h5>
+                                    <p class="card-text bg-light p-3 rounded">{{ submission.reference }}</p>
+                                </div>
+                            {% endif %}
+
+                            <div class="review-section">
+                                {% if submission.status == 'pending' %}
+                                    <a href="{{ url_for('submission.review_submission', submission_id=submission.id) }}"
+                                       class="btn btn-primary">
+                                        <i class="fas fa-clipboard-check me-2"></i>Review Submission
+                                    </a>
+                                {% else %}
+                                    <div class="review-info bg-light p-3 rounded">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1">
+                                                <strong>Reviewed by:</strong> {{ submission.reviewer.username }}<br>
+                                                <strong>Date:</strong> {{ submission.reviewed_at.strftime('%Y-%m-%d %H:%M') }}
+                                            </div>
+                                            {% if submission.feedback %}
+                                                <button class="btn btn-outline-secondary btn-sm ms-3"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#feedback{{ submission.id }}">
+                                                    <i class="fas fa-comments me-2"></i>View Feedback
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                        {% if submission.feedback %}
+                                            <div class="collapse mt-3" id="feedback{{ submission.id }}">
+                                                <div class="card card-body">
+                                                    {{ submission.feedback }}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Enhanced Pagination -->
+        {% if submissions.pages > 1 %}
+            <nav aria-label="Submissions navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {{ 'disabled' if not submissions.has_prev }}">
+                        <a class="page-link" href="{{ url_for('submission.review_submissions',
+                                                  status=request.args.get('status', 'pending'),
+                                                  course=request.args.get('course'),
+                                                  page=submissions.prev_num) if submissions.has_prev else '#' }}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    {% for page in submissions.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                        {% if page %}
+                            <li class="page-item {{ 'active' if page == submissions.page }}">
+                                <a class="page-link" href="{{ url_for('submission.review_submissions',
+                                                          status=request.args.get('status', 'pending'),
+                                                          course=request.args.get('course'),
+                                                          page=page) }}">{{ page }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    <li class="page-item {{ 'disabled' if not submissions.has_next }}">
+                        <a class="page-link" href="{{ url_for('submission.review_submissions',
+                                                  status=request.args.get('status', 'pending'),
+                                                  course=request.args.get('course'),
+                                                  page=submissions.next_num) if submissions.has_next else '#' }}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <h5>No Submissions Found</h5>
+                <p class="text-muted">There are no submissions matching your current filters.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+.option-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.border-success {
+    border-width: 2px;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+.btn-group .btn {
+    padding: 0.5rem 1rem;
+}
+
+.review-info {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+}
+
+.pagination .page-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.submission-stats .badge {
+    font-size: 0.875rem;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
+</script>
+{% endblock %}

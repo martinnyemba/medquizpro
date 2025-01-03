@@ -1,0 +1,239 @@
+<!-- templates/submission/my_submissions.html -->
+{% extends "base.html" %}
+
+{% block title %}My Submitted Questions{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Submitted Questions</h2>
+        <a href="{{ url_for('submission.submit_question') }}" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i>Submit New Question
+        </a>
+    </div>
+
+    {% if submissions.items %}
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="px-4">Date</th>
+                                <th>Course</th>
+                                <th>Question Details</th>
+                                <th>Status</th>
+                                <th class="text-end px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for submission in submissions.items %}
+                                <tr>
+                                    <td class="px-4">
+                                        <div>{{ submission.created_at.strftime('%Y-%m-%d') }}</div>
+                                        <small class="text-muted">{{ submission.created_at.strftime('%H:%M') }}</small>
+                                    </td>
+                                    <td>
+                                        <div>{{ submission.course|replace('_', ' ')|title }}</div>
+                                        <small class="text-muted">{{ submission.difficulty_level|title }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="question-content">{{ submission.content|truncate(100) }}</div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">Correct Answer:</small>
+                                            <small class="text-success">
+                                                {{ submission.correct_option_content|truncate(50) }}
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% set status_classes = {
+                                            'pending': 'bg-warning text-dark',
+                                            'approved': 'bg-success text-white',
+                                            'rejected': 'bg-danger text-white'
+                                        } %}
+                                        <span class="badge {{ status_classes[submission.status] }}">
+                                            {{ submission.status|title }}
+                                        </span>
+                                        {% if submission.reviewed_at %}
+                                            <div class="mt-1">
+                                                <small class="text-muted">
+                                                    Reviewed {{ submission.reviewed_at.strftime('%Y-%m-%d') }}
+                                                </small>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end px-4">
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#submissionModal{{ submission.id }}">
+                                            <i class="fas fa-eye me-1"></i>View Details
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal for submission details -->
+                                <div class="modal fade" id="submissionModal{{ submission.id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Question Details</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-4">
+                                                    <label class="form-label fw-bold">Question Content:</label>
+                                                    <div class="p-3 bg-light rounded">{{ submission.content }}</div>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="form-label fw-bold">Options:</label>
+                                                    <div class="row g-3">
+                                                        {% for option in submission.options %}
+                                                            <div class="col-md-6">
+                                                                <div class="card h-100 {% if option == submission.correct_option_content %}border-success{% endif %}">
+                                                                    <div class="card-body">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <div class="flex-grow-1">{{ option }}</div>
+                                                                            {% if option == submission.correct_option_content %}
+                                                                                <i class="fas fa-check-circle text-success ms-2"></i>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="form-label fw-bold">Explanation:</label>
+                                                    <div class="p-3 bg-light rounded">{{ submission.explanation }}</div>
+                                                </div>
+
+                                                {% if submission.reference %}
+                                                    <div class="mb-4">
+                                                        <label class="form-label fw-bold">Reference:</label>
+                                                        <div class="p-3 bg-light rounded">{{ submission.reference }}</div>
+                                                    </div>
+                                                {% endif %}
+
+                                                {% if submission.feedback %}
+                                                    <div class="mb-4">
+                                                        <label class="form-label fw-bold">Reviewer Feedback:</label>
+                                                        <div class="p-3 {% if submission.status == 'approved' %}bg-success-light{% elif submission.status == 'rejected' %}bg-danger-light{% else %}bg-light{% endif %} rounded">
+                                                            {{ submission.feedback }}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if submissions.pages > 1 %}
+        <nav aria-label="Submissions navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {{ 'disabled' if not submissions.has_prev }}">
+                    <a class="page-link" href="{{ url_for('submission.my_submissions', page=submissions.prev_num) if submissions.has_prev else '#' }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+
+                {% for page in submissions.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                    {% if page %}
+                        <li class="page-item {{ 'active' if page == submissions.page }}">
+                            <a class="page-link" href="{{ url_for('submission.my_submissions', page=page) }}">
+                                {{ page }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <li class="page-item {{ 'disabled' if not submissions.has_next }}">
+                    <a class="page-link" href="{{ url_for('submission.my_submissions', page=submissions.next_num) if submissions.has_next else '#' }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-clipboard-list fa-3x text-muted"></i>
+                </div>
+                <h5>No Questions Submitted Yet</h5>
+                <p class="text-muted">Start contributing to our question bank by submitting your first question.</p>
+                <a href="{{ url_for('submission.submit_question') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i>Submit Your First Question
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.bg-success-light {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.bg-danger-light {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.question-content {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.modal-body .card {
+    transition: all 0.2s ease-in-out;
+}
+
+.modal-body .card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.pagination .page-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enable all tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
+</script>
+{% endblock %}

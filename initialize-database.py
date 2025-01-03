@@ -64,9 +64,9 @@ def create_quiz_content():
                 {
                     'content': 'Which of the following bones is part of the axial skeleton?',
                     'options': [
-                        {'content': 'Skull', 'is_correct': True},
                         {'content': 'Humerus', 'is_correct': False},
                         {'content': 'Femur', 'is_correct': False},
+                        {'content': 'Skull', 'is_correct': True},
                         {'content': 'Radius', 'is_correct': False}
                     ],
                     'explanation': 'The axial skeleton includes the skull, vertebral column, and rib cage.'
@@ -79,17 +79,19 @@ def create_quiz_content():
                         {'content': 'Controls blood flow from left ventricle to aorta', 'is_correct': False},
                         {'content': 'Controls blood flow from right ventricle to pulmonary artery', 'is_correct': False}
                     ],
-                    'explanation': 'The mitral valve is located between the left atrium and left ventricle, controlling blood flow between these chambers.'
+                    'explanation': 'The mitral valve is located between the left atrium and left ventricle, '
+                                   'controlling blood flow between these chambers.'
                 },
                 {
                     'content': 'Which cranial nerve controls taste in the anterior two-thirds of the tongue?',
                     'options': [
-                        {'content': 'Facial nerve (CN VII)', 'is_correct': True},
                         {'content': 'Glossopharyngeal nerve (CN IX)', 'is_correct': False},
+                        {'content': 'Facial nerve (CN VII)', 'is_correct': True},
                         {'content': 'Vagus nerve (CN X)', 'is_correct': False},
                         {'content': 'Hypoglossal nerve (CN XII)', 'is_correct': False}
                     ],
-                    'explanation': 'The facial nerve (CN VII) provides taste sensation to the anterior two-thirds of the tongue via the chorda tympani branch.'
+                    'explanation': 'The facial nerve (CN VII) provides taste sensation to the anterior two-thirds of '
+                                   'the tongue via the chorda tympani branch.'
                 },
                 {
                     "content": "What is the primary function of the cerebellum in the human brain?",
@@ -104,9 +106,9 @@ def create_quiz_content():
                 {
                     "content": "Which bone is known as the longest bone in the human body?",
                     "options": [
-                        {"content": "Femur", "is_correct": True},
                         {"content": "Tibia", "is_correct": False},
                         {"content": "Humerus", "is_correct": False},
+                        {"content": "Femur", "is_correct": True},
                         {"content": "Radius", "is_correct": False}
                     ],
                     "explanation": "The femur, or thigh bone, is the longest and strongest bone in the human body."
@@ -124,10 +126,11 @@ def create_quiz_content():
                 {
                     "content": "What is the name of the outermost layer of the skin?",
                     "options": [
-                        {"content": "Epidermis", "is_correct": True},
+
                         {"content": "Dermis", "is_correct": False},
                         {"content": "Hypodermis", "is_correct": False},
-                        {"content": "Subcutaneous tissue", "is_correct": False}
+                        {"content": "Subcutaneous tissue", "is_correct": False},
+                        {"content": "Epidermis", "is_correct": True}
                     ],
                     "explanation": "The epidermis is the outermost layer of the skin that acts as a protective barrier."
                 },
@@ -144,8 +147,8 @@ def create_quiz_content():
                 {
                     'content': 'Which muscle is the primary flexor of the hip joint?',
                     'options': [
-                        {'content': 'Iliopsoas', 'is_correct': True},
                         {'content': 'Gluteus maximus', 'is_correct': False},
+                        {'content': 'Iliopsoas', 'is_correct': True},
                         {'content': 'Rectus femoris', 'is_correct': False},
                         {'content': 'Sartorius', 'is_correct': False}
                     ],
@@ -159,7 +162,8 @@ def create_quiz_content():
                         {'content': 'Distal convoluted tubule', 'is_correct': False},
                         {'content': 'Collecting duct', 'is_correct': False}
                     ],
-                    'explanation': 'The loop of Henle creates and maintains the medullary concentration gradient through countercurrent multiplication.'
+                    'explanation': 'The loop of Henle creates and maintains the medullary concentration gradient '
+                                   'through countercurrent multiplication.'
                 }
             ]
         },
@@ -173,27 +177,30 @@ def create_quiz_content():
                         {'content': 'Beta blockers', 'is_correct': False},
                         {'content': 'Thiazide diuretics', 'is_correct': False}
                     ],
-                    'explanation': 'ACE inhibitors are contraindicated in bilateral renal artery stenosis as they can cause acute kidney injury by reducing efferent arteriolar tone.'
+                    'explanation': 'ACE inhibitors are contraindicated in bilateral renal artery stenosis as they can '
+                                   'cause acute kidney injury by reducing efferent arteriolar tone.'
                 },
                 {
                     "content": "Which antihypertensive medication class is contraindicated in bilateral renal artery stenosis?",
                     "options": [
-                        {"content": "ACE inhibitors", "is_correct": True},
                         {"content": "Calcium channel blockers", "is_correct": False},
                         {"content": "Beta blockers", "is_correct": False},
-                        {"content": "Thiazide diuretics", "is_correct": False}
+                        {"content": "Thiazide diuretics", "is_correct": False},
+                        {"content": "ACE inhibitors", "is_correct": True}
                     ],
-                    "explanation": "ACE inhibitors are contraindicated in bilateral renal artery stenosis as they can cause acute kidney injury by reducing efferent arteriolar tone."
+                    "explanation": "ACE inhibitors are contraindicated in bilateral renal artery stenosis as they can "
+                                   "cause acute kidney injury by reducing efferent arteriolar tone."
                 },
                 {
                     "content": "Which drug is the first-line treatment for acute status epilepticus?",
                     "options": [
-                        {"content": "Lorazepam", "is_correct": True},
                         {"content": "Phenytoin", "is_correct": False},
                         {"content": "Valproic acid", "is_correct": False},
+                        {"content": "Lorazepam", "is_correct": True},
                         {"content": "Carbamazepine", "is_correct": False}
                     ],
-                    "explanation": "Lorazepam is the preferred first-line benzodiazepine for status epilepticus due to its rapid onset and longer duration of action."
+                    "explanation": "Lorazepam is the preferred first-line benzodiazepine for status epilepticus due "
+                                   "to its rapid onset and longer duration of action."
                 },
                 {
                     "content": "What is the mechanism of action of metformin in treating type 2 diabetes?",
@@ -204,13 +211,14 @@ def create_quiz_content():
                         {"content": "Delays glucose absorption in the intestine", "is_correct": False},
                         {"content": "Increases glucose excretion in urine", "is_correct": False}
                     ],
-                    "explanation": "Metformin primarily works by reducing hepatic glucose production and improving peripheral insulin sensitivity."
+                    "explanation": "Metformin primarily works by reducing hepatic glucose production and improving "
+                                   "peripheral insulin sensitivity."
                 },
                 {
                     "content": "Which antibiotic class is most appropriate for treating atypical pneumonia?",
                     "options": [
-                        {"content": "Macrolides", "is_correct": True},
                         {"content": "Penicillins", "is_correct": False},
+                        {"content": "Macrolides", "is_correct": True},
                         {"content": "Cephalosporins", "is_correct": False},
                         {"content": "Aminoglycosides", "is_correct": False}
                     ],
@@ -229,12 +237,13 @@ def create_quiz_content():
                 {
                     'content': 'Which drug is the first-line treatment for acute status epilepticus?',
                     'options': [
-                        {'content': 'Lorazepam', 'is_correct': True},
                         {'content': 'Phenytoin', 'is_correct': False},
+                        {'content': 'Lorazepam', 'is_correct': True},
                         {'content': 'Valproic acid', 'is_correct': False},
                         {'content': 'Carbamazepine', 'is_correct': False}
                     ],
-                    'explanation': 'Lorazepam is the preferred first-line benzodiazepine for status epilepticus due to its rapid onset and longer duration of action.'
+                    'explanation': 'Lorazepam is the preferred first-line benzodiazepine for status epilepticus due '
+                                   'to its rapid onset and longer duration of action.'
                 },
                 {
                     'content': 'What is the mechanism of action of metformin in treating type 2 diabetes?',
@@ -249,9 +258,9 @@ def create_quiz_content():
                 {
                     'content': 'Which antibiotic class is most appropriate for treating atypical pneumonia?',
                     'options': [
-                        {'content': 'Macrolides', 'is_correct': True},
                         {'content': 'Penicillins', 'is_correct': False},
                         {'content': 'Cephalosporins', 'is_correct': False},
+                        {'content': 'Macrolides', 'is_correct': True},
                         {'content': 'Aminoglycosides', 'is_correct': False}
                     ],
                     'explanation': 'Macrolides are effective against atypical organisms like Mycoplasma pneumoniae and Chlamydophila pneumoniae.'
@@ -263,8 +272,8 @@ def create_quiz_content():
                 {
                     'content': 'What is the most appropriate initial management for acute STEMI?',
                     'options': [
-                        {'content': 'Primary PCI within 90 minutes', 'is_correct': True},
                         {'content': 'Thrombolysis if PCI unavailable within 30 minutes', 'is_correct': False},
+                        {'content': 'Primary PCI within 90 minutes', 'is_correct': True},
                         {'content': 'Conservative medical management', 'is_correct': False},
                         {'content': 'Immediate coronary artery bypass surgery', 'is_correct': False}
                     ],
@@ -293,10 +302,10 @@ def create_quiz_content():
                 {
                     "content": "What is the most common cause of hospital-acquired pneumonia?",
                     "options": [
-                        {"content": "Staphylococcus aureus", "is_correct": True},
                         {"content": "Streptococcus pneumoniae", "is_correct": False},
                         {"content": "Klebsiella pneumoniae", "is_correct": False},
-                        {"content": "Haemophilus influenzae", "is_correct": False}
+                        {"content": "Haemophilus influenzae", "is_correct": False},
+                        {"content": "Staphylococcus aureus", "is_correct": True}
                     ],
                     "explanation": "Staphylococcus aureus, including MRSA, is the most common cause of hospital-acquired pneumonia."
                 },
@@ -313,12 +322,14 @@ def create_quiz_content():
                 {
                     "content": "What is the diagnostic hallmark of nephrotic syndrome?",
                     "options": [
-                        {"content": "Proteinuria >3.5 g/day", "is_correct": True},
                         {"content": "Hematuria", "is_correct": False},
                         {"content": "Pyuria", "is_correct": False},
+                        {"content": "Proteinuria >3.5 g/day", "is_correct": True},
                         {"content": "Oliguria", "is_correct": False}
                     ],
-                    "explanation": "Nephrotic syndrome is characterized by proteinuria >3.5 g/day, hypoalbuminemia, edema, and often hyperlipidemia. Additional features may include an increased risk of infections and thromboembolism."
+                    "explanation": "Nephrotic syndrome is characterized by proteinuria >3.5 g/day, hypoalbuminemia, "
+                                   "edema, and often hyperlipidemia. Additional features may include an increased "
+                                   "risk of infections and thromboembolism."
                 },
                 {
                     'content': 'Which finding is most specific for systemic lupus erythematosus?',
@@ -333,8 +344,8 @@ def create_quiz_content():
                 {
                     'content': 'What is the most common cause of hospital-acquired pneumonia?',
                     'options': [
-                        {'content': 'Staphylococcus aureus', 'is_correct': True},
                         {'content': 'Streptococcus pneumoniae', 'is_correct': False},
+                        {'content': 'Staphylococcus aureus', 'is_correct': True},
                         {'content': 'Klebsiella pneumoniae', 'is_correct': False},
                         {'content': 'Haemophilus influenzae', 'is_correct': False}
                     ],
@@ -362,17 +373,19 @@ def create_quiz_content():
                         {'content': 'Percutaneous cholecystostomy', 'is_correct': False},
                         {'content': 'ERCP', 'is_correct': False}
                     ],
-                    'explanation': 'Early laparoscopic cholecystectomy (within 72 hours) is the preferred treatment for acute cholecystitis in suitable candidates.'
+                    'explanation': 'Early laparoscopic cholecystectomy (within 72 hours) is the preferred treatment '
+                                   'for acute cholecystitis in suitable candidates.'
                 },
                 {
                     'content': 'What is the most appropriate management for a patient with a perforated peptic ulcer?',
                     'options': [
-                        {'content': 'Emergency laparotomy and ulcer repair', 'is_correct': True},
                         {'content': 'Antibiotics alone', 'is_correct': False},
                         {'content': 'Endoscopic clipping', 'is_correct': False},
+                        {'content': 'Emergency laparotomy and ulcer repair', 'is_correct': True},
                         {'content': 'Observation and pain management', 'is_correct': False}
                     ],
-                    'explanation': 'Emergency laparotomy with repair or resection is the standard treatment for perforated peptic ulcer to prevent peritonitis.'
+                    'explanation': 'Emergency laparotomy with repair or resection is the standard treatment for '
+                                   'perforated peptic ulcer to prevent peritonitis.'
                 },
                 {
                     'content': 'What is the most common cause of postoperative fever within the first 48 hours?',
@@ -382,17 +395,19 @@ def create_quiz_content():
                         {'content': 'Wound infection', 'is_correct': False},
                         {'content': 'Deep vein thrombosis', 'is_correct': False}
                     ],
-                    'explanation': 'Atelectasis is the most common cause of fever in the first 48 hours after surgery, due to impaired lung expansion.'
+                    'explanation': 'Atelectasis is the most common cause of fever in the first 48 hours after '
+                                   'surgery, due to impaired lung expansion.'
                 },
                 {
                     'content': 'What is the most appropriate initial management for acute cholecystitis?',
                     'options': [
-                        {'content': 'Early laparoscopic cholecystectomy', 'is_correct': True},
                         {'content': 'Antibiotics alone', 'is_correct': False},
                         {'content': 'Percutaneous cholecystostomy', 'is_correct': False},
-                        {'content': 'ERCP', 'is_correct': False}
+                        {'content': 'ERCP', 'is_correct': False},
+                        {'content': 'Early laparoscopic cholecystectomy', 'is_correct': True}
                     ],
-                    'explanation': 'Early laparoscopic cholecystectomy (within 72 hours) is the preferred treatment for acute cholecystitis in suitable candidates.'
+                    'explanation': 'Early laparoscopic cholecystectomy (within 72 hours) is the preferred treatment '
+                                   'for acute cholecystitis in suitable candidates.'
                 },
                 {
                     'content': 'Which is the most appropriate fluid for initial resuscitation in hemorrhagic shock?',
@@ -402,17 +417,19 @@ def create_quiz_content():
                         {'content': 'Albumin', 'is_correct': False},
                         {'content': 'Dextrose solution', 'is_correct': False}
                     ],
-                    'explanation': 'Balanced crystalloid solutions are preferred for initial resuscitation as they cause less metabolic derangement.'
+                    'explanation': 'Balanced crystalloid solutions are preferred for initial resuscitation as they '
+                                   'cause less metabolic derangement.'
                 },
                 {
                     'content': 'What is the most common complication after splenectomy?',
                     'options': [
-                        {'content': 'Left lower lobe atelectasis', 'is_correct': True},
                         {'content': 'Hemorrhage', 'is_correct': False},
                         {'content': 'Subphrenic abscess', 'is_correct': False},
-                        {'content': 'Thrombocytosis', 'is_correct': False}
+                        {'content': 'Thrombocytosis', 'is_correct': False},
+                        {'content': 'Left lower lobe atelectasis', 'is_correct': True},
                     ],
-                    'explanation': 'Left lower lobe atelectasis is the most common post-splenectomy complication due to decreased left diaphragm movement.'
+                    'explanation': 'Left lower lobe atelectasis is the most common post-splenectomy complication due '
+                                   'to decreased left diaphragm movement.'
                 },
                 {
                     'content': 'Which is the most appropriate fluid for initial resuscitation in hemorrhagic shock?',
@@ -422,17 +439,19 @@ def create_quiz_content():
                         {'content': 'Albumin', 'is_correct': False},
                         {'content': 'Dextrose solution', 'is_correct': False}
                     ],
-                    'explanation': 'Balanced crystalloid solutions are preferred for initial resuscitation as they cause less metabolic derangement.'
+                    'explanation': 'Balanced crystalloid solutions are preferred for initial resuscitation as they '
+                                   'cause less metabolic derangement.'
                 },
                 {
                     'content': 'What is the most common complication after splenectomy?',
                     'options': [
-                        {'content': 'Left lower lobe atelectasis', 'is_correct': True},
                         {'content': 'Hemorrhage', 'is_correct': False},
+                        {'content': 'Left lower lobe atelectasis', 'is_correct': True},
                         {'content': 'Subphrenic abscess', 'is_correct': False},
                         {'content': 'Thrombocytosis', 'is_correct': False}
                     ],
-                    'explanation': 'Left lower lobe atelectasis is the most common post-splenectomy complication due to decreased left diaphragm movement.'
+                    'explanation': 'Left lower lobe atelectasis is the most common post-splenectomy complication due '
+                                   'to decreased left diaphragm movement.'
                 }
             ]
         },
@@ -441,12 +460,13 @@ def create_quiz_content():
                 {
                     'content': 'What is the most common presenting symptom of intussusception?',
                     'options': [
-                        {'content': 'Intermittent severe abdominal pain', 'is_correct': True},
                         {'content': 'Bilious vomiting', 'is_correct': False},
                         {'content': 'Bloody stool', 'is_correct': False},
+                        {'content': 'Intermittent severe abdominal pain', 'is_correct': True},
                         {'content': 'Fever', 'is_correct': False}
                     ],
-                    'explanation': 'Intermittent severe abdominal pain is typically the first symptom of intussusception, often causing a child to draw their knees to their chest.'
+                    'explanation': 'Intermittent severe abdominal pain is typically the first symptom of '
+                                   'intussusception, often causing a child to draw their knees to their chest.'
                 },
                 {
                     'content': 'What is the first-line treatment for a child with croup?',
@@ -471,9 +491,9 @@ def create_quiz_content():
                 {
                     'content': 'What is the first-line treatment for acute otitis media in children?',
                     'options': [
-                        {'content': 'Amoxicillin', 'is_correct': True},
                         {'content': 'Azithromycin', 'is_correct': False},
                         {'content': 'Amoxicillin-clavulanate', 'is_correct': False},
+                        {'content': 'Amoxicillin', 'is_correct': True},
                         {'content': 'Cefuroxime', 'is_correct': False}
                     ],
                     'explanation': 'Amoxicillin is the first-line treatment for uncomplicated acute otitis media in children.'
@@ -481,8 +501,8 @@ def create_quiz_content():
                 {
                     'content': 'Which vaccine is recommended at birth?',
                     'options': [
-                        {'content': 'Hepatitis B', 'is_correct': True},
                         {'content': 'Rotavirus', 'is_correct': False},
+                        {'content': 'Hepatitis B', 'is_correct': True},
                         {'content': 'Diphtheria, tetanus, and pertussis (DTaP)', 'is_correct': False},
                         {'content': 'Polio', 'is_correct': False}
                     ],
@@ -501,10 +521,10 @@ def create_quiz_content():
                 {
                     'content': 'Which congenital heart defect is most commonly associated with Down syndrome?',
                     'options': [
-                        {'content': 'Atrioventricular septal defect', 'is_correct': True},
                         {'content': 'Tetralogy of Fallot', 'is_correct': False},
                         {'content': 'Transposition of great arteries', 'is_correct': False},
-                        {'content': 'Patent ductus arteriosus', 'is_correct': False}
+                        {'content': 'Patent ductus arteriosus', 'is_correct': False},
+                        {'content': 'Atrioventricular septal defect', 'is_correct': True}
                     ],
                     'explanation': 'Atrioventricular septal defect (AVSD) is the most common cardiac defect in Down syndrome.'
                 },
@@ -530,30 +550,34 @@ def create_quiz_content():
                         {'content': 'Immediate cesarean delivery', 'is_correct': False},
                         {'content': 'Antihypertensive therapy alone', 'is_correct': False}
                     ],
-                    'explanation': 'Severe preeclampsia at 34 weeks warrants delivery after completing antenatal corticosteroids for fetal lung maturity.'
+                    'explanation': 'Severe preeclampsia at 34 weeks warrants delivery after completing antenatal '
+                                   'corticosteroids for fetal lung maturity.'
                 },
                 {
                     'content': 'What is the most common cause of postpartum hemorrhage?',
                     'options': [
-                        {'content': 'Uterine atony', 'is_correct': True},
                         {'content': 'Cervical lacerations', 'is_correct': False},
                         {'content': 'Retained placenta', 'is_correct': False},
+                        {'content': 'Uterine atony', 'is_correct': True},
                         {'content': 'Coagulopathy', 'is_correct': False}
                     ],
-                    'explanation': 'Uterine atony, or failure of the uterus to contract after delivery, is the leading cause of postpartum hemorrhage.'
+                    'explanation': 'Uterine atony, or failure of the uterus to contract after delivery, is the '
+                                   'leading cause of postpartum hemorrhage.'
                 },
                 {
                     'content': 'Which is the recommended method of delivery for a breech presentation at term?',
                     'options': [
-                        {'content': 'Cesarean section', 'is_correct': True},
                         {'content': 'Vaginal delivery', 'is_correct': False},
+                        {'content': 'Cesarean section', 'is_correct': True},
                         {'content': 'Vacuum-assisted delivery', 'is_correct': False},
                         {'content': 'Forceps delivery', 'is_correct': False}
                     ],
-                    'explanation': 'Cesarean section is recommended for breech presentation at term to reduce the risk of injury to both mother and baby.'
+                    'explanation': 'Cesarean section is recommended for breech presentation at term to reduce the '
+                                   'risk of injury to both mother and baby.'
                 },
                 {
-                    'content': 'What is the most appropriate management for a patient with preeclampsia at 34 weeks gestation?',
+                    'content': 'What is the most appropriate management for a patient with preeclampsia at 34 weeks '
+                               'gestation?',
                     'options': [
                         {'content': 'Induction of labor', 'is_correct': True},
                         {'content': 'Observation with blood pressure monitoring', 'is_correct': False},
@@ -575,8 +599,8 @@ def create_quiz_content():
                 {
                     'content': 'What is the recommended management for a patient with a ruptured ectopic pregnancy?',
                     'options': [
-                        {'content': 'Surgical removal of the ectopic pregnancy', 'is_correct': True},
                         {'content': 'Methotrexate therapy', 'is_correct': False},
+                        {'content': 'Surgical removal of the ectopic pregnancy', 'is_correct': True},
                         {'content': 'Expectant management', 'is_correct': False},
                         {'content': 'Intravenous antibiotics', 'is_correct': False}
                     ],
@@ -585,9 +609,9 @@ def create_quiz_content():
                 {
                     'content': 'Which medication is first-line for postpartum hemorrhage?',
                     'options': [
-                        {'content': 'Oxytocin', 'is_correct': True},
                         {'content': 'Methylergonovine', 'is_correct': False},
                         {'content': 'Carboprost', 'is_correct': False},
+                        {'content': 'Oxytocin', 'is_correct': True},
                         {'content': 'Misoprostol', 'is_correct': False}
                     ],
                     'explanation': 'Oxytocin is the first-line uterotonic agent for prevention and treatment of postpartum hemorrhage.'
@@ -600,7 +624,8 @@ def create_quiz_content():
                         {'content': 'Vasa previa', 'is_correct': False},
                         {'content': 'Cervical ectropion', 'is_correct': False}
                     ],
-                    'explanation': 'Placental abruption is the most common cause of third-trimester bleeding and can lead to significant maternal and fetal complications.'
+                    'explanation': 'Placental abruption is the most common cause of third-trimester bleeding and can '
+                                   'lead to significant maternal and fetal complications.'
                 }
             ]
         },
@@ -614,25 +639,27 @@ def create_quiz_content():
                         {'content': 'Oral corticosteroids', 'is_correct': False},
                         {'content': 'Nebulized albuterol', 'is_correct': False}
                     ],
-                    'explanation': 'Intramuscular epinephrine is the first-line treatment for anaphylaxis due to its rapid onset and effectiveness in treating multiple aspects of the reaction.'
+                    'explanation': 'Intramuscular epinephrine is the first-line treatment for anaphylaxis due to its '
+                                   'rapid onset and effectiveness in treating multiple aspects of the reaction.'
                 },
                 {
                     'content': 'What is the initial management for a patient with a suspected acute myocardial infarction (MI)?',
                     'options': [
-                        {'content': 'Aspirin and nitroglycerin', 'is_correct': True},
                         {'content': 'Morphine and oxygen', 'is_correct': False},
                         {'content': 'Fibrinolysis alone', 'is_correct': False},
+                        {'content': 'Aspirin and nitroglycerin', 'is_correct': True},
                         {'content': 'Beta-blockers', 'is_correct': False}
                     ],
-                    'explanation': 'Aspirin and nitroglycerin are typically given immediately in suspected MI to reduce clot formation and improve coronary perfusion.'
+                    'explanation': 'Aspirin and nitroglycerin are typically given immediately in suspected MI to '
+                                   'reduce clot formation and improve coronary perfusion.'
                 },
                 {
                     'content': 'Which of the following is the most common cause of non-traumatic abdominal pain in the emergency department?',
                     'options': [
-                        {'content': 'Acute appendicitis', 'is_correct': True},
                         {'content': 'Cholecystitis', 'is_correct': False},
                         {'content': 'Peptic ulcer disease', 'is_correct': False},
-                        {'content': 'Diverticulitis', 'is_correct': False}
+                        {'content': 'Diverticulitis', 'is_correct': False},
+                        {'content': 'Acute appendicitis', 'is_correct': True},
                     ],
                     'explanation': 'Acute appendicitis is the most common cause of non-traumatic abdominal pain requiring emergency care.'
                 },
@@ -654,13 +681,14 @@ def create_quiz_content():
                         {'content': 'Asystole', 'is_correct': False},
                         {'content': 'Complete heart block', 'is_correct': False}
                     ],
-                    'explanation': 'Ventricular fibrillation is a shockable rhythm that requires immediate defibrillation as the first-line treatment.'
+                    'explanation': 'Ventricular fibrillation is a shockable rhythm that requires immediate '
+                                   'defibrillation as the first-line treatment.'
                 },
                 {
                     'content': 'What is the first step in managing a patient with suspected myocardial infarction?',
                     'options': [
-                        {'content': 'Administer aspirin', 'is_correct': True},
                         {'content': 'Obtain an ECG', 'is_correct': False},
+                        {'content': 'Administer aspirin', 'is_correct': True},
                         {'content': 'Administer morphine', 'is_correct': False},
                         {'content': 'Insert an intravenous line', 'is_correct': False}
                     ],
@@ -674,17 +702,19 @@ def create_quiz_content():
                         {'content': 'Intravenous fluids', 'is_correct': False},
                         {'content': 'Corticosteroids', 'is_correct': False}
                     ],
-                    'explanation': 'Intramuscular epinephrine is the first-line treatment for anaphylaxis to counteract the effects of histamine release.'
+                    'explanation': 'Intramuscular epinephrine is the first-line treatment for anaphylaxis to '
+                                   'counteract the effects of histamine release.'
                 },
                 {
                     'content': 'What is the most appropriate initial fluid for severe diabetic ketoacidosis?',
                     'options': [
-                        {'content': 'Normal saline', 'is_correct': True},
                         {'content': 'Lactated Ringers', 'is_correct': False},
                         {'content': 'D5W', 'is_correct': False},
-                        {'content': 'Half-normal saline', 'is_correct': False}
+                        {'content': 'Half-normal saline', 'is_correct': False},
+                        {'content': 'Normal saline', 'is_correct': True}
                     ],
-                    'explanation': 'Normal saline is the preferred initial fluid for DKA to correct volume depletion and provide sodium replacement.'
+                    'explanation': 'Normal saline is the preferred initial fluid for DKA to correct volume depletion '
+                                   'and provide sodium replacement.'
                 }
             ]
         },
@@ -693,12 +723,13 @@ def create_quiz_content():
                 {
                     'content': 'Which antipsychotic medication has the lowest risk of extrapyramidal symptoms?',
                     'options': [
-                        {'content': 'Quetiapine', 'is_correct': True},
                         {'content': 'Haloperidol', 'is_correct': False},
                         {'content': 'Risperidone', 'is_correct': False},
-                        {'content': 'Chlorpromazine', 'is_correct': False}
+                        {'content': 'Chlorpromazine', 'is_correct': False},
+                        {'content': 'Quetiapine', 'is_correct': True}
                     ],
-                    'explanation': 'Quetiapine has the lowest risk of extrapyramidal symptoms among antipsychotics due to its low D2 receptor affinity.'
+                    'explanation': 'Quetiapine has the lowest risk of extrapyramidal symptoms among antipsychotics '
+                                   'due to its low D2 receptor affinity.'
                 },
                 {
                     'content': 'What is the first-line treatment for generalized anxiety disorder (GAD)?',
@@ -708,7 +739,8 @@ def create_quiz_content():
                         {'content': 'Antipsychotics', 'is_correct': False},
                         {'content': 'Tricyclic antidepressants', 'is_correct': False}
                     ],
-                    'explanation': 'SSRIs are considered first-line treatment for generalized anxiety disorder due to their efficacy and safety profile.'
+                    'explanation': 'SSRIs are considered first-line treatment for generalized anxiety disorder due to '
+                                   'their efficacy and safety profile.'
                 },
                 {
                     'content': 'Which of the following is a common side effect of antipsychotic medications?',
@@ -718,13 +750,14 @@ def create_quiz_content():
                         {'content': 'Hyperactivity', 'is_correct': False},
                         {'content': 'Dizziness', 'is_correct': False}
                     ],
-                    'explanation': 'Extrapyramidal symptoms (EPS) such as tremors, rigidity, and bradykinesia are common side effects of antipsychotic medications.'
+                    'explanation': 'Extrapyramidal symptoms (EPS) such as tremors, rigidity, and bradykinesia are '
+                                   'common side effects of antipsychotic medications.'
                 },
                 {
                     'content': 'What is the most common symptom of generalized anxiety disorder?',
                     'options': [
-                        {'content': 'Excessive worry', 'is_correct': True},
                         {'content': 'Mood swings', 'is_correct': False},
+                        {'content': 'Excessive worry', 'is_correct': True},
                         {'content': 'Delusions', 'is_correct': False},
                         {'content': 'Hallucinations', 'is_correct': False}
                     ],
@@ -733,8 +766,8 @@ def create_quiz_content():
                 {
                     'content': 'Which class of medications is commonly used in the treatment of depression?',
                     'options': [
-                        {'content': 'Selective serotonin reuptake inhibitors (SSRIs)', 'is_correct': True},
                         {'content': 'Antipsychotics', 'is_correct': False},
+                        {'content': 'Selective serotonin reuptake inhibitors (SSRIs)', 'is_correct': True},
                         {'content': 'Benzodiazepines', 'is_correct': False},
                         {'content': 'Opioids', 'is_correct': False}
                     ],
@@ -748,17 +781,19 @@ def create_quiz_content():
                         {'content': 'Grandiosity', 'is_correct': False},
                         {'content': 'Euphoria', 'is_correct': False}
                     ],
-                    'explanation': 'The hallmark symptom of major depressive disorder is a persistent low mood or loss of interest in daily activities.'
+                    'explanation': 'The hallmark symptom of major depressive disorder is a persistent low mood or '
+                                   'loss of interest in daily activities.'
                 },
                 {
                     'content': 'What is the first-line treatment for major depressive disorder?',
                     'options': [
-                        {'content': 'SSRIs', 'is_correct': True},
                         {'content': 'TCAs', 'is_correct': False},
                         {'content': 'MAOIs', 'is_correct': False},
+                        {'content': 'SSRIs', 'is_correct': True},
                         {'content': 'Benzodiazepines', 'is_correct': False}
                     ],
-                    'explanation': 'SSRIs are the first-line treatment for major depression due to their favorable side effect profile and efficacy.'
+                    'explanation': 'SSRIs are the first-line treatment for major depression due to their favorable '
+                                   'side effect profile and efficacy.'
                 }
             ]
         },
@@ -772,7 +807,8 @@ def create_quiz_content():
                         {'content': 'VQ scan', 'is_correct': False},
                         {'content': 'MRI', 'is_correct': False}
                     ],
-                    'explanation': 'CT pulmonary angiogram is the gold standard for diagnosing pulmonary embolism due to its high sensitivity and specificity.'
+                    'explanation': 'CT pulmonary angiogram is the gold standard for diagnosing pulmonary embolism due '
+                                   'to its high sensitivity and specificity.'
                 },
                 {
                     'content': 'Which imaging modality is most appropriate for evaluating suspected pulmonary embolism?',
@@ -787,12 +823,13 @@ def create_quiz_content():
                 {
                     'content': 'What is the most common finding in a chest X-ray of a patient with pneumonia?',
                     'options': [
-                        {'content': 'Consolidation', 'is_correct': True},
                         {'content': 'Pleural effusion', 'is_correct': False},
                         {'content': 'Cardiomegaly', 'is_correct': False},
+                        {'content': 'Consolidation', 'is_correct': True},
                         {'content': 'Lung nodules', 'is_correct': False}
                     ],
-                    'explanation': 'Consolidation is the most common radiological finding in pneumonia, indicating areas of alveolar fluid accumulation.'
+                    'explanation': 'Consolidation is the most common radiological finding in pneumonia, indicating '
+                                   'areas of alveolar fluid accumulation.'
                 },
                 {
                     'content': 'What does a “snowman sign” on a chest X-ray suggest?',
@@ -802,13 +839,14 @@ def create_quiz_content():
                         {'content': 'Lung cancer', 'is_correct': False},
                         {'content': 'Aortic dissection', 'is_correct': False}
                     ],
-                    'explanation': 'The “snowman sign” is a classic radiologic feature of total anomalous pulmonary venous return (TAPVR) due to the enlarged superior vena cava and dilated heart.'
+                    'explanation': 'The “snowman sign” is a classic radiologic feature of total anomalous pulmonary '
+                                   'venous return (TAPVR) due to the enlarged superior vena cava and dilated heart.'
                 },
                 {
                     'content': 'Which of the following is the best initial imaging test for a patient with suspected stroke?',
                     'options': [
-                        {'content': 'Non-contrast CT scan of the head', 'is_correct': True},
                         {'content': 'MRI', 'is_correct': False},
+                        {'content': 'Non-contrast CT scan of the head', 'is_correct': True},
                         {'content': 'Ultrasound of the carotid arteries', 'is_correct': False},
                         {'content': 'Chest X-ray', 'is_correct': False}
                     ],
@@ -817,12 +855,13 @@ def create_quiz_content():
                 {
                     'content': 'What is the primary advantage of using ultrasound in the assessment of abdominal pain?',
                     'options': [
-                        {'content': 'Real-time imaging and safety', 'is_correct': True},
                         {'content': 'High resolution of soft tissues', 'is_correct': False},
                         {'content': 'Cost-effectiveness compared to CT', 'is_correct': False},
-                        {'content': 'Ability to diagnose tumors', 'is_correct': False}
+                        {'content': 'Ability to diagnose tumors', 'is_correct': False},
+                        {'content': 'Real-time imaging and safety', 'is_correct': True}
                     ],
-                    'explanation': 'Ultrasound provides real-time imaging and is considered safe, making it an excellent tool for assessing abdominal pain.'
+                    'explanation': 'Ultrasound provides real-time imaging and is considered safe, making it an '
+                                   'excellent tool for assessing abdominal pain.'
                 },
                 {
                     'content': 'What is the best initial imaging study for suspected acute appendicitis?',
@@ -832,7 +871,8 @@ def create_quiz_content():
                         {'content': 'Plain abdominal radiograph', 'is_correct': False},
                         {'content': 'Nuclear medicine scan', 'is_correct': False}
                     ],
-                    'explanation': 'Ultrasound is preferred in children and pregnant patients to avoid radiation, while CT is more sensitive and specific in other adults.'
+                    'explanation': 'Ultrasound is preferred in children and pregnant patients to avoid radiation, '
+                                   'while CT is more sensitive and specific in other adults.'
                 }
             ]
         },
@@ -851,9 +891,9 @@ def create_quiz_content():
                 {
                     'content': 'Which of the following is the most common cause of acute kidney injury in hospitalized patients?',
                     'options': [
-                        {'content': 'Acute tubular necrosis', 'is_correct': True},
                         {'content': 'Pre-renal azotemia', 'is_correct': False},
                         {'content': 'Post-renal obstruction', 'is_correct': False},
+                        {'content': 'Acute tubular necrosis', 'is_correct': True},
                         {'content': 'Glomerulonephritis', 'is_correct': False}
                     ],
                     'explanation': 'Acute tubular necrosis is the most common cause of acute kidney injury in hospitalized patients.'
@@ -871,8 +911,8 @@ def create_quiz_content():
                 {
                     'content': 'Which of the following is a characteristic feature of a malignant tumor?',
                     'options': [
-                        {'content': 'Infiltration into surrounding tissue', 'is_correct': True},
                         {'content': 'Well-defined borders', 'is_correct': False},
+                        {'content': 'Infiltration into surrounding tissue', 'is_correct': True},
                         {'content': 'Slow growth', 'is_correct': False},
                         {'content': 'Capsule formation', 'is_correct': False}
                     ],
@@ -886,14 +926,15 @@ def create_quiz_content():
                         {'content': 'Type II (cytotoxic)', 'is_correct': False},
                         {'content': 'Type IV (delayed-type)', 'is_correct': False}
                     ],
-                    'explanation': 'SLE is a type III hypersensitivity reaction, where immune complexes deposit in tissues, causing inflammation and tissue damage.'
+                    'explanation': 'SLE is a type III hypersensitivity reaction, where immune complexes deposit in '
+                                   'tissues, causing inflammation and tissue damage.'
                 },
                 {
                     'content': 'Which is the most common type of lung cancer?',
                     'options': [
-                        {'content': 'Adenocarcinoma', 'is_correct': True},
                         {'content': 'Squamous cell carcinoma', 'is_correct': False},
                         {'content': 'Small cell carcinoma', 'is_correct': False},
+                        {'content': 'Adenocarcinoma', 'is_correct': True},
                         {'content': 'Large cell carcinoma', 'is_correct': False}
                     ],
                     'explanation': 'Adenocarcinoma is the most common type of lung cancer, particularly among non-smokers.'
@@ -915,10 +956,10 @@ def create_quiz_content():
                 {
                     'content': 'What is the most common cause of neonatal jaundice?',
                     'options': [
-                        {'content': 'Physiological jaundice', 'is_correct': True},
                         {'content': 'Biliary atresia', 'is_correct': False},
                         {'content': 'Sepsis', 'is_correct': False},
-                        {'content': 'Hemolytic disease of the newborn', 'is_correct': False}
+                        {'content': 'Hemolytic disease of the newborn', 'is_correct': False},
+                        {'content': 'Physiological jaundice', 'is_correct': True}
                     ],
                     'explanation': 'Physiological jaundice is the most common cause in the first few days of life due to immature liver enzymes.'
                 },
@@ -930,7 +971,8 @@ def create_quiz_content():
                         {'content': 'Intubation', 'is_correct': False},
                         {'content': 'Diuretics', 'is_correct': False}
                     ],
-                    'explanation': 'Surfactant therapy is the key intervention in neonatal RDS, as it reduces alveolar collapse and improves oxygenation.'
+                    'explanation': 'Surfactant therapy is the key intervention in neonatal RDS, as it reduces '
+                                   'alveolar collapse and improves oxygenation.'
                 },
                 {
                     'content': 'At what gestational age is surfactant therapy most commonly administered to preterm infants?',
@@ -940,27 +982,30 @@ def create_quiz_content():
                         {'content': '37-40 weeks gestation', 'is_correct': False},
                         {'content': 'After 40 weeks gestation', 'is_correct': False}
                     ],
-                    'explanation': 'Surfactant therapy is most commonly administered to infants born before 28 weeks gestation due to the lack of surfactant production.'
+                    'explanation': 'Surfactant therapy is most commonly administered to infants born before 28 weeks '
+                                   'gestation due to the lack of surfactant production.'
                 },
                 {
                     'content': 'What is the primary cause of hypoxic-ischemic encephalopathy (HIE) in neonates?',
                     'options': [
-                        {'content': 'Perinatal asphyxia', 'is_correct': True},
                         {'content': 'Intrauterine infection', 'is_correct': False},
                         {'content': 'Neonatal seizures', 'is_correct': False},
+                        {'content': 'Perinatal asphyxia', 'is_correct': True},
                         {'content': 'Kernicterus', 'is_correct': False}
                     ],
-                    'explanation': 'Perinatal asphyxia, leading to oxygen deprivation to the brain, is the primary cause of hypoxic-ischemic encephalopathy.'
+                    'explanation': 'Perinatal asphyxia, leading to oxygen deprivation to the brain, is the primary '
+                                   'cause of hypoxic-ischemic encephalopathy.'
                 },
                 {
                     'content': 'What is the most common congenital cardiac defect in neonates?',
                     'options': [
-                        {'content': 'Ventricular septal defect (VSD)', 'is_correct': True},
                         {'content': 'Atrial septal defect (ASD)', 'is_correct': False},
+                        {'content': 'Ventricular septal defect (VSD)', 'is_correct': True},
                         {'content': 'Tetralogy of Fallot', 'is_correct': False},
                         {'content': 'Patent ductus arteriosus (PDA)', 'is_correct': False}
                     ],
-                    'explanation': 'Ventricular septal defect (VSD) is the most common congenital cardiac defect, accounting for about 25% of cases.'
+                    'explanation': 'Ventricular septal defect (VSD) is the most common congenital cardiac defect, '
+                                   'accounting for about 25% of cases.'
                 }
             ]
         },
@@ -969,12 +1014,13 @@ def create_quiz_content():
                 {
                     'content': 'Which of the following is a key element of transformational leadership?',
                     'options': [
-                        {'content': 'Inspiring and motivating employees', 'is_correct': True},
                         {'content': 'Micromanaging team tasks', 'is_correct': False},
                         {'content': 'Focusing only on results and goals', 'is_correct': False},
+                        {'content': 'Inspiring and motivating employees', 'is_correct': True},
                         {'content': 'Maintaining strict control over team behavior', 'is_correct': False}
                     ],
-                    'explanation': 'Transformational leadership focuses on inspiring and motivating employees to achieve higher levels of performance.'
+                    'explanation': 'Transformational leadership focuses on inspiring and motivating employees to '
+                                   'achieve higher levels of performance.'
                 },
                 {
                     'content': 'What is the primary purpose of strategic planning in leadership?',
@@ -984,27 +1030,30 @@ def create_quiz_content():
                         {'content': 'Creating a team-building exercise', 'is_correct': False},
                         {'content': 'Assigning tasks based on skill sets', 'is_correct': False}
                     ],
-                    'explanation': 'Strategic planning aligns the team with the overall vision and goals of the organization to ensure success.'
+                    'explanation': 'Strategic planning aligns the team with the overall vision and goals of the '
+                                   'organization to ensure success.'
                 },
                 {
                     'content': 'Which of the following is a key challenge of leadership in a diverse workforce?',
                     'options': [
-                        {'content': 'Managing different communication styles and perspectives', 'is_correct': True},
                         {'content': 'Ensuring uniformity in work processes', 'is_correct': False},
+                        {'content': 'Managing different communication styles and perspectives', 'is_correct': True},
                         {'content': 'Limiting innovation and change', 'is_correct': False},
                         {'content': 'Restricting decision-making to a single group', 'is_correct': False}
                     ],
-                    'explanation': 'Managing diverse communication styles and perspectives is a key challenge in leadership, requiring sensitivity and flexibility.'
+                    'explanation': 'Managing diverse communication styles and perspectives is a key challenge in '
+                                   'leadership, requiring sensitivity and flexibility.'
                 },
                 {
                     'content': 'What is a common characteristic of a transactional leadership style?',
                     'options': [
-                        {'content': 'Rewarding compliance with clear tasks and goals', 'is_correct': True},
                         {'content': 'Encouraging personal development and innovation', 'is_correct': False},
                         {'content': 'Fostering a sense of shared vision and motivation', 'is_correct': False},
-                        {'content': 'Empowering employees to make autonomous decisions', 'is_correct': False}
+                        {'content': 'Empowering employees to make autonomous decisions', 'is_correct': False},
+                        {'content': 'Rewarding compliance with clear tasks and goals', 'is_correct': True}
                     ],
-                    'explanation': 'Transactional leadership focuses on rewarding compliance and performance, typically within a structured environment.'
+                    'explanation': 'Transactional leadership focuses on rewarding compliance and performance, '
+                                   'typically within a structured environment.'
                 },
                 {
                     'content': 'Which of the following is a critical component of effective management?',
@@ -1014,7 +1063,8 @@ def create_quiz_content():
                         {'content': 'Focusing solely on short-term goals', 'is_correct': False},
                         {'content': 'Limiting employee feedback and interaction', 'is_correct': False}
                     ],
-                    'explanation': 'Clear communication and setting clear expectations are key to ensuring effective management and achieving organizational goals.'
+                    'explanation': 'Clear communication and setting clear expectations are key to ensuring effective '
+                                   'management and achieving organizational goals.'
                 }
             ]
         },
@@ -1033,9 +1083,9 @@ def create_quiz_content():
                 {
                     'content': 'Which of the following bacteria is commonly associated with urinary tract infections?',
                     'options': [
-                        {'content': 'Escherichia coli', 'is_correct': True},
                         {'content': 'Staphylococcus aureus', 'is_correct': False},
                         {'content': 'Streptococcus pyogenes', 'is_correct': False},
+                        {'content': 'Escherichia coli', 'is_correct': True},
                         {'content': 'Clostridium difficile', 'is_correct': False}
                     ],
                     'explanation': 'Escherichia coli is the most common pathogen responsible for urinary tract infections.'
@@ -1053,12 +1103,13 @@ def create_quiz_content():
                 {
                     'content': 'Which of the following is a characteristic feature of Gram-negative bacteria?',
                     'options': [
-                        {'content': 'Thin peptidoglycan layer and outer membrane', 'is_correct': True},
                         {'content': 'Thick peptidoglycan layer', 'is_correct': False},
                         {'content': 'No cell wall', 'is_correct': False},
-                        {'content': 'Endospores formation', 'is_correct': False}
+                        {'content': 'Endospores formation', 'is_correct': False},
+                        {'content': 'Thin peptidoglycan layer and outer membrane', 'is_correct': True}
                     ],
-                    'explanation': 'Gram-negative bacteria have a thin peptidoglycan layer and an outer membrane that contains lipopolysaccharides.'
+                    'explanation': 'Gram-negative bacteria have a thin peptidoglycan layer and an outer membrane that '
+                                   'contains lipopolysaccharides.'
                 },
                 {
                     'content': 'What is the most common cause of food poisoning in the United States?',
@@ -1068,7 +1119,8 @@ def create_quiz_content():
                         {'content': 'Clostridium botulinum', 'is_correct': False},
                         {'content': 'Escherichia coli', 'is_correct': False}
                     ],
-                    'explanation': 'Salmonella is the most common cause of foodborne illness in the U.S., particularly from undercooked poultry.'
+                    'explanation': 'Salmonella is the most common cause of foodborne illness in the U.S., '
+                                   'particularly from undercooked poultry.'
                 }
             ]
         },
@@ -1082,17 +1134,19 @@ def create_quiz_content():
                         {'content': 'Statins', 'is_correct': False},
                         {'content': 'Proton pump inhibitors', 'is_correct': False}
                     ],
-                    'explanation': 'NRTIs are a class of antiretroviral drugs that inhibit reverse transcriptase, a key enzyme in HIV replication.'
+                    'explanation': 'NRTIs are a class of antiretroviral drugs that inhibit reverse transcriptase, '
+                                   'a key enzyme in HIV replication.'
                 },
                 {
                     'content': 'What is the primary mode of HIV transmission?',
                     'options': [
-                        {'content': 'Sharing of needles', 'is_correct': True},
                         {'content': 'Airborne droplets', 'is_correct': False},
+                        {'content': 'Sharing of needles', 'is_correct': True},
                         {'content': 'Touching an infected person', 'is_correct': False},
                         {'content': 'Insect bites', 'is_correct': False}
                     ],
-                    'explanation': 'HIV is primarily transmitted through contact with infected blood, semen, vaginal fluids, or breast milk, often via sharing needles or unprotected sexual activity.'
+                    'explanation': 'HIV is primarily transmitted through contact with infected blood, semen, vaginal '
+                                   'fluids, or breast milk, often via sharing needles or unprotected sexual activity.'
                 },
                 {
                     'content': 'Which laboratory test is commonly used to monitor the effectiveness of HIV treatment?',
@@ -1102,17 +1156,19 @@ def create_quiz_content():
                         {'content': 'Liver function test', 'is_correct': False},
                         {'content': 'Blood glucose levels', 'is_correct': False}
                     ],
-                    'explanation': 'The CD4 count is a key measure to assess the immune system’s health and monitor the effectiveness of HIV treatment.'
+                    'explanation': 'The CD4 count is a key measure to assess the immune system’s health and monitor '
+                                   'the effectiveness of HIV treatment.'
                 },
                 {
                     'content': 'What is the significance of achieving an undetectable viral load in HIV patients?',
                     'options': [
-                        {'content': 'It reduces the risk of HIV transmission.', 'is_correct': True},
                         {'content': 'It eliminates the virus from the body.', 'is_correct': False},
                         {'content': 'It cures the patient of HIV.', 'is_correct': False},
+                        {'content': 'It reduces the risk of HIV transmission.', 'is_correct': True},
                         {'content': 'It means the patient no longer needs treatment.', 'is_correct': False}
                     ],
-                    'explanation': 'Achieving an undetectable viral load greatly reduces the risk of transmitting HIV to others but does not indicate the virus has been eliminated.'
+                    'explanation': 'Achieving an undetectable viral load greatly reduces the risk of transmitting HIV '
+                                   'to others but does not indicate the virus has been eliminated.'
                 },
                 {
                     'content': 'What is a key strategy to prevent mother-to-child transmission of HIV?',
@@ -1123,17 +1179,19 @@ def create_quiz_content():
                         {'content': 'Reducing the mother’s weight gain during pregnancy', 'is_correct': False},
                         {'content': 'Using only herbal medicine', 'is_correct': False}
                     ],
-                    'explanation': 'Administering antiretroviral therapy during pregnancy significantly reduces the risk of mother-to-child transmission of HIV.'
+                    'explanation': 'Administering antiretroviral therapy during pregnancy significantly reduces the '
+                                   'risk of mother-to-child transmission of HIV.'
                 },
                 {
                     'content': 'Which of the following is an effective method to prevent HIV transmission?',
                     'options': [
-                        {'content': 'Consistent and correct use of condoms', 'is_correct': True},
                         {'content': 'Regular handwashing', 'is_correct': False},
                         {'content': 'Avoiding contact with animals', 'is_correct': False},
-                        {'content': 'Drinking boiled water', 'is_correct': False}
+                        {'content': 'Drinking boiled water', 'is_correct': False},
+                        {'content': 'Consistent and correct use of condoms', 'is_correct': True}
                     ],
-                    'explanation': 'Consistent and correct use of condoms is one of the most effective ways to prevent HIV transmission during sexual activity.'
+                    'explanation': 'Consistent and correct use of condoms is one of the most effective ways to '
+                                   'prevent HIV transmission during sexual activity.'
                 }
             ],
 
@@ -1142,12 +1200,13 @@ def create_quiz_content():
                 {
                     'content': 'At what age should colorectal cancer screening begin for average-risk individuals?',
                     'options': [
-                        {'content': '45 years', 'is_correct': True},
                         {'content': '50 years', 'is_correct': False},
+                        {'content': '45 years', 'is_correct': True},
                         {'content': '40 years', 'is_correct': False},
                         {'content': '55 years', 'is_correct': False}
                     ],
-                    'explanation': 'Current guidelines recommend starting colorectal cancer screening at age 45 for average-risk individuals.'
+                    'explanation': 'Current guidelines recommend starting colorectal cancer screening at age 45 for '
+                                   'average-risk individuals.'
                 },
                 {
                     'content': 'Which vaccination is recommended for all healthcare workers?',
@@ -1157,27 +1216,30 @@ def create_quiz_content():
                         {'content': 'Tdap', 'is_correct': False},
                         {'content': 'Varicella', 'is_correct': False}
                     ],
-                    'explanation': 'Hepatitis B vaccination is recommended for all healthcare workers due to their potential exposure to bloodborne pathogens.'
+                    'explanation': 'Hepatitis B vaccination is recommended for all healthcare workers due to their '
+                                   'potential exposure to bloodborne pathogens.'
                 },
                 {
                     'content': 'Which is the most effective method for primary prevention of cardiovascular disease?',
                     'options': [
-                        {'content': 'Lifestyle modifications', 'is_correct': True},
                         {'content': 'Statins', 'is_correct': False},
                         {'content': 'Aspirin therapy', 'is_correct': False},
+                        {'content': 'Lifestyle modifications', 'is_correct': True},
                         {'content': 'Blood pressure medications', 'is_correct': False}
                     ],
-                    'explanation': 'Lifestyle modifications such as exercise, diet, and smoking cessation are the most effective methods for primary prevention of cardiovascular disease.'
+                    'explanation': 'Lifestyle modifications such as exercise, diet, and smoking cessation are the '
+                                   'most effective methods for primary prevention of cardiovascular disease.'
                 },
                 {
                     'content': 'Which screening test is recommended for colorectal cancer in individuals aged 50 and above?',
                     'options': [
-                        {'content': 'Colonoscopy', 'is_correct': True},
                         {'content': 'Fecal occult blood test (FOBT)', 'is_correct': False},
                         {'content': 'CT colonography', 'is_correct': False},
-                        {'content': 'Sigmoidoscopy', 'is_correct': False}
+                        {'content': 'Sigmoidoscopy', 'is_correct': False},
+                        {'content': 'Colonoscopy', 'is_correct': True}
                     ],
-                    'explanation': 'Colonoscopy is the gold standard screening test for colorectal cancer in individuals aged 50 and above.'
+                    'explanation': 'Colonoscopy is the gold standard screening test for colorectal cancer in '
+                                   'individuals aged 50 and above.'
                 },
                 {
                     'content': 'Which vaccine is contraindicated in immunocompromised patients?',
@@ -1187,7 +1249,8 @@ def create_quiz_content():
                         {'content': 'Pneumococcal vaccine', 'is_correct': False},
                         {'content': 'Tdap vaccine', 'is_correct': False}
                     ],
-                    'explanation': 'Live attenuated vaccines are contraindicated in immunocompromised patients due to the risk of vaccine-strain infection.'
+                    'explanation': 'Live attenuated vaccines are contraindicated in immunocompromised patients due to '
+                                   'the risk of vaccine-strain infection.'
                 },
                 {
                     'content': 'Which of the following is a primary prevention strategy for cardiovascular disease?',
@@ -1202,9 +1265,9 @@ def create_quiz_content():
                 {
                     'content': 'What is the recommended age for the first dose of the HPV vaccine?',
                     'options': [
-                        {'content': '11-12 years old', 'is_correct': True},
                         {'content': '15-16 years old', 'is_correct': False},
                         {'content': '5-6 years old', 'is_correct': False},
+                        {'content': '11-12 years old', 'is_correct': True},
                         {'content': '18 years old', 'is_correct': False}
                     ],
                     'explanation': 'The HPV vaccine is recommended at age 11-12 to provide protection before any potential exposure to the virus.'
@@ -1212,12 +1275,13 @@ def create_quiz_content():
                 {
                     'content': 'What is the recommended first-line intervention for primary prevention of cardiovascular disease?',
                     'options': [
-                        {'content': 'Lifestyle modifications', 'is_correct': True},
                         {'content': 'Aspirin therapy', 'is_correct': False},
+                        {'content': 'Lifestyle modifications', 'is_correct': True},
                         {'content': 'Statin therapy', 'is_correct': False},
                         {'content': 'Beta blockers', 'is_correct': False}
                     ],
-                    'explanation': 'Lifestyle modifications including diet, exercise, and smoking cessation are the cornerstone of primary cardiovascular disease prevention.'
+                    'explanation': 'Lifestyle modifications including diet, exercise, and smoking cessation are the '
+                                   'cornerstone of primary cardiovascular disease prevention.'
                 }
             ]
         },
@@ -1247,11 +1311,11 @@ def create_quizzes(admin_user):
                 title=f'{course.replace("_", " ").title()} for {profession.replace("_", " ").title()}',
                 course=course,
                 profession=profession,
-                time_limit=30,
+                time_limit=15,
                 description=f'Comprehensive {course.replace("_", " ")} assessment for {profession.replace("_", " ")} professionals',
                 created_by_id=admin_user.id,
                 difficulty_level='intermediate',
-                passing_score=70.0,
+                passing_score=60.0,
                 instructions="""
                     Please read each question carefully and select the best answer.
                     - Each question has one correct answer

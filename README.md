@@ -95,20 +95,138 @@
 ## 📂 **Project Structure**
 
 ```
-medquest/
-│-- app/
+medquizpro/
+├── Procfile
+├── README.md
+├── MedQuizPro.db
+├── LICENSE
+├── worker.py
+├── venv/
+├── .gitignore
+├── requirements.txt
+├── .env
+├── migrations/
+├── logs/
+├── tests/
 │   ├── __init__.py
-│   ├── routes.py
-│   ├── models.py
-│   └── templates/
-│       ├── base.html
-│       ├── login.html
-│       ├── dashboard.html
-│       └── quiz.html
-│-- migrations/
-│-- .env
-│-- requirements.txt
-└── run.py
+├── config.py
+├── app/
+│   ├── errors.py
+│   ├── __init__.py
+│   ├── models/
+│   │   ├── base.py
+│   │   ├── __init__.py
+│   │   ├── submission.py
+│   │   ├── user.py
+│   │   ├── study_group.py
+│   │   ├── result.py
+│   │   ├── question.py
+│   │   ├── report.py
+│   │   ├── quiz.py
+│   ├── search.py
+│   ├── templates/
+│   │   ├── reports/
+│   │   │   ├── report_form.html
+│   │   ├── emails/
+│   │   │   ├── base.html
+│   │   │   ├── welcome.html
+│   │   │   ├── achievement.html
+│   │   │   ├── reset_password.html
+│   │   │   ├── quiz_completion.html
+│   │   │   ├── issue_report.html
+│   │   │   ├── contact_form.html
+│   │   ├── base.html
+│   │   ├── quiz/
+│   │   │   ├── analytics.html
+│   │   │   ├── components/
+│   │   │   ├── take_quiz.html
+│   │   │   ├── result.html
+│   │   │   ├── list.html
+│   │   │   ├── modals/
+│   │   ├── admin/
+│   │   │   ├── reports/
+│   │   │   │   ├── review.html
+│   │   │   │   ├── list.html
+│   │   │   ├── submissions/
+│   │   │   │   ├── review.html
+│   │   │   │   ├── review_single.html
+│   │   │   ├── dashboard.html
+│   │   │   ├── base.html
+│   │   │   ├── quiz/
+│   │   │   │   ├── create.html
+│   │   │   │   ├── edit_questions.html
+│   │   │   │   ├── edit.html
+│   │   │   │   ├── manage.html
+│   │   │   ├── users.html
+│   │   │   ├── reports.html
+│   │   ├── errors/
+│   │   │   ├── 401.html
+│   │   │   ├── 500.html
+│   │   │   ├── 403.html
+│   │   │   ├── 404.html
+│   │   │   ├── 400.html
+│   │   ├── main/
+│   │   │   ├── about.html
+│   │   │   ├── contact.html
+│   │   │   ├── index.html
+│   │   ├── search/
+│   │   │   ├── _pagination.html
+│   │   │   ├── _results.html
+│   │   │   ├── search.html
+│   │   ├── submission/
+│   │   │   ├── submit.html
+│   │   │   ├── my_submissions.html
+│   │   ├── auth/
+│   │   │   ├── login.html
+│   │   │   ├── reset_password.html
+│   │   │   ├── achievements.html
+│   │   │   ├── register.html
+│   │   │   ├── reset_password_request.html
+│   │   │   ├── profile.html
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── helpers.py
+│   │   ├── email.py
+│   │   ├── validators.py
+│   │   ├── decorators.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── quiz/
+│   │   │   ├── __init__.py
+│   │   │   ├── submission.py
+│   │   ├── admin/
+│   │   │   ├── __init__.py
+│   │   ├── reports.py
+│   │   ├── main/
+│   │   │   ├── __init__.py
+│   │   ├── search/
+│   │   │   ├── __init__.py
+│   │   ├── auth/
+│   │   │   ├── __init__.py
+│   ├── forms.py
+│   ├── static/
+│   │   ├── css/
+│   │   │   ├── components/
+│   │   │   │   ├── cards.css
+│   │   │   │   ├── forms.css
+│   │   │   │   ├── buttons.css
+│   │   │   ├── style.css
+│   │   ├── uploads/
+│   │   ├── js/
+│   │   │   ├── components/
+│   │   │   │   ├── quiz.js
+│   │   │   │   ├── timer.js
+│   │   │   │   ├── validation.js
+│   │   │   ├── main.js
+│   │   ├── images/
+│   │   │   ├── avatars/
+├── initialize-database.py
+├── .idea/
+├── instance/
+├── run.py
+├── init_db.py
+
+
 ```
 
 ---

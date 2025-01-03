@@ -1,214 +1,178 @@
-# routes/quiz/quiz_routes.py
-from flask import Blueprint, render_template, request, jsonify, current_app, abort, flash, redirect, url_for
+#!/usr/bin/env python3
+# app/routes/submission.py
+"""Module for Quiz Submission routes"""
+from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 
 from app import db
-from app.models import Quiz, Question, QuizResult, User, UserAchievement
-from app.utils.decorators import profession_required
-from sqlalchemy import func
+from app.models.submission import QuestionSubmission
+from app.models import Question, QuestionOption, Quiz
+from app.forms import QuestionSubmissionForm, ReviewSubmissionForm
 from datetime import datetime
-import json
 
-quiz_bp = Blueprint('quiz', __name__)
+from app.utils.decorators import admin_required
+
+submission_bp = Blueprint('submission', __name__)
 
 
-@quiz_bp.route('/quizzes')
+@submission_bp.route('/my-submissions')
 @login_required
-def list_quizzes():
-    """List available quizzes with filtering and pagination"""
+def my_submissions():
     page = request.args.get('page', 1, type=int)
-    per_page = current_app.config['QUIZZES_PER_PAGE']
+    submissions = QuestionSubmission.query.filter_by(submitter_id=current_user.id) \
+        .order_by(QuestionSubmission.created_at.desc()) \
+        .paginate(page=page, per_page=10)
 
-    # Filter parameters
+    return render_template('submission/my_submissions.html', submissions=submissions)
+
+
+@submission_bp.route('/admin/submissions')
+@login_required
+@admin_required
+def review_submissions():
+    page = request.args.get('page', 1, type=int)
+    status = request.args.get('status', 'pending')
     course = request.args.get('course')
-    difficulty = request.args.get('difficulty')
-    profession = request.args.get('profession', current_user.profession)
 
-    # Base query
-    query = Quiz.query.filter_by(is_deleted=False, is_published=True)
+    query = QuestionSubmission.query
 
-    # Apply filters
+    if status != 'all':
+        query = query.filter_by(status=status)
     if course:
         query = query.filter_by(course=course)
-    if difficulty:
-        query = query.filter_by(difficulty_level=difficulty)
-    if profession != 'all':
-        query = query.filter(Quiz.profession.in_(['all', profession]))
 
-    # Get paginated results
-    quizzes = query.order_by(Quiz.created_at.desc()).paginate(
-        page=page, per_page=per_page, error_out=False)
+    submissions = query.order_by(QuestionSubmission.created_at.asc()) \
+        .paginate(page=page, per_page=20)
 
-    # Get available courses and difficulty levels for filters
-    courses = db.session.query(Quiz.course).distinct().all()
-    difficulty_levels = db.session.query(Quiz.difficulty_level).distinct().all()
-
-    return render_template('quiz/list.html',
-                           quizzes=quizzes,
-                           courses=courses,
-                           difficulty_levels=difficulty_levels,
-                           current_filters={
-                               'course': course,
-                               'difficulty': difficulty,
-                               'profession': profession
-                           })
+    return render_template('admin/submissions/review.html', submissions=submissions)
 
 
-@quiz_bp.route('/quiz/<int:quiz_id>')
+@submission_bp.route('/submit-question', methods=['GET', 'POST'])
 @login_required
-def take_quiz(quiz_id):
-    """Start or resume a quiz"""
-    quiz = Quiz.query.get_or_404(quiz_id)
+def submit_question():
+    form = QuestionSubmissionForm()
 
-    # Check profession requirements
-    if quiz.profession != 'all' and quiz.profession != current_user.profession:
-        abort(403)
+    if form.validate_on_submit():
+        # Get all options and the correct one
+        options = [
+            form.option1.data,
+            form.option2.data,
+            form.option3.data,
+            form.option4.data
+        ]
+        correct_option_index = int(form.correct_answer.data) - 1  # Convert to 0-based index
 
-    # Check if user has exceeded maximum attempts
-    attempt_count = QuizResult.query.filter_by(
-        user_id=current_user.id,
-        quiz_id=quiz_id,
-        is_deleted=False
-    ).count()
-
-    if attempt_count >= quiz.max_attempts:
-        flash('You have exceeded the maximum number of attempts for this quiz.', 'error')
-        return redirect(url_for('quiz.list_quizzes'))
-
-    # Check for existing incomplete attempt
-    existing_attempt = QuizResult.query.filter_by(
-        user_id=current_user.id,
-        quiz_id=quiz_id,
-        status='in_progress',
-        is_deleted=False
-    ).first()
-
-    if existing_attempt:
-        return redirect(url_for('quiz.resume_quiz', result_id=existing_attempt.id))
-
-    # Create new quiz attempt
-    questions = quiz.questions.filter_by(is_deleted=False).all()
-    quiz_result = QuizResult(
-        user_id=current_user.id,
-        quiz_id=quiz_id,
-        attempt_number=attempt_count + 1,
-        answers={},
-        status='in_progress'
-    )
-    db.session.add(quiz_result)
-    db.session.commit()
-
-    return render_template('quiz/take_quiz.html',
-                           quiz=quiz,
-                           questions=questions,
-                           quiz_result=quiz_result)
-
-
-@quiz_bp.route('/quiz/submit/<int:result_id>', methods=['POST'])
-@login_required
-def submit_quiz(result_id):
-    """Submit quiz answers and calculate results"""
-    quiz_result = QuizResult.query.get_or_404(result_id)
-
-    # Verify ownership
-    if quiz_result.user_id != current_user.id:
-        abort(403)
-
-    # Get answers from request
-    answers = request.get_json()
-
-    # Update quiz result
-    quiz_result.answers = answers
-    quiz_result.completed_at = datetime.utcnow()
-    quiz_result.status = 'completed'
-    quiz_result.calculate_score()
-
-    # Update user achievements
-    if quiz_result.score >= quiz_result.quiz.passing_score:
-        achievement = UserAchievement(
-            user_id=current_user.id,
-            achievement_type='quiz_passed',
-            achievement_data={
-                'quiz_id': quiz_result.quiz_id,
-                'score': quiz_result.score
-            }
+        submission = QuestionSubmission(
+            submitter_id=current_user.id,
+            course=form.course.data,
+            content=form.content.data,
+            difficulty_level=form.difficulty_level.data,
+            options=options,
+            correct_option_content=options[correct_option_index],
+            explanation=form.explanation.data,
+            reference=form.reference.data
         )
-        db.session.add(achievement)
+        db.session.add(submission)
+        db.session.commit()
 
-    db.session.commit()
+        flash('Your question has been submitted for review. Thank you for contributing!', 'success')
+        return redirect(url_for('submission.my_submissions'))
 
-    return jsonify({
-        'success': True,
-        'redirect_url': url_for('quiz.view_result', result_id=result_id)
-    })
+    return render_template('submission/submit.html', form=form)
 
 
-@quiz_bp.route('/quiz/result/<int:result_id>')
+@submission_bp.route('/admin/submissions/<int:submission_id>', methods=['GET', 'POST'])
 @login_required
-def view_result(result_id):
-    """View quiz results with detailed feedback"""
-    result = QuizResult.query.get_or_404(result_id)
+@admin_required
+def review_submission(submission_id):
+    submission = QuestionSubmission.query.get_or_404(submission_id)
+    form = ReviewSubmissionForm()
 
-    # Verify ownership or admin status
-    if result.user_id != current_user.id and not current_user.is_admin:
-        abort(403)
+    if form.validate_on_submit():
+        submission.status = form.status.data
+        submission.feedback = form.feedback.data
+        submission.reviewed_at = datetime.utcnow()
+        submission.reviewed_by_id = current_user.id
 
-    # Get question details for answers
-    questions = {q.id: q for q in result.quiz.questions.all()}
+        if form.status.data == 'approved':
+            try:
+                # Find or create question bank quiz for this course
+                quiz = Quiz.query.filter_by(
+                    course=submission.course,
+                    is_question_bank=True
+                ).first()
 
-    # Process answers for display
-    processed_answers = []
-    for answer in result.answers:
-        question = questions.get(answer['question_id'])
-        if question:
-            processed_answers.append({
-                'question': question,
-                'user_answer': answer['answer'],
-                'is_correct': answer['answer'] == question.correct_answer,
-                'explanation': question.explanation
-            })
+                if not quiz:
+                    # Create new question bank quiz
+                    quiz = Quiz(
+                        title=f"{submission.course.replace('_', ' ').title()} Question Bank",
+                        course=submission.course,
+                        description="Approved community submissions",
+                        is_question_bank=True,
+                        created_by_id=current_user.id,
+                        is_published=True,
+                        passing_score=60.0,
+                        time_limit=60,  # Default 60 minutes
+                        profession='all',  # Question banks are available to all
+                        difficulty_level='intermediate',
+                        max_attempts=100,  # Unlimited attempts for question banks
+                        requires_approval=False
+                    )
+                    db.session.add(quiz)
+                    db.session.flush()
 
-    return render_template('quiz/result.html',
-                           result=result,
-                           answers=processed_answers,
-                           quiz=result.quiz)
+                # Create the question with a temporary correct_answer
+                question = Question(
+                    quiz_id=quiz.id,
+                    content=submission.content,
+                    question_type=submission.question_type,
+                    difficulty_level=submission.difficulty_level,
+                    explanation=submission.explanation,
+                    created_by_id=current_user.id,
+                    correct_answer=1  # Temporary value
+                )
+                db.session.add(question)
+                db.session.flush()
 
+                # Create options and identify the correct one
+                correct_option = None
+                for option_content in submission.options:
+                    option = QuestionOption(
+                        question_id=question.id,
+                        content=option_content,
+                        is_correct=(option_content == submission.correct_option_content)
+                    )
+                    db.session.add(option)
+                    db.session.flush()
 
-@quiz_bp.route('/quiz/analytics/<int:quiz_id>')
-@login_required
-def quiz_analytics(quiz_id):
-    """View detailed quiz analytics"""
-    quiz = Quiz.query.get_or_404(quiz_id)
+                    if option_content == submission.correct_option_content:
+                        correct_option = option
 
-    # Get general statistics
-    total_attempts = QuizResult.query.filter_by(quiz_id=quiz_id).count()
-    avg_score = db.session.query(func.avg(QuizResult.score)) \
-                    .filter_by(quiz_id=quiz_id).scalar() or 0
+                # Update question with correct option ID
+                if correct_option:
+                    question.correct_answer = correct_option.id
+                else:
+                    # Handle the case where no correct option was found
+                    raise ValueError("No correct option found in submission")
 
-    # Get question statistics
-    question_stats = []
-    for question in quiz.questions:
-        if question.times_answered > 0:
-            success_rate = (question.times_correct / question.times_answered) * 100
+                db.session.commit()
+                flash('Submission approved and added to question bank.', 'success')
+            except Exception as e:
+                db.session.rollback()
+                current_app.logger.error(f'Error approving submission: {str(e)}')
+                flash('Error approving submission. Please try again.', 'error')
+                return redirect(url_for('submission.review_submission', submission_id=submission_id))
         else:
-            success_rate = 0
-        question_stats.append({
-            'question': question.content,
-            'success_rate': success_rate,
-            'times_answered': question.times_answered
-        })
+            try:
+                db.session.commit()
+                flash(f'Submission has been {form.status.data}.', 'success')
+            except Exception as e:
+                db.session.rollback()
+                current_app.logger.error(f'Error updating submission status: {str(e)}')
+                flash('Error updating submission status. Please try again.', 'error')
+                return redirect(url_for('submission.review_submission', submission_id=submission_id))
 
-    # Get profession breakdown
-    profession_stats = db.session.query(
-        User.profession,
-        func.count(QuizResult.id).label('attempts'),
-        func.avg(QuizResult.score).label('avg_score')
-    ).join(QuizResult).filter(QuizResult.quiz_id == quiz_id) \
-        .group_by(User.profession).all()
+        return redirect(url_for('submission.review_submissions'))
 
-    return render_template('quiz/analytics.html',
-                           quiz=quiz,
-                           total_attempts=total_attempts,
-                           avg_score=avg_score,
-                           question_stats=question_stats,
-                           profession_stats=profession_stats)
+    return render_template('admin/submissions/review_single.html',
+                           submission=submission, form=form)

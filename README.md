@@ -287,9 +287,9 @@ This project is licensed under the **MIT License**.
 ## 📬 **Contact**
 
 - **Author**: Martin Nyemba  
-- **Email**: [your.email@example.com](mailto:martinnyemba@gmail.com)  
-- **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/martinchongochikaya)  
-- **GitHub**: [Your GitHub Profile](https://github.com/martinnyemba)  
+- **Email**: [martinnyemba@gmail.com](mailto:martinnyemba@gmail.com)  
+- **LinkedIn**: [LinkedIn Profile](https://www.linkedin.com/martinchongochikaya)  
+- **GitHub**: [GitHub Profile](https://github.com/martinnyemba)  
 
 ---
 

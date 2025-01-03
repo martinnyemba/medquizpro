@@ -1,20 +1,30 @@
 # config.py
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 class Config:
     # Basic Configuration
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard-to-guess-string'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'secure-and-strong-hard-to-guess-string'
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
     # Database Configuration
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+    # Database configuration
+    HEROKU_POSTGRESQL_WHITE_URL = os.environ.get('DATABASE_URL')
+    if HEROKU_POSTGRESQL_WHITE_URL and HEROKU_POSTGRESQL_WHITE_URL.startswith("postgres://"):
+        HEROKU_POSTGRESQL_WHITE_URL = HEROKU_POSTGRESQL_WHITE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+
+    SQLALCHEMY_DATABASE_URI = HEROKU_POSTGRESQL_WHITE_URL or os.environ.get('DATABASE_URL') or \
                               'sqlite:///' + os.path.join(BASEDIR, 'MedQuizPro.db')
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Redis Configuration
-    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379/0'
+    REDIS_URL = os.environ.get('REDISCLOUD_URL') or 'redis://localhost:6379/0'
 
     # Session Configuration
     SESSION_TYPE = 'redis'

@@ -1,4 +1,1 @@
-# Procfile
-
-web: gunicorn run:app
-worker: python worker.py
+web: gunicorn -w 4 run:app

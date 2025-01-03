@@ -1,7 +1,12 @@
+#!/usr/bin/env python3
 # run.py
-"""Module to run the Flask app"""
-from app import create_app
-from app.models import db, User, Quiz, Question, QuizResult, StudyGroup
+"""
+Module to run the Flask app
+This file is used to run the Flask app. It creates the app and adds the models to the shell context.
+"""
+from app import create_app, db
+from app.models import User, Quiz, Question, QuizResult, StudyGroup
+
 
 app = create_app()
 

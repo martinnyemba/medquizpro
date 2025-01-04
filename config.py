@@ -36,6 +36,7 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME', 'medqiuzpro@emtechzambia.net')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'medqiuzpro@emtechzambia.net')
+    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@emtechzambia.net')
 
     # Cache Configuration
     CACHE_TYPE = 'redis'

@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, current_app, flash, redirect, url_
 from flask_login import current_user
 
 from app.forms import ContactForm
-from app.models import Quiz, User, QuizResult, UserAchievement
+from app.models import Quiz, User, QuizResult, UserAchievement, Question
 from sqlalchemy import func
 from datetime import datetime, timedelta
 
@@ -19,6 +19,7 @@ def index():
     stats = {
         'total_users': User.query.count(),
         'total_quizzes': Quiz.query.filter_by(is_published=True).count(),
+        'total_questions': Question.query.count(),
         'total_attempts': QuizResult.query.count()
     }
 
@@ -48,7 +49,14 @@ def index():
 
 @main_bp.route('/about')
 def about():
-    return render_template('main/about.html')
+    """About us page"""
+    stats = {
+        'total_users': User.query.count(),
+        'total_quizzes': Quiz.query.filter_by(is_published=True).count(),
+        'total_questions': Question.query.count(),
+        'total_attempts': QuizResult.query.count()
+    }
+    return render_template('main/about.html', stats=stats)
 
 
 @main_bp.route('/contact', methods=['GET', 'POST'])
@@ -61,7 +69,7 @@ def contact():
             subject=f'Contact Form: {form.subject.data}',
             sender=current_app.config['MAIL_DEFAULT_SENDER'],
             recipients=[current_app.config['ADMIN_EMAIL']],
-            text_body=render_template('email/contact_form.txt',
+            text_body=render_template('emails/contact_form.txt',
                                     name=form.name.data,
                                     email=form.email.data,
                                     subject=form.subject.data,

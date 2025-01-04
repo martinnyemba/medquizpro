@@ -66,7 +66,7 @@
                                 <div class="stat-icon mb-2">
                                     <i class="fas fa-question-circle text-primary"></i>
                                 </div>
-                                <h3 class="stat-value mb-1">1000+</h3>
+                                <h3 class="stat-value mb-1">{{ stats.total_questions }}</h3>
                                 <p class="stat-label mb-0 text-muted">Questions</p>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                                 <div class="stat-icon mb-2">
                                     <i class="fas fa-tasks text-success"></i>
                                 </div>
-                                <h3 class="stat-value mb-1">50+</h3>
+                                <h3 class="stat-value mb-1">{{ stats.total_quizzes }}+</h3>
                                 <p class="stat-label mb-0 text-muted">Quizzes</p>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                                 <div class="stat-icon mb-2">
                                     <i class="fas fa-users text-info"></i>
                                 </div>
-                                <h3 class="stat-value mb-1">5000+</h3>
+                                <h3 class="stat-value mb-1">{{ stats.total_users }}+</h3>
                                 <p class="stat-label mb-0 text-muted">Users</p>
                             </div>
                         </div>
@@ -164,13 +164,13 @@
                 <div class="team-card bg-white rounded-4 p-4 text-center shadow-sm">
                     <div class="team-image-wrapper mb-4">
                         <div class="team-image rounded-circle overflow-hidden mx-auto">
-                            <img src="{{ url_for('static', filename='images/team/doctor.jpg') }}"
-                                 alt="Dr. Sarah Smith" class="img-fluid">
+                            <img src="{{ url_for('static', filename='images/team/martin.jpg') }}"
+                                 alt="Lead Software Engineer" class="img-fluid">
                         </div>
                     </div>
-                    <h4 class="mb-2">Dr. Sarah Smith</h4>
-                    <p class="text-primary mb-3">Medical Director</p>
-                    <p class="text-muted mb-4">20+ years of clinical experience in internal medicine, leading content development and medical accuracy.</p>
+                    <h4 class="mb-2">Eng. Nyemba Martin</h4>
+                    <p class="text-primary mb-3">Founder | Lead Software Engineer</p>
+                    <p class="text-muted mb-4">Founder with 5+ years of Software Engineering, educational technology experience, driving innovation in online medical education..</p>
                     <div class="social-links">
                         <a href="#" class="btn btn-light btn-sm rounded-circle me-2">
                             <i class="fab fa-linkedin-in"></i>
@@ -188,13 +188,13 @@
                 <div class="team-card bg-white rounded-4 p-4 text-center shadow-sm">
                     <div class="team-image-wrapper mb-4">
                         <div class="team-image rounded-circle overflow-hidden mx-auto">
-                            <img src="{{ url_for('static', filename='images/team/nurse.jpg') }}"
-                                 alt="Emma Johnson" class="img-fluid">
+                            <img src="{{ url_for('static', filename='images/team/robert.jpg') }}"
+                                 alt="Lead Clinical Expert" class="img-fluid">
                         </div>
                     </div>
-                    <h4 class="mb-2">Emma Johnson</h4>
-                    <p class="text-primary mb-3">Lead Nurse Educator</p>
-                    <p class="text-muted mb-4">15+ years of nursing education experience, specializing in curriculum development and assessment strategies.</p>
+                    <h4 class="mb-2">Dr. Robert Mwale</h4>
+                    <p class="text-primary mb-3">Medical Doctor | Lead Clinical Expert</p>
+                    <p class="text-muted mb-4">10+ years of clinical experience in internal medicine, HIV/AIDS, Public Health leading content development and medical accuracy.</p>
                     <div class="social-links">
                         <a href="#" class="btn btn-light btn-sm rounded-circle me-2">
                             <i class="fab fa-linkedin-in"></i>
@@ -212,13 +212,13 @@
                 <div class="team-card bg-white rounded-4 p-4 text-center shadow-sm">
                     <div class="team-image-wrapper mb-4">
                         <div class="team-image rounded-circle overflow-hidden mx-auto">
-                            <img src="{{ url_for('static', filename='images/team/tech.jpg') }}"
-                                 alt="Michael Chen" class="img-fluid">
+                            <img src="{{ url_for('static', filename='images/team/brighton.jpg') }}"
+                                 alt="Clinical Expert" class="img-fluid">
                         </div>
                     </div>
-                    <h4 class="mb-2">Michael Chen</h4>
-                    <p class="text-primary mb-3">Technical Director</p>
-                    <p class="text-muted mb-4">10+ years of educational technology experience, driving innovation in online medical education.</p>
+                    <h4 class="mb-2">ML Brighton Chisha </h4>
+                    <p class="text-primary mb-3">Medical Licentiate | Clinical Expert</p>
+                    <p class="text-muted mb-4">10+ years of Clinical education experience, specializing in curriculum development and assessment strategies.</p>
                     <div class="social-links">
                         <a href="#" class="btn btn-light btn-sm rounded-circle me-2">
                             <i class="fab fa-linkedin-in"></i>
@@ -423,17 +423,6 @@
         font-size: 2rem;
     }
 }
-
-/* Dark Mode Support */
-{#@media (prefers-color-scheme: dark) {#}
-{#    .bg-white {#}
-{#        background-color: var(--bs-dark) !important;#}
-{#    }#}
-{##}
-{#    .text-muted {#}
-{#        color: rgba(255,255,255,0.6) !important;#}
-{#    }#}
-{#}#}
 </style>
 {% endblock %}
 

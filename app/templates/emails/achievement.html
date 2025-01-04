@@ -1,0 +1,27 @@
+<!-- templates/email/achievement.html -->
+{% extends "emails/base.html" %}
+
+{% block title %}Achievement Unlocked!{% endblock %}
+
+{% block content %}
+<p>Dear {{ user.username }},</p>
+
+<p>Congratulations! You've earned a new achievement:</p>
+
+<div style="background-color: white; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center;">
+    <h2 style="color: #ffc107;">{{ achievement.achievement_type|title|replace('_', ' ') }}</h2>
+    {% if achievement.achievement_data %}
+        {% if achievement.achievement_type == 'quiz_passed' %}
+            <p>You scored {{ achievement.achievement_data.score }}% on {{ achievement.achievement_data.quiz_title }}</p>
+        {% elif achievement.achievement_type == 'streak' %}
+            <p>You've maintained a {{ achievement.achievement_data.days }} day study streak!</p>
+        {% endif %}
+    {% endif %}
+</div>
+
+<p><a href="{{ url_for('auth.achievements', _external=True) }}" class="button">View All Achievements</a></p>
+
+<p>Keep up the excellent work!</p>
+
+<p>Best regards,<br>The Medical Quiz Team</p>
+{% endblock %}

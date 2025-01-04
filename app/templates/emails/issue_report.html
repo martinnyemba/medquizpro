@@ -1,0 +1,24 @@
+<!-- templates/email/issue_report.html -->
+{% extends "emails/base.html" %}
+
+{% block title %}New Issue Report{% endblock %}
+
+{% block content %}
+<h2>Issue Details</h2>
+
+<div style="background-color: white; padding: 20px; border-radius: 5px; margin: 20px 0;">
+    <p><strong>Type:</strong> {{ issue.issue_type|title }}</p>
+    <p><strong>Priority:</strong> {{ issue.priority|title }}</p>
+    <p><strong>Reported by:</strong> {{ issue.user.username }}</p>
+    <p><strong>Date:</strong> {{ issue.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+
+    <h3>Description</h3>
+    <p>{{ issue.description }}</p>
+
+    {% if issue.screenshot_filename %}
+    <p><strong>Screenshot attached:</strong> {{ issue.screenshot_filename }}</p>
+    {% endif %}
+</div>
+
+<p><a href="{{ url_for('admin.view_issue', issue_id=issue.id, _external=True) }}" class="button">View in Admin Panel</a></p>
+{% endblock %}

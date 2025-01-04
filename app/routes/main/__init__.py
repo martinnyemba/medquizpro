@@ -81,5 +81,5 @@ def contact():
                                     message=form.message.data)
         )
         flash('Your message has been sent. We will get back to you soon!', 'success')
-        return redirect(url_for('static_pages.contact'))
+        return redirect(url_for('main.contact'))
     return render_template('main/contact.html', form=form)

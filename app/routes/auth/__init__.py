@@ -1,4 +1,6 @@
-# routes/auth/auth_routes.py
+#!/usr/bin/env python3
+"""Module for user authentication and authorization routes."""
+# app/routes/auth/auth_routes.py
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_user, logout_user, login_required, current_user
 from urllib.parse import urlparse
@@ -7,7 +9,7 @@ from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, Res
 from datetime import datetime
 import jwt
 from app import db
-from app.utils.email import send_email
+from app.utils.email import send_email, send_welcome_email, send_password_reset_email
 
 auth_bp = Blueprint('auth', __name__)
 

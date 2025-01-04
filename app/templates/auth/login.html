@@ -55,10 +55,7 @@
                                 {{ form.password(class="form-control" ~ (' is-invalid' if form.password.errors else ''),
                                    placeholder="Password", id="password", type="password") }}
                                 {{ form.password.label(for="password") }}
-{#                                <button type="button" class="btn btn-link password-toggle"#}
-{#                                        onclick="togglePassword('password')" aria-label="Toggle password visibility">#}
-{#                                    <i class="far fa-eye"></i>#}
-{#                                </button>#}
+
                                 {% for error in form.password.errors %}
                                     <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}

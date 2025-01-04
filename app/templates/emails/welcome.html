@@ -1,25 +1,61 @@
 <!-- templates/email/welcome.html -->
-{% extends "email/base.html" %}
+{% extends "emails/base.html" %}
 
-{% block title %}Welcome to Medical Quiz!{% endblock %}
+{% block title %}Welcome to MedQuizPro!{% endblock %}
 
 {% block content %}
-<p>Dear {{ user.username }},</p>
+<div style="padding: 0 !important;">
+    <p style="font-size: 16px !important; margin-bottom: 20px !important;">Dear {{ user.username }},</p>
 
-<p>Welcome to Medical Quiz! We're excited to have you join our community of medical professionals dedicated to continuous learning and improvement.</p>
+    <p style="font-size: 16px !important; margin-bottom: 25px !important; line-height: 1.6 !important;">Welcome to MedQuizPro! We're excited to have you join our community of medical professionals dedicated to continuous learning and improvement.</p>
 
-<h3>Getting Started</h3>
-<ul>
-    <li>Browse available quizzes in your field</li>
-    <li>Track your progress</li>
-    <li>Earn achievements</li>
-    <li>Connect with other professionals</li>
-</ul>
+    <div style="background-color: #ffffff !important; border-radius: 8px !important; padding: 25px !important; margin: 20px 0 !important; border: 1px solid #e9ecef !important;">
+        <h3 style="color: #007bff !important; margin: 0 0 20px 0 !important; font-size: 20px !important;">Getting Started</h3>
+        <div style="margin-left: 20px !important;">
+            <p style="margin: 12px 0 !important;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px !important; vertical-align: middle !important;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Browse available quizzes in your field
+            </p>
+            <p style="margin: 12px 0 !important;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px !important; vertical-align: middle !important;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Track your progress with detailed analytics
+            </p>
+            <p style="margin: 12px 0 !important;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px !important; vertical-align: middle !important;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Earn achievements and certifications
+            </p>
+            <p style="margin: 12px 0 !important;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px !important; vertical-align: middle !important;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Connect with other medical professionals
+            </p>
+        </div>
+    </div>
 
-<p><a href="{{ url_for('quiz.list_quizzes', _external=True) }}" class="button">Start Your First Quiz</a></p>
+    <div style="text-align: center !important; margin: 30px 0 !important;">
+        <a href="{{ url_for('quiz.list_quizzes', _external=True) }}" class="button" style="font-size: 16px !important;">
+            Start Your First Quiz
+            <span style="margin-left: 8px !important;">&rarr;</span>
+        </a>
+    </div>
 
-<p>If you have any questions, feel free to reach out to our support team.</p>
+    <p style="font-size: 16px !important; margin: 25px 0 !important; line-height: 1.6 !important;">
+        If you have any questions, our support team is here to help. Reach out to us at
+        <a href="mailto:medquizpro@emtechzambia.net" style="color: #007bff !important; text-decoration: underline !important;">medquizpro@emtechzambia.net</a>.
+    </p>
 
-<p>Best regards,<br>The Medical Quiz Team</p>
+    <div style="margin-top: 30px !important; border-top: 1px solid #e9ecef !important; padding-top: 20px !important;">
+        <p style="margin: 0 !important; line-height: 1.6 !important;">
+            Best regards,<br>
+            <strong style="color: #007bff !important;">The MedQuizPro Team</strong>
+        </p>
+    </div>
+</div>
 {% endblock %}
-

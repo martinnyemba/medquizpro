@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+"""Description: Configuration settings for the application"""
 # config.py
+
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
@@ -8,6 +11,10 @@ load_dotenv()
 
 
 class Config:
+    """
+    Base configuration class for the application.
+    Contains default configuration settings
+    """
     # Basic Configuration
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'secure-and-strong-hard-to-guess-string'
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -61,6 +68,9 @@ class Config:
 
 
 class DevelopmentConfig(Config):
+    """
+    Development configuration class.
+    """
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
                               'sqlite:///' + os.path.join(Config.BASEDIR, 'MedQuizPro.db')
@@ -68,12 +78,18 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
+    """
+    Testing configuration class.
+    """
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/medical_quiz_test'
     WTF_CSRF_ENABLED = False
 
 
 class ProductionConfig(Config):
+    """
+    Production configuration class.
+    """
     SSL_REDIRECT = True
     REMEMBER_COOKIE_SECURE = True
 

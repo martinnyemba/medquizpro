@@ -65,7 +65,7 @@ def send_password_reset_email(user):
     """
     token = user.get_reset_password_token()
     send_email(
-        '[Medical Quiz] Reset Your Password',
+        'MedQuizPro: Reset Your Password',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
         text_body=render_template('emails/reset_password.txt',
@@ -80,7 +80,7 @@ def send_welcome_email(user):
     Send a welcome email to new users
     """
     send_email(
-        '[Medical Quiz] Welcome to Medical Quiz',
+        'MedQuizPro: Welcome to Medical Quiz',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
         text_body=render_template('emails/welcome.txt', user=user),
@@ -93,7 +93,7 @@ def send_quiz_completion_email(user, quiz_result):
     Send quiz completion results to the user
     """
     send_email(
-        f'[Medical Quiz] {quiz_result.quiz.title} - Results',
+        f'MedQuizPro: {quiz_result.quiz.title} - Results',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
         text_body=render_template('emails/quiz_completion.txt',
@@ -108,7 +108,7 @@ def send_achievement_notification(user, achievement):
     Send achievement notification to the user
     """
     send_email(
-        '[Medical Quiz] New Achievement Unlocked!',
+        'MedQuizPro: New Achievement Unlocked!',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
         text_body=render_template('emails/achievement.txt',
@@ -123,7 +123,7 @@ def send_report_issue_notification(admin_emails, issue):
     Send a notification email to administrators when a new issue is reported
     """
     send_email(
-        f'[Medical Quiz] New Issue Report: {issue.issue_type}',
+        f'MedQuizPro: New Issue Report: {issue.issue_type}',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=admin_emails,
         text_body=render_template('emails/issue_report.txt', issue=issue),

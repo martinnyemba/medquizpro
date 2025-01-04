@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+"""Module that initializes the Flask application."""
 # app/__init__.py
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -14,6 +17,7 @@ import os
 from redis import Redis
 import rq
 
+# Initialize Flask extensions
 db = SQLAlchemy()
 login = LoginManager()
 login.login_view = 'auth.login'
@@ -24,11 +28,19 @@ csrf = CSRFProtect()
 
 
 def create_app(config_class=Config):
-    """Create and configure an instance of the Flask application"""
+    """
+    Create and configure an instance of the Flask application.
+
+    Args:
+        config_class (Config): The configuration class to use.
+
+    Returns:
+        Flask: The configured Flask application instance.
+    """
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    # Initialize extensions
+    # Initialize extensions with the app instance
     db.init_app(app)
     login.init_app(app)
     migrate.init_app(app, db)
@@ -36,7 +48,7 @@ def create_app(config_class=Config):
     mail.init_app(app)
     csrf.init_app(app)
 
-    # Redis queue
+    # Set up Redis queue
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     app.task_queue = rq.Queue('medical_quiz', connection=app.redis)
 
@@ -53,11 +65,11 @@ def create_app(config_class=Config):
     app.register_blueprint(submission_bp, url_prefix='/submission')
     app.register_blueprint(admin_bp, url_prefix='/admin')
 
-    # Implement Error handlers
+    # Implement error handlers
     from app.errors import register_error_handlers
     register_error_handlers(app)
 
-    # Logging setup
+    # Set up logging
     if not app.debug and not app.testing:
         if not os.path.exists('logs'):
             os.mkdir('logs')
@@ -74,7 +86,12 @@ def create_app(config_class=Config):
     # Create a Date now injector
     @app.context_processor
     def inject_now():
-        """Inject current datetime into templates"""
+        """
+        Inject current datetime into templates.
+
+        Returns:
+            dict: A dictionary containing the current UTC datetime.
+        """
         from datetime import datetime
         return {'now': datetime.utcnow()}
 

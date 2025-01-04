@@ -46,8 +46,8 @@
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/medquest.git
-   cd medquest
+   git clone https://github.com/yourusername/medquizpro.git
+   cd medquizpro
    ```
 
 2. **Set Up a Virtual Environment**

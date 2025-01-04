@@ -1,28 +1,107 @@
 <!-- templates/emails/contact_form.html -->
 {% extends "emails/base.html" %}
 
-{% block title %}New Contact Form Submission{% endblock %}
+{% block title %}📬 New Contact Form Submission{% endblock %}
 
 {% block content %}
-<h2>Contact Form Submission</h2>
+<div class="content-block">
+    <!-- Header Section -->
+    <div style="text-align: center !important; margin-bottom: 30px !important;">
+        <h2 style="color: #2c3e50 !important; font-size: 24px !important; margin: 0 !important;">
+            Contact Form Submission
+        </h2>
+        <p style="color: #6c757d !important; margin-top: 10px !important;">
+            Received on {{ now.strftime('%B %d, %Y at %H:%M') }}
+        </p>
+    </div>
 
-<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <tr>
-        <th style="text-align: left; padding: 10px; background-color: #f8f9fa;">Name:</th>
-        <td style="padding: 10px;">{{ name }}</td>
-    </tr>
-    <tr>
-        <th style="text-align: left; padding: 10px; background-color: #f8f9fa;">Email:</th>
-        <td style="padding: 10px;">{{ email }}</td>
-    </tr>
-    <tr>
-        <th style="text-align: left; padding: 10px; background-color: #f8f9fa;">Subject:</th>
-        <td style="padding: 10px;">{{ subject }}</td>
-    </tr>
-</table>
+    <!-- Contact Information Card -->
+    <div style="background-color: #ffffff !important; border-radius: 12px !important; border: 1px solid #e9ecef !important; margin-bottom: 24px !important; overflow: hidden !important;">
+        <div style="background-color: #f8f9fa !important; padding: 15px 20px !important; border-bottom: 1px solid #e9ecef !important;">
+            <h3 style="margin: 0 !important; color: #495057 !important; font-size: 18px !important;">
+                👤 Contact Information
+            </h3>
+        </div>
 
-<div style="margin-top: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 5px;">
-    <h3 style="margin-top: 0;">Message:</h3>
-    <p style="white-space: pre-wrap;">{{ message }}</p>
+        <div style="padding: 20px !important;">
+            <table style="width: 100% !important; border-collapse: collapse !important;">
+                <tr>
+                    <th style="text-align: left !important; padding: 12px 15px !important; width: 120px !important; color: #495057 !important; vertical-align: top !important;">
+                        <span style="display: inline-block !important;">
+                            👤 Name:
+                        </span>
+                    </th>
+                    <td style="padding: 12px 15px !important; color: #2c3e50 !important;">
+                        {{ name }}
+                    </td>
+                </tr>
+                <tr style="background-color: #f8f9fa !important;">
+                    <th style="text-align: left !important; padding: 12px 15px !important; width: 120px !important; color: #495057 !important; vertical-align: top !important;">
+                        <span style="display: inline-block !important;">
+                            ✉️ Email:
+                        </span>
+                    </th>
+                    <td style="padding: 12px 15px !important; color: #2c3e50 !important;">
+                        <a href="mailto:{{ email }}" style="color: #007bff !important; text-decoration: none !important;">
+                            {{ email }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="text-align: left !important; padding: 12px 15px !important; width: 120px !important; color: #495057 !important; vertical-align: top !important;">
+                        <span style="display: inline-block !important;">
+                            📝 Subject:
+                        </span>
+                    </th>
+                    <td style="padding: 12px 15px !important; color: #2c3e50 !important;">
+                        {{ subject }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Message Card -->
+    <div style="background-color: #ffffff !important; border-radius: 12px !important; border: 1px solid #e9ecef !important;">
+        <div style="background-color: #f8f9fa !important; padding: 15px 20px !important; border-bottom: 1px solid #e9ecef !important;">
+            <h3 style="margin: 0 !important; color: #495057 !important; font-size: 18px !important;">
+                💬 Message Content
+            </h3>
+        </div>
+
+        <div style="padding: 20px !important;">
+            <div style="white-space: pre-wrap !important; color: #2c3e50 !important; line-height: 1.6 !important; background-color: #ffffff !important; border-radius: 8px !important;">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="text-align: center !important; margin-top: 30px !important;">
+        <a href="mailto:{{ email }}" class="button" style="margin: 10px !important;">
+            ↩️ Reply to Sender
+        </a>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="margin-top: 30px !important; padding-top: 20px !important; border-top: 1px solid #e9ecef !important;">
+        <h4 style="color: #495057 !important; margin-bottom: 15px !important;">
+            ⚡ Quick Actions:
+        </h4>
+        <ul style="color: #6c757d !important; font-size: 14px !important; margin: 0 !important; padding-left: 20px !important;">
+            <li style="margin-bottom: 10px !important;">Forward to appropriate department</li>
+            <li style="margin-bottom: 10px !important;">Add to contact management system</li>
+            <li style="margin-bottom: 10px !important;">Check previous communications</li>
+            <li>Create follow-up task</li>
+        </ul>
+    </div>
+
+    <!-- Support Note -->
+    <div style="margin-top: 30px !important; text-align: center !important; color: #6c757d !important; font-size: 14px !important;">
+        <p style="margin: 0 !important;">
+            This is an internal communication for the MedQuizPro support team.
+            <br>Please handle according to our response guidelines.
+        </p>
+    </div>
 </div>
 {% endblock %}

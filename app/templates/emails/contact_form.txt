@@ -1,0 +1,39 @@
+<!-- templates/emails/contact_form.txt -->
+NEW CONTACT FORM SUBMISSION
+==========================
+Received on: {{ now.strftime('%B %d, %Y at %H:%M') }}
+
+CONTACT INFORMATION
+------------------
+Name:    {{ name }}
+Email:   {{ email }}
+Subject: {{ subject }}
+
+MESSAGE CONTENT
+--------------
+{{ message }}
+
+QUICK ACTIONS
+------------
+* Reply to sender: {{ email }}
+* Forward to appropriate department
+* Add to contact management system
+* Check previous communications
+* Create follow-up task
+
+===============================
+INTERNAL USE ONLY
+---------------
+This is an internal communication for the MedQuizPro support team.
+Please handle according to our response guidelines.
+
+Response Priority Guidelines:
+- Technical Issues: 4 hours
+- Account Issues: 6 hours
+- General Inquiries: 24 hours
+- Feedback: 48 hours
+
+===============================
+MedQuizPro Support System
+Generated: {{ now.strftime('%Y-%m-%d %H:%M:%S') }}
+Ticket ID: MQP-{{ now.strftime('%Y%m%d-%H%M%S') }}

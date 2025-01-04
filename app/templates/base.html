@@ -23,7 +23,6 @@
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="{{ url_for('static', filename='fonts/custom-font.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -189,7 +188,7 @@
     </div>
 
     <!-- Main Content -->
-    <main id="main-content" class="container">
+    <main id="main-content" class="container py-5">
         {% block content %}{% endblock %}
     </main>
 
@@ -197,7 +196,11 @@
     <footer class="footer" role="contentinfo">
         <div class="footer-content">
             <section class="footer-section">
-                <h4>About MedQuizPro</h4>
+                <h4>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                    MedQuizPro</h4>
                 <p>Empowering healthcare professionals with interactive learning tools and comprehensive medical education resources.</p>
                 <div class="social-links mt-3">
                     <a href="#" aria-label="Follow us on Twitter" class="me-2">

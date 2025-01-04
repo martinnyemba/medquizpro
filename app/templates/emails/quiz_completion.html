@@ -1,28 +1,98 @@
-<!-- templates/email/quiz_completion.html -->
+<!-- templates/emails/quiz_completion.html -->
 {% extends "emails/base.html" %}
 
-{% block title %}Quiz Results: {{ result.quiz.title }}{% endblock %}
+{% block title %}📋 Quiz Results: {{ result.quiz.title }}{% endblock %}
 
 {% block content %}
-<p>Dear {{ user.username }},</p>
+<div class="content-block">
+    <p style="font-size: 18px !important; margin-bottom: 20px !important;">Dear {{ user.username }},</p>
 
-<p>Here are your results for {{ result.quiz.title }}:</p>
-
-<div style="background-color: white; padding: 20px; border-radius: 5px; margin: 20px 0;">
-    <h3 style="margin-top: 0;">Score: {{ "%.1f"|format(result.score) }}%</h3>
-    <p>Time taken: {{ (result.time_taken / 60)|round|int }} minutes</p>
-    <p>Status:
-        {% if result.score >= result.quiz.passing_score %}
-        <span style="color: #28a745;">Passed</span>
-        {% else %}
-        <span style="color: #dc3545;">Failed</span>
-        {% endif %}
+    <p style="font-size: 16px !important; margin-bottom: 25px !important;">
+        📊 Here are your results for <strong>{{ result.quiz.title }}</strong>:
     </p>
+
+    <!-- Main Results Card -->
+    <div style="background-color: #ffffff !important; border-radius: 12px !important; padding: 30px !important; margin: 24px 0 !important; border: 1px solid #e9ecef !important; text-align: center !important;">
+        {% if result.score >= result.quiz.passing_score %}
+        <div style="background-color: #d4edda !important; color: #155724 !important; border-radius: 50px !important; padding: 8px 20px !important; display: inline-block !important; margin-bottom: 20px !important; font-weight: bold !important;">
+            🌟 PASSED
+        </div>
+        {% else %}
+        <div style="background-color: #f8d7da !important; color: #721c24 !important; border-radius: 50px !important; padding: 8px 20px !important; display: inline-block !important; margin-bottom: 20px !important; font-weight: bold !important;">
+            ⚠️ NOT PASSED
+        </div>
+        {% endif %}
+
+        <h2 style="font-size: 48px !important; color: #2c3e50 !important; margin: 20px 0 !important; font-weight: bold !important;">
+            {{ "%.1f"|format(result.score) }}%
+        </h2>
+
+        <div style="display: inline-block !important; padding: 15px 25px !important; background-color: #f8f9fa !important; border-radius: 8px !important; margin: 10px 0 20px 0 !important;">
+            ⏱️ Time taken: {{ (result.time_taken / 60)|round|int }} minutes
+        </div>
+    </div>
+
+    <!-- Performance Insights -->
+    <div style="background-color: #f8f9fa !important; border-radius: 12px !important; padding: 24px !important; margin: 24px 0 !important;">
+        <h3 style="color: #2c3e50 !important; margin-bottom: 20px !important; font-size: 18px !important;">
+            📈 Performance Insights
+        </h3>
+        <ul style="list-style: none !important; padding: 0 !important; margin: 0 !important;">
+            <li style="margin-bottom: 15px !important; padding-left: 24px !important; position: relative !important;">
+                <span style="color: #6c757d !important;">Passing Score Required: {{ result.quiz.passing_score }}%</span>
+            </li>
+            <li style="margin-bottom: 15px !important; padding-left: 24px !important; position: relative !important;">
+                <span style="color: #6c757d !important;">Questions Attempted: {{ result.total_questions }}</span>
+            </li>
+            <li style="padding-left: 24px !important; position: relative !important;">
+                <span style="color: #6c757d !important;">Average Time per Question:
+                    {{ ((result.time_taken / 60) / result.total_questions)|round(1) }} minutes
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Call to Action -->
+    <div style="text-align: center !important; margin: 30px 0 !important;">
+        <a href="{{ url_for('quiz.view_result', result_id=result.id, _external=True) }}" class="button">
+            🔍 View Detailed Analysis
+        </a>
+    </div>
+
+    <!-- Motivation Message -->
+    {% if result.score >= result.quiz.passing_score %}
+    <div class="info-card" style="background-color: #d4edda !important; border-color: #c3e6cb !important;">
+        <p style="color: #155724 !important; margin-bottom: 0 !important;">
+            🎉 Congratulations on passing! Your hard work and dedication are paying off. Keep up the excellent performance!
+        </p>
+    </div>
+    {% else %}
+    <div class="info-card" style="background-color: #fff3cd !important; border-color: #ffeeba !important;">
+        <p style="color: #856404 !important; margin-bottom: 0 !important;">
+            💪 Don't give up! Every attempt is a learning opportunity. Review your answers and try again - you've got this!
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Next Steps -->
+    <div style="margin-top: 30px !important; padding-top: 20px !important; border-top: 1px solid #e9ecef !important;">
+        <h4 style="color: #2c3e50 !important; margin-bottom: 15px !important; font-size: 16px !important;">
+            📚 Recommended Next Steps:
+        </h4>
+        <ul style="color: #6c757d !important; font-size: 14px !important; margin: 0 !important; padding-left: 20px !important;">
+            <li style="margin-bottom: 10px !important;">Review your answers in detail</li>
+            <li style="margin-bottom: 10px !important;">Check out related study materials</li>
+            <li style="margin-bottom: 10px !important;">Practice similar quizzes</li>
+            <li>Share your results with your study group</li>
+        </ul>
+    </div>
+
+    <div style="text-align: center !important; margin-top: 40px !important; color: #6c757d !important;">
+        <p style="margin-bottom: 5px !important;">Keep learning and growing!</p>
+        <p style="margin: 0 !important;">
+            Best regards,<br>
+            <strong style="color: #007bff !important;">The MedQuizPro Team 👨‍⚕️</strong>
+        </p>
+    </div>
 </div>
-
-<p><a href="{{ url_for('quiz.view_result', result_id=result.id, _external=True) }}" class="button">View Detailed Results</a></p>
-
-<p>Keep up the great work!</p>
-
-<p>Best regards,<br>The Medical Quiz Team</p>
 {% endblock %}

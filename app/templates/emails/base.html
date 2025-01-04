@@ -1,4 +1,4 @@
-<!-- templates/email/base.html -->
+<!-- templates/emails/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,130 +22,264 @@
             padding: 0 !important;
             height: 100% !important;
             width: 100% !important;
-            font-family: Arial, Helvetica, sans-serif !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
             line-height: 1.6 !important;
+            background-color: #f0f2f5 !important;
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
         }
         * {
             -ms-text-size-adjust: 100%;
             -webkit-text-size-adjust: 100%;
             box-sizing: border-box;
         }
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.4 !important;
+            font-weight: 600 !important;
+        }
+        p {
+            margin: 0 0 16px 0 !important;
+            padding: 0 !important;
+            line-height: 1.8 !important;
+        }
         /* Base container */
+        .email-wrapper {
+            width: 100% !important;
+            table-layout: fixed !important;
+            background-color: #f0f2f5 !important;
+            padding: 30px 10px !important;
+        }
         .email-container {
             max-width: 600px !important;
             margin: 0 auto !important;
-            padding: 20px !important;
+            padding: 0 !important;
             background-color: #ffffff !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            overflow: hidden !important;
         }
         /* Header styles */
         .header {
             background-color: #007bff !important;
-            padding: 30px 20px !important;
+            background-image: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+            padding: 40px 30px !important;
             text-align: center !important;
-            border-radius: 8px 8px 0 0 !important;
+            position: relative !important;
+        }
+        .header::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 40px !important;
+            background: linear-gradient(to bottom right, transparent 49%, #ffffff 50%) !important;
         }
         .header h1 {
             color: #ffffff !important;
-            font-size: 24px !important;
-            margin: 0 !important;
-            padding: 0 !important;
+            font-size: 32px !important;
+            font-weight: 700 !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            margin-bottom: 10px !important;
         }
         /* Content area */
         .content {
+            background-color: #ffffff !important;
+            padding: 40px 30px !important;
+            font-size: 16px !important;
+        }
+        .content-block {
             background-color: #f8f9fa !important;
-            padding: 30px 20px !important;
-            border-radius: 0 0 8px 8px !important;
+            border-radius: 12px !important;
+            padding: 24px !important;
+            margin-bottom: 24px !important;
+            border: 1px solid #e9ecef !important;
         }
         /* Button styles */
+        .button-wrapper {
+            text-align: center !important;
+            margin: 30px 0 !important;
+        }
         .button {
             display: inline-block !important;
-            padding: 12px 24px !important;
+            padding: 16px 32px !important;
             background-color: #007bff !important;
+            background-image: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
             color: #ffffff !important;
             text-decoration: none !important;
-            border-radius: 4px !important;
-            font-weight: bold !important;
-            margin: 20px 0 !important;
-            mso-padding-alt: 0px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 16px !important;
             text-align: center !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2) !important;
+            min-width: 200px !important;
+            border: 2px solid transparent !important;
+        }
+        /* Interactive elements */
+        .info-card {
+            background-color: #e7f5ff !important;
+            border: 1px solid #b8daff !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+            margin: 20px 0 !important;
+        }
+        .divider {
+            height: 1px !important;
+            background-color: #e9ecef !important;
+            margin: 30px 0 !important;
         }
         /* Footer styles */
         .footer {
+            background-color: #f8f9fa !important;
             text-align: center !important;
-            margin-top: 30px !important;
+            padding: 40px 30px !important;
             color: #6c757d !important;
             font-size: 14px !important;
-            line-height: 1.5 !important;
+            line-height: 1.6 !important;
+            border-top: 1px solid #e9ecef !important;
+        }
+        .footer p {
+            margin: 8px 0 !important;
+            color: #6c757d !important;
+        }
+        .footer-links {
+            margin: 20px 0 !important;
+        }
+        .footer a {
+            color: #007bff !important;
+            text-decoration: none !important;
+            border-bottom: 1px solid transparent !important;
+            transition: all 0.3s ease !important;
+            padding: 2px 4px !important;
+        }
+        .footer a:hover {
+            color: #0056b3 !important;
+            border-bottom-color: #0056b3 !important;
+        }
+        .social-links {
+            margin: 20px 0 !important;
+        }
+        .social-link {
+            display: inline-block !important;
+            margin: 0 10px !important;
+            font-size: 20px !important;
         }
         /* Dark mode overrides */
         @media (prefers-color-scheme: dark) {
+            body, html {
+                background-color: #1a1a1a !important;
+            }
+            .email-wrapper {
+                background-color: #1a1a1a !important;
+            }
             .email-container {
                 background-color: #ffffff !important;
             }
             .content {
+                background-color: #ffffff !important;
+            }
+            .content-block {
                 background-color: #f8f9fa !important;
             }
             .header {
-                background-color: #0056b3 !important;
+                background-image: linear-gradient(135deg, #0056b3 0%, #003d80 100%) !important;
             }
-            .button {
-                background-color: #0056b3 !important;
+            .footer {
+                background-color: #f8f9fa !important;
+            }
+            .info-card {
+                background-color: #e3f2fd !important;
             }
         }
         /* Mobile responsiveness */
         @media screen and (max-width: 600px) {
-            .email-container {
-                width: 100% !important;
+            .email-wrapper {
                 padding: 10px !important;
             }
+            .email-container {
+                border-radius: 12px !important;
+            }
             .header {
-                padding: 20px 15px !important;
+                padding: 30px 20px !important;
             }
             .header h1 {
-                font-size: 20px !important;
+                font-size: 24px !important;
+            }
+            .header::after {
+                height: 20px !important;
             }
             .content {
-                padding: 20px 15px !important;
+                padding: 30px 20px !important;
+            }
+            .content-block {
+                padding: 20px !important;
+                margin-bottom: 20px !important;
             }
             .button {
                 display: block !important;
                 width: 100% !important;
-                text-align: center !important;
+                min-width: unset !important;
+                padding: 16px 24px !important;
             }
+            .footer {
+                padding: 30px 20px !important;
+            }
+            .social-links {
+                margin: 15px 0 !important;
+            }
+            .social-link {
+                margin: 0 8px !important;
+            }
+        }
+        /* Outlook specific fixes */
+        [owa] .button {
+            width: 200px !important;
+        }
+        [owa] .email-container {
+            width: 600px !important;
         }
     </style>
 </head>
 <body>
-    <div class="email-container">
-        <div class="header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <!-- Ear tips -->
-              <circle cx="7" cy="4" r="1.5" fill="#ffffff"/>
-              <circle cx="17" cy="4" r="1.5" fill="#ffffff"/>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <div class="header">
+                <h1>⚕️ {% block title %}{% endblock %}</h1>
+            </div>
 
-              <!-- Tubing to ear tips -->
-              <path d="M7 4v7c0 3 2 5 5 5s5-2 5-5V4" stroke="#ffffff"/>
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
 
-              <!-- Chest piece -->
-              <circle cx="12" cy="17" r="2" stroke="#ffffff" fill="none"/>
+            <div class="footer">
+                <div class="footer-links">
+                    <a href="#" style="margin: 0 10px;">Terms of Service</a>
+                    <a href="#" style="margin: 0 10px;">Privacy Policy</a>
+                    <a href="#" style="margin: 0 10px;">Help Center</a>
+                </div>
 
-              <!-- Tubing from chest piece -->
-              <path d="M12 19v2" stroke="#ffffff"/>
+                <div class="social-links">
+                    <span class="social-link">📱</span>
+                    <span class="social-link">💻</span>
+                    <span class="social-link">📧</span>
+                </div>
 
-              <!-- Horizontal tube -->
-              <path d="M5 11h14" stroke="#ffffff"/>
-            </svg>
+                <div class="divider"></div>
 
-            <h1>{% block title %}{% endblock %}</h1>
-        </div>
-        <div class="content">
-            {% block content %}{% endblock %}
-        </div>
-        <div class="footer">
-            <p>© {{ now.year }} MedQuizPro. All rights reserved.</p>
-            <p>If you didn't request this email, please ignore it.</p>
-            <p>You're receiving this email because you signed up for MedQuizPro.</p>
-            <p><a href="{{ unsubscribe_url }}" style="color: #6c757d; text-decoration: underline;">Unsubscribe</a></p>
+                <p>© {{ now.year }} ⚕️ MedQuizPro. All rights reserved.</p>
+                <p>🔒 Your privacy is important to us</p>
+                <p>📬 You're receiving this email because you signed up for MedQuizPro</p>
+                <p>
+                    <a href="{{ unsubscribe_url }}">
+                        ❌ Unsubscribe
+                    </a>
+                    from these emails
+                </p>
+            </div>
         </div>
     </div>
 </body>

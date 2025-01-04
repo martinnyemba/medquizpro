@@ -77,7 +77,7 @@ def register():
         db.session.commit()
 
         # Send welcome email
-        # send_welcome_email(user)
+        send_welcome_email(user)
 
         flash('Congratulations, you are now a registered user!', 'success')
         return redirect(url_for('auth.login'))
@@ -209,27 +209,3 @@ def study_groups():
                            title='Study Groups',
                            user_groups=user_groups,
                            available_groups=available_groups)
-
-
-# Email utility functions
-def send_password_reset_email(user):
-    """Send password reset email to user"""
-    token = user.get_reset_password_token()
-    send_email('[Medical Quiz] Reset Your Password',
-               sender=current_app.config['MAIL_DEFAULT_SENDER'],
-               recipients=[user.email],
-               text_body=render_template('email/reset_password.txt',
-                                         user=user, token=token),
-               html_body=render_template('email/reset_password.html',
-                                         user=user, token=token))
-
-
-def send_welcome_email(user):
-    """Send welcome email to new users"""
-    send_email('[Medical Quiz] Welcome to Medical Quiz',
-               sender=current_app.config['MAIL_DEFAULT_SENDER'],
-               recipients=[user.email],
-               text_body=render_template('email/welcome.txt',
-                                         user=user),
-               html_body=render_template('email/welcome.html',
-                                         user=user))

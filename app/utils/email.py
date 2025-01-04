@@ -48,7 +48,7 @@ def send_email(subject, sender, recipients, text_body, html_body, attachments=No
     smtp_settings = {
         'server': app.config['MAIL_SERVER'],
         'port': app.config['MAIL_PORT'],
-        'use_tls': app.config['MAIL_USE_TLS'],
+        'use_ssl': app.config['MAIL_USE_SSL'],
         'username': app.config['MAIL_USERNAME'],
         'password': app.config['MAIL_PASSWORD']
     }
@@ -62,9 +62,9 @@ def send_password_reset_email(user):
         '[Medical Quiz] Reset Your Password',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
-        text_body=render_template('email/reset_password.txt',
+        text_body=render_template('emails/reset_password.txt',
                                   user=user, token=token),
-        html_body=render_template('email/reset_password.html',
+        html_body=render_template('emails/reset_password.html',
                                   user=user, token=token)
     )
 
@@ -74,8 +74,8 @@ def send_welcome_email(user):
         '[Medical Quiz] Welcome to Medical Quiz',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
-        text_body=render_template('email/welcome.txt', user=user),
-        html_body=render_template('email/welcome.html', user=user)
+        text_body=render_template('emails/welcome.txt', user=user),
+        html_body=render_template('emails/welcome.html', user=user)
     )
 
 
@@ -84,9 +84,9 @@ def send_quiz_completion_email(user, quiz_result):
         f'[Medical Quiz] {quiz_result.quiz.title} - Results',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
-        text_body=render_template('email/quiz_completion.txt',
+        text_body=render_template('emails/quiz_completion.txt',
                                   user=user, result=quiz_result),
-        html_body=render_template('email/quiz_completion.html',
+        html_body=render_template('emails/quiz_completion.html',
                                   user=user, result=quiz_result)
     )
 
@@ -96,9 +96,9 @@ def send_achievement_notification(user, achievement):
         '[Medical Quiz] New Achievement Unlocked!',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=[user.email],
-        text_body=render_template('email/achievement.txt',
+        text_body=render_template('emails/achievement.txt',
                                   user=user, achievement=achievement),
-        html_body=render_template('email/achievement.html',
+        html_body=render_template('emails/achievement.html',
                                   user=user, achievement=achievement)
     )
 
@@ -108,7 +108,7 @@ def send_report_issue_notification(admin_emails, issue):
         f'[Medical Quiz] New Issue Report: {issue.issue_type}',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],
         recipients=admin_emails,
-        text_body=render_template('email/issue_report.txt', issue=issue),
-        html_body=render_template('email/issue_report.html', issue=issue),
+        text_body=render_template('emails/issue_report.txt', issue=issue),
+        html_body=render_template('emails/issue_report.html', issue=issue),
         attachments=[(issue.screenshot_filename, issue.screenshot_data)] if issue.screenshot_data else None
     )

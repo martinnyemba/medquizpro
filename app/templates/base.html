@@ -194,7 +194,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer" role="contentinfo">
+    <footer class="footer bg-dark p-5" role="contentinfo">
         <div class="footer-content">
             <section class="footer-section">
                 <h4>
@@ -265,31 +265,6 @@
 
     <!-- Page-specific JavaScript -->
     {% block scripts %}{% endblock %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-dismiss alerts after 8 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }, 8000);
-            });
-
-            // Smooth removal of alerts
-            document.querySelectorAll('.alert').forEach(alert => {
-                alert.addEventListener('close.bs.alert', function(e) {
-                    e.preventDefault();
-                    const element = this;
-                    element.style.transform = 'translateY(-10px)';
-                    element.style.opacity = '0';
-                    setTimeout(() => {
-                        element.remove();
-                    }, 300);
-                });
-            });
-        });
-    </script>
 
     <!-- User Tracking (with privacy-first approach) -->
     {% if current_user.has_consented_to_analytics %}
@@ -317,6 +292,27 @@
 
             // Track client-side navigation if using a SPA approach
             document.addEventListener('spa:navigation', sendPageView);
+        });
+
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 8000);
+        });
+
+        // Smooth removal of alerts
+        document.querySelectorAll('.alert').forEach(alert => {
+            alert.addEventListener('close.bs.alert', function(e) {
+                e.preventDefault();
+                const element = this;
+                element.style.transform = 'translateY(-10px)';
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    element.remove();
+                }, 300);
+            });
         });
     </script>
     {% endif %}

@@ -1,0 +1,20 @@
+# templates/search/_pagination.html
+{% if results and results.pages > 1 %}
+<nav aria-label="Search results pages">
+    <ul class="pagination justify-content-center">
+        {% for page in results.iter_pages() %}
+            {% if page %}
+                <li class="page-item {{ 'active' if page == results.page }}">
+                    <a class="page-link" href="{{ url_for('search.search', page=page, **request.args) }}">
+                        {{ page }}
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}

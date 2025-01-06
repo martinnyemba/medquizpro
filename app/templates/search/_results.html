@@ -1,0 +1,37 @@
+# templates/search/_results.html
+{% if results %}
+    {% if results.total > 0 %}
+        <div class="mb-3">
+            Found {{ results.total }} result(s)
+        </div>
+        <div class="row">
+            {% for quiz in results.items %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.title }}</h5>
+                            <p class="card-text">{{ quiz.description|truncate(100) }}</p>
+                            <div class="mb-3">
+                                <span class="badge badge-primary">{{ quiz.course|title }}</span>
+                                <span class="badge badge-info">{{ quiz.difficulty_level|title }}</span>
+                                {% if quiz.profession == 'all' %}
+                                    <span class="badge badge-success">All Professions</span>
+                                {% else %}
+                                    <span class="badge badge-warning">{{ quiz.profession|title }}</span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('quiz.take_quiz', quiz_id=quiz.id) }}"
+                               class="btn btn-primary btn-sm">
+                                Start Quiz
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No quizzes found matching your criteria.
+        </div>
+    {% endif %}
+{% endif %}

@@ -49,7 +49,7 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Navigation -->
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <nav class="navbar mb-4" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <a href="{{ url_for('main.index') }}" class="logo" aria-label="MedQuizPro Home">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -111,7 +111,7 @@
                                  class="avatar-img"
                                  width="24"
                                  height="24">
-                            <span>{{ current_user.username }}</span>
+                            <span>{{ current_user.display_name() }}</span>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M6 9l6 6 6-6"/>
                             </svg>
@@ -141,7 +141,7 @@
                                 <a href="{{ url_for('admin.quiz_management') }}" role="menuitem">
                                     <i class="fas fa-tasks fa-fw"></i> Manage Quizzes
                                 </a>
-                                <a href="{{ url_for('admin.user_management') }}" role="menuitem">
+                                <a href="{{ url_for('admin.list_users') }}" role="menuitem">
                                     <i class="fas fa-users fa-fw"></i> Manage Users
                                 </a>
                                 <a href="{{ url_for('submission.review_submissions') }}" role="menuitem">
@@ -169,26 +169,27 @@
         </div>
     </nav>
 
-    <!-- Flash Messages -->
-    <div class="container mt-3" role="alert" aria-live="polite">
+    <!-- Main Content with Flash Messages Inside -->
+    <main id="main-content" class="container mt-5 py-4">
+        <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="alert"
-                                aria-label="Close">
-                        </button>
-                    </div>
-                {% endfor %}
+                <div class="mb-4" role="alert" aria-live="polite">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close">
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
-    </div>
 
-    <!-- Main Content -->
-    <main id="main-content" class="container py-5">
+        <!-- Page Content -->
         {% block content %}{% endblock %}
     </main>
 
@@ -264,6 +265,31 @@
 
     <!-- Page-specific JavaScript -->
     {% block scripts %}{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-dismiss alerts after 8 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 8000);
+            });
+
+            // Smooth removal of alerts
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.addEventListener('close.bs.alert', function(e) {
+                    e.preventDefault();
+                    const element = this;
+                    element.style.transform = 'translateY(-10px)';
+                    element.style.opacity = '0';
+                    setTimeout(() => {
+                        element.remove();
+                    }, 300);
+                });
+            });
+        });
+    </script>
 
     <!-- User Tracking (with privacy-first approach) -->
     {% if current_user.has_consented_to_analytics %}

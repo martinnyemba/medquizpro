@@ -3,29 +3,89 @@ from werkzeug.datastructures import FileStorage
 from wtforms import (StringField, PasswordField, BooleanField, SelectField,
                      TextAreaField, IntegerField, FileField, SelectMultipleField,
                      RadioField, DecimalField)
-from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional, NumberRange
+from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional, \
+    NumberRange, Regexp
 from app.models import User
 from flask_wtf.file import FileAllowed
+from wtforms.widgets import PasswordInput
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
+    email = StringField(
+        'Email',
+        validators=[
+            DataRequired(message="Email is required"),
+            Email(message="Please enter a valid email address"),
+            Length(max=120, message="Email must be less than 120 characters")
+        ],
+        render_kw={
+            "placeholder": "Enter your email",
+            "autocomplete": "email",
+            "spellcheck": "false",
+            "autocapitalize": "none",
+            "inputmode": "email"
+        }
+    )
+
+    password = PasswordField(
+        'Password',
+        validators=[
+            DataRequired(message="Password is required"),
+            Length(min=8, message="Password must be at least 8 characters long")
+        ],
+        render_kw={
+            "placeholder": "Enter your password",
+            "autocomplete": "current-password"
+        }
+    )
+
+    remember_me = BooleanField(
+        'Keep me logged in',
+        description="Warning: Only select this option on your personal devices"
+    )
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=25)])
+    firstname = StringField(
+        label='First Name',
+        validators=[DataRequired()]
+    )
+    lastname = StringField(
+        label='Last Name',
+        validators=[DataRequired()]
+    )
+    username = StringField(
+        'Username',
+        validators=[
+            DataRequired(),
+            Length(min=4, max=25),
+            Regexp(r'^[\w.]+$', message="Username can only contain letters, numbers, and dots.")
+        ])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     password2 = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     profession = SelectField('Profession', choices=[
-        ('doctor', 'Doctor'),
-        ('nurse', 'Nurse'),
-        ('pharmacist', 'Pharmacist'),
+        ('doctor', 'Medical Doctor'),
+        ('medical_licentiate', 'Medical Licentiate'),
         ('clinical_officer', 'Clinical Officer'),
-        ('medical_licentiate', 'Medical Licentiate')
+        ('dentist', 'Dentist'),
+        ('pharmacist', 'Pharmacist'),
+        ('laboratory_technologist', 'Laboratory Technologist/Technician'),
+        ('nurse', 'Registered Nurse (General Nurse)'),
+        ('midwife', 'Midwife'),
+        ('physiotherapist', 'Physiotherapist'),
+        ('radiographer', 'Radiographer (Diagnostic and Therapeutic)'),
+        ('nutritionist', 'Nutritionist/Dietitian'),
+        ('biomedical_scientist', 'Biomedical Scientist'),
+        ('public_health_specialist', 'Public Health Specialist'),
+        ('paramedic', 'Paramedic/Emergency Medical'),
+        ('optometrist', 'Optometrist/Ophthalmic Technologist'),
+        ('anaesthetist', 'Anaesthetist'),
+        ('anesthetic_technologist', 'Anesthetic Technologist'),
+        ('psychiatrist', 'Psychiatrist'),
+        ('environmental_technologist', 'Environmental Health Technologist')
     ])
+
     specialization = StringField('Specialization', validators=[Optional()])
     experience_years = IntegerField('Years of Experience', validators=[Optional(), NumberRange(min=0, max=50)])
     institution = StringField('Institution/Hospital', validators=[Optional()])
@@ -50,11 +110,25 @@ class QuizForm(FlaskForm):
                          )
     profession = SelectField('Target Profession', choices=[
         ('all', 'All Professions'),
-        ('doctor', 'Doctors Only'),
-        ('nurse', 'Nurses Only'),
-        ('pharmacist', 'Pharmacists Only'),
-        ('clinical_officer', 'Clinical Officers Only'),
-        ('medical_licentiate', 'Medical Licentiates Only')
+        ('doctor', 'Medical Doctor'),
+        ('medical_licentiate', 'Medical Licentiate'),
+        ('clinical_officer', 'Clinical Officer'),
+        ('dentist', 'Dentist'),
+        ('pharmacist', 'Pharmacist'),
+        ('laboratory_technologist', 'Laboratory Technologist/Technician'),
+        ('nurse', 'Registered Nurse (General Nurse)'),
+        ('midwife', 'Midwife'),
+        ('physiotherapist', 'Physiotherapist'),
+        ('radiographer', 'Radiographer (Diagnostic and Therapeutic)'),
+        ('nutritionist', 'Nutritionist/Dietitian'),
+        ('biomedical_scientist', 'Biomedical Scientist'),
+        ('public_health_specialist', 'Public Health Specialist'),
+        ('paramedic', 'Paramedic/Emergency Medical'),
+        ('optometrist', 'Optometrist/Ophthalmic Technologist'),
+        ('anaesthetist', 'Anaesthetist'),
+        ('anesthetic_technologist', 'Anesthetic Technologist'),
+        ('psychiatrist', 'Psychiatrist'),
+        ('environmental_technologist', 'Environmental Health Technologist')
     ])
     difficulty_level = SelectField('Difficulty Level', choices=[
         ('beginner', 'Beginner'),
@@ -63,12 +137,12 @@ class QuizForm(FlaskForm):
     ])
     passing_score = IntegerField('Passing Score (%)',
                                  validators=[DataRequired(), NumberRange(min=0, max=100)],
-                                 default=70)
+                                 default=60)
     time_limit = IntegerField('Time Limit (minutes)',
                               validators=[DataRequired(), NumberRange(min=5, max=180)])
     max_attempts = IntegerField('Maximum Attempts',
                                 validators=[DataRequired(), NumberRange(min=1, max=10)],
-                                default=3)
+                                default=5)
     tags = StringField('Tags (comma separated)', validators=[Optional()])
     instructions = TextAreaField('Instructions', validators=[Optional()])
 
@@ -252,11 +326,25 @@ class ProfileForm(FlaskForm):
     confirm_password = PasswordField('Confirm New Password',
                                      validators=[EqualTo('new_password', message='Passwords must match')])
     profession = SelectField('Profession', choices=[
-        ('doctor', 'Doctor'),
-        ('nurse', 'Nurse'),
-        ('pharmacist', 'Pharmacist'),
+        ('doctor', 'Medical Doctor'),
+        ('medical_licentiate', 'Medical Licentiate'),
         ('clinical_officer', 'Clinical Officer'),
-        ('medical_licentiate', 'Medical Licentiate')
+        ('dentist', 'Dentist'),
+        ('pharmacist', 'Pharmacist'),
+        ('laboratory_technologist', 'Laboratory Technologist/Technician'),
+        ('nurse', 'Registered Nurse (General Nurse)'),
+        ('midwife', 'Midwife'),
+        ('physiotherapist', 'Physiotherapist'),
+        ('radiographer', 'Radiographer (Diagnostic and Therapeutic)'),
+        ('nutritionist', 'Nutritionist/Dietitian'),
+        ('biomedical_scientist', 'Biomedical Scientist'),
+        ('public_health_specialist', 'Public Health Specialist'),
+        ('paramedic', 'Paramedic/Emergency Medical'),
+        ('optometrist', 'Optometrist/Ophthalmic Technologist'),
+        ('anaesthetist', 'Anaesthetist'),
+        ('anesthetic_technologist', 'Anesthetic Technologist'),
+        ('psychiatrist', 'Psychiatrist'),
+        ('environmental_technologist', 'Environmental Health Technologist')
     ])
     specialization = StringField('Specialization')
     experience_years = IntegerField('Years of Experience', validators=[Optional(), NumberRange(min=0, max=50)])
@@ -484,3 +572,110 @@ class ReportForm:
 
 class ReportReviewForm:
     pass
+
+
+# Admin user management forms
+class AdminUserCreateForm(FlaskForm):
+    username = StringField('Username', validators=[
+        DataRequired(),
+        Length(min=4, max=25),
+        Regexp(r'^[\w.]+$', message="Username can only contain letters, numbers, and dots.")
+    ])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[
+        DataRequired(),
+        Length(min=8),
+        Regexp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$',
+               message="Password must contain at least one letter, one number, and one special character.")
+    ])
+    confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(),
+        EqualTo('password', message='Passwords must match.')
+    ])
+    profession = SelectField('Profession', choices=[
+        ('doctor', 'Medical Doctor'),
+        ('medical_licentiate', 'Medical Licentiate'),
+        ('clinical_officer', 'Clinical Officer'),
+        ('dentist', 'Dentist'),
+        ('pharmacist', 'Pharmacist'),
+        ('laboratory_technologist', 'Laboratory Technologist/Technician'),
+        ('nurse', 'Registered Nurse (General Nurse)'),
+        ('midwife', 'Midwife'),
+        ('physiotherapist', 'Physiotherapist'),
+        ('radiographer', 'Radiographer (Diagnostic and Therapeutic)'),
+        ('nutritionist', 'Nutritionist/Dietitian'),
+        ('biomedical_scientist', 'Biomedical Scientist'),
+        ('public_health_specialist', 'Public Health Specialist'),
+        ('paramedic', 'Paramedic/Emergency Medical'),
+        ('optometrist', 'Optometrist/Ophthalmic Technologist'),
+        ('anaesthetist', 'Anaesthetist'),
+        ('anesthetic_technologist', 'Anesthetic Technologist'),
+        ('psychiatrist', 'Psychiatrist'),
+        ('environmental_technologist', 'Environmental Health Technologist')
+    ])
+    specialization = StringField('Specialization')
+    experience_years = IntegerField('Years of Experience', validators=[Optional(), NumberRange(min=0, max=50)])
+    institution = StringField('Institution/Hospital')
+    is_admin = BooleanField('Administrator Access')
+
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('Username already exists.')
+
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered.')
+
+
+class AdminUserEditForm(FlaskForm):
+    username = StringField('Username', validators=[
+        DataRequired(),
+        Length(min=4, max=25),
+        Regexp(r'^[\w.]+$', message="Username can only contain letters, numbers, and dots.")
+    ])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    new_password = PasswordField('New Password', validators=[
+        Optional(),
+        Length(min=8),
+        Regexp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$',
+               message="Password must contain at least one letter, one number, and one special character.")
+    ])
+    confirm_password = PasswordField('Confirm New Password', validators=[
+        EqualTo('new_password', message='Passwords must match.')
+    ])
+    profession = SelectField('Profession', choices=[
+        ('doctor', 'Medical Doctor'),
+        ('medical_licentiate', 'Medical Licentiate'),
+        ('clinical_officer', 'Clinical Officer'),
+        ('dentist', 'Dentist'),
+        ('pharmacist', 'Pharmacist'),
+        ('laboratory_technologist', 'Laboratory Technologist/Technician'),
+        ('nurse', 'Registered Nurse (General Nurse)'),
+        ('midwife', 'Midwife'),
+        ('physiotherapist', 'Physiotherapist'),
+        ('radiographer', 'Radiographer (Diagnostic and Therapeutic)'),
+        ('nutritionist', 'Nutritionist/Dietitian'),
+        ('biomedical_scientist', 'Biomedical Scientist'),
+        ('public_health_specialist', 'Public Health Specialist'),
+        ('paramedic', 'Paramedic/Emergency Medical'),
+        ('optometrist', 'Optometrist/Ophthalmic Technologist'),
+        ('anaesthetist', 'Anaesthetist'),
+        ('anesthetic_technologist', 'Anesthetic Technologist'),
+        ('psychiatrist', 'Psychiatrist'),
+        ('environmental_technologist', 'Environmental Health Technologist')
+    ])
+    specialization = StringField('Specialization')
+    experience_years = IntegerField('Years of Experience', validators=[Optional(), NumberRange(min=0, max=50)])
+    institution = StringField('Institution/Hospital')
+    is_admin = BooleanField('Administrator Access')
+    is_active = BooleanField('Active Account')
+
+    def __init__(self, original_username, *args, **kwargs):
+        super(AdminUserEditForm, self).__init__(*args, **kwargs)
+        self.original_username = original_username
+
+    def validate_username(self, field):
+        if field.data != self.original_username:
+            user = User.query.filter_by(username=field.data).first()
+            if user:
+                raise ValidationError('Username already exists.')

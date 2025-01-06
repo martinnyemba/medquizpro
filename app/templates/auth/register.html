@@ -48,7 +48,33 @@
                             {{ form.hidden_tag() }}
 
                             <!-- Step 1: Account Information -->
+
                             <div class="form-step active" data-step="1">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3 password-field">
+                                            {{ form.firstname(class="form-control" ~ (' is-invalid' if form.firstname.errors else ''),
+                                               placeholder="First Name", id="firstname", type="text") }}
+                                            {{ form.firstname.label(for="firstname") }}
+
+                                            {% for error in form.firstname.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3 password-field">
+                                            {{ form.lastname(class="form-control" ~ (' is-invalid' if form.lastname.errors else ''),
+                                               placeholder="Last Name", id="lastname", type="text") }}
+                                            {{ form.lastname.label(for="lastname") }}
+
+                                            {% for error in form.lastname.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-floating mb-3">
                                     {{ form.username(class="form-control" ~ (' is-invalid' if form.username.errors else ''),
                                        placeholder="Username", id="username") }}

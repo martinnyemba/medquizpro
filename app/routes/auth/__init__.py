@@ -10,40 +10,45 @@ from datetime import datetime
 import jwt
 from app import db
 from app.utils.email import send_email, send_welcome_email, send_password_reset_email
+from app.models.user_session import UserSession
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    """User login route"""
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(email=form.email.data.lower()).first()
 
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password', 'error')
-            return redirect(url_for('auth.login'))
+        if user and user.check_password(form.password.data):
+            if user.is_active:
+                # Create new session with device info
+                session = user.create_session(
+                    device_info={
+                        'user_agent': request.user_agent.string,
+                        'platform': request.user_agent.platform,
+                        'browser': request.user_agent.browser
+                    },
+                    ip_address=request.remote_addr
+                )
 
-        if not user.is_active:
-            flash('Your account is deactivated. Please contact support.', 'error')
-            return redirect(url_for('auth.login'))
+                # Login with session
+                login_user(session, remember=form.remember_me.data)
 
-        # Update last login timestamp
-        user.last_login = datetime.utcnow()
-        db.session.commit()
+                next_page = request.args.get('next')
+                if not next_page or urlparse(next_page).netloc != '':
+                    next_page = url_for('main.index')
 
-        login_user(user, remember=form.remember_me.data)
+                return redirect(next_page)
 
-        # Handle next page redirect
-        next_page = request.args.get('next')
-        if not next_page or urlparse(next_page).netloc != '':
-            next_page = url_for('main.index')
-
-        return redirect(next_page)
+            flash('Your account is deactivated. Please contact support.', 'danger')
+        else:
+            flash('Invalid email or password. Please check your login detail', 'danger')
+            redirect(url_for('auth.login'))
 
     return render_template('auth/login.html', title='Sign In', form=form)
 
@@ -57,6 +62,8 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
+            first_name=form.firstname.data,
+            last_name=form.lastname.data,
             username=form.username.data,
             email=form.email.data,
             profession=form.profession.data
@@ -87,11 +94,35 @@ def register():
     return render_template('auth/register.html', title='Register', form=form)
 
 
+
 @auth_bp.route('/logout')
 @login_required
 def logout():
-    """User logout route"""
-    logout_user()
+    """
+    User logout route with session cleanup.
+    Revokes the current session and optionally all other sessions.
+    """
+    try:
+        if hasattr(current_user, 'user_id'):  # Check if it's a UserSession
+            # Get the current session ID before logout
+            current_session_id = current_user.id
+            user_id = current_user.user_id
+
+            # Revoke the current session
+            current_user.revoke()
+
+            # Optional: Revoke all other sessions for additional security
+            # user = User.query.get(user_id)
+            # user.revoke_all_sessions(except_session_id=current_session_id)
+
+        # Perform the logout
+        logout_user()
+        flash('You have been successfully logged out.', 'success')
+
+    except Exception as e:
+        # Log the error here if you have logging configured
+        flash('An error occurred during logout. Please try again.', 'error')
+
     return redirect(url_for('main.index'))
 
 

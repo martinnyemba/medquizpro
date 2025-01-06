@@ -4,7 +4,7 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<section class="login-section py-5">
+<section class="login-section mt-2 py-5">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
@@ -40,12 +40,12 @@
                         <form method="POST" action="" class="login-form" novalidate>
                             {{ form.hidden_tag() }}
 
-                            <!-- Username Field -->
+                            <!-- email Field -->
                             <div class="form-floating mb-3">
-                                {{ form.username(class="form-control" ~ (' is-invalid' if form.username.errors else ''),
-                                   placeholder="Username", id="username") }}
-                                {{ form.username.label(for="username") }}
-                                {% for error in form.username.errors %}
+                                {{ form.email(class="form-control" ~ (' is-invalid' if form.email.errors else ''),
+                                   placeholder="Your Email address", id="email") }}
+                                {{ form.email.label(for="email") }}
+                                {% for error in form.email.errors %}
                                     <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}
                             </div>

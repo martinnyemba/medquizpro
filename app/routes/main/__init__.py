@@ -4,11 +4,12 @@
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for
 from flask_login import current_user
 
+from app import db
 from app.forms import ContactForm
 from app.models import Quiz, User, QuizResult, UserAchievement, Question
 from sqlalchemy import func
 from datetime import datetime, timedelta
-
+from sqlalchemy import desc
 from app.utils.email import send_email
 
 main_bp = Blueprint('main', __name__)
@@ -23,20 +24,53 @@ def index():
         'total_attempts': QuizResult.query.count()
     }
 
+    from sqlalchemy import func, distinct
+    from datetime import datetime, timedelta
+
     if current_user.is_authenticated:
+        # Existing logic for authenticated users
         recent_quizzes = Quiz.query.filter_by(is_published=True) \
             .filter(Quiz.profession.in_(['all', current_user.profession])) \
             .order_by(Quiz.created_at.desc()).limit(6).all()
 
         user_stats = current_user.performance_stats
-
-        # Get achievements from last 30 days
         recent_achievements = current_user.achievements \
             .filter(UserAchievement.earned_at >= datetime.utcnow() - timedelta(days=30)) \
             .order_by(UserAchievement.earned_at.desc()).limit(5).all()
     else:
-        recent_quizzes = Quiz.query.filter_by(is_published=True) \
-            .order_by(Quiz.created_at.desc()).limit(6).all()
+        # Get distinct profession and course combinations
+        prof_courses = db.session.query(
+            distinct(Quiz.profession), Quiz.course
+        ).filter(
+            Quiz.is_published == True,
+            Quiz.is_deleted == False
+        ).all()
+
+        # For each profession-course combination, get the quiz with most answered questions
+        recent_quizzes = []
+        for profession, course in prof_courses:
+            quiz = db.session.query(
+                Quiz
+            ).join(
+                Question, Quiz.id == Question.quiz_id
+            ).filter(
+                Quiz.is_published == True,
+                Quiz.is_deleted == False,
+                Quiz.profession == profession,
+                Quiz.course == course
+            ).group_by(
+                Quiz.id
+            ).order_by(
+                func.sum(Question.times_answered).desc(),
+                Quiz.created_at.desc()
+            ).first()
+
+            if quiz:  # Only add if a quiz was found
+                recent_quizzes.append(quiz)
+
+        # Limit to 6 quizzes if there are more combinations
+        recent_quizzes = recent_quizzes[:6]
+
         user_stats = None
         recent_achievements = None
 

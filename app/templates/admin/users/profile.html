@@ -1,0 +1,175 @@
+<!-- templates/admin/users/profile.html -->
+{% extends "base.html" %}
+
+{% block title %}User Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- User Info Card -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image }}" class="rounded-circle"
+                                 style="width: 150px; height: 150px;">
+                        {% else %}
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto"
+                                 style="width: 150px; height: 150px; font-size: 64px;">
+                                {{ user.username[0]|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <h4>{{ user.username }}</h4>
+                    <p class="text-muted">{{ user.profession|title }}</p>
+
+                    {% if user.is_admin %}
+                        <span class="badge badge-info">Admin</span>
+                    {% endif %}
+                    <span class="badge badge-{{ 'success' if user.is_active else 'danger' }}">
+                        {{ 'Active' if user.is_active else 'Inactive' }}
+                    </span>
+
+                    <hr>
+
+                    <dl class="row text-left">
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">{{ user.email }}</dd>
+
+                        <dt class="col-sm-4">Joined</dt>
+                        <dd class="col-sm-8">{{ user.created_at.strftime('%Y-%m-%d') }}</dd>
+
+                        <dt class="col-sm-4">Last Active</dt>
+                        <dd class="col-sm-8">
+                            {% if user.last_login %}
+                                {{ user.last_login.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </dd>
+
+                        {% if user.specialization %}
+                            <dt class="col-sm-4">Specialization</dt>
+                            <dd class="col-sm-8">{{ user.specialization }}</dd>
+                        {% endif %}
+
+                        {% if user.experience_years %}
+                            <dt class="col-sm-4">Experience</dt>
+                            <dd class="col-sm-8">{{ user.experience_years }} years</dd>
+                        {% endif %}
+
+                        {% if user.institution %}
+                            <dt class="col-sm-4">Institution</dt>
+                            <dd class="col-sm-8">{{ user.institution }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('admin.edit_user', user_id=user.id) }}"
+                       class="btn btn-primary btn-block">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity and Stats -->
+        <div class="col-md-8">
+            <!-- Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">{{ stats.total_quizzes }}</h3>
+                            <p class="mb-0">Quizzes Taken</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">{{ "%.1f"|format(stats.avg_score) }}%</h3>
+                            <p class="mb-0">Average Score</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">{{ stats.achievements }}</h3>
+                            <p class="mb-0">Achievements</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Quiz Results</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_results %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Quiz</th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in recent_results %}
+                                    <tr>
+                                        <td>{{ result.quiz.title }}</td>
+                                        <td>
+                                            <span class="badge badge-{{ 'success' if result.score >= result.quiz.passing_score else 'danger' }}">
+                                                {{ "%.1f"|format(result.score) }}%
+                                            </span>
+                                        </td>
+                                        <td>{{ result.completed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No quiz results yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Achievements -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Achievements</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_achievements %}
+                        <div class="achievement-list">
+                            {% for achievement in recent_achievements %}
+                            <div class="achievement-item d-flex align-items-center mb-3">
+                                <div class="achievement-icon mr-3">
+                                    <i class="fas fa-trophy text-warning fa-2x"></i>
+                                </div>
+                                <div class="achievement-details">
+                                    <h6 class="mb-1">{{ achievement.achievement_type|title|replace('_', ' ') }}</h6>
+                                    <small class="text-muted">
+                                        {{ achievement.earned_at.strftime('%B %d, %Y') }}
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No achievements yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

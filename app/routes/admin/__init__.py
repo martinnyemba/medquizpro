@@ -252,6 +252,7 @@ def edit_questions(quiz_id):
                            questions=questions,
                            stats=stats)
 
+
 @admin_bp.route('/question/<int:question_id>', methods=['DELETE'])
 @login_required
 @admin_required
@@ -410,6 +411,7 @@ def update_question(question_id):
             'message': 'An error occurred while updating the question'
         }), 500
 
+
 @admin_bp.route('/quiz/<int:quiz_id>/publish', methods=['POST'])
 @login_required
 @admin_required
@@ -495,19 +497,27 @@ def duplicate_quiz(quiz_id):
     return redirect(url_for('admin.edit_questions', quiz_id=new_quiz.id))
 
 
+# Admin User Management
+from app.models import User, QuizResult, UserAchievement
+from app.forms import AdminUserCreateForm, AdminUserEditForm
+
+
 @admin_bp.route('/users')
 @login_required
 @admin_required
-def user_management():
+def list_users():
     page = request.args.get('page', 1, type=int)
-    query = User.query
+    per_page = current_app.config['USERS_PER_PAGE']
 
-    # Apply filters
+    # Filter parameters
     role = request.args.get('role')
     profession = request.args.get('profession')
     status = request.args.get('status')
     search = request.args.get('search')
 
+    query = User.query
+
+    # Apply filters
     if role:
         query = query.filter_by(is_admin=(role == 'admin'))
     if profession:
@@ -520,10 +530,193 @@ def user_management():
             (User.email.ilike(f'%{search}%'))
         )
 
-    users = query.order_by(User.created_at.desc()).paginate(
-        page=page, per_page=current_app.config['USERS_PER_PAGE'])
+    # Get statistics
+    total_users = User.query.count()
+    active_users = User.query.filter_by(is_active=True).count()
+    new_users_today = User.query.filter(
+        User.created_at >= datetime.utcnow().date()
+    ).count()
 
-    return render_template('admin/users.html', users=users)
+    users = query.order_by(User.created_at.desc()).paginate(page=page, per_page=per_page)
+
+    return render_template('admin/users/list.html',
+                           users=users,
+                           stats={
+                               'total': total_users,
+                               'active': active_users,
+                               'new_today': new_users_today
+                           })
+
+
+@admin_bp.route('/users/create', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def create_user():
+    form = AdminUserCreateForm()
+
+    if form.validate_on_submit():
+        user = User(
+            username=form.username.data,
+            email=form.email.data,
+            profession=form.profession.data,
+            is_admin=form.is_admin.data,
+            is_active=True,
+            specialization=form.specialization.data,
+            experience_years=form.experience_years.data,
+            institution=form.institution.data
+        )
+        user.set_password(form.password.data)
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('User created successfully!', 'success')
+        return redirect(url_for('admin.list_users'))
+
+    return render_template('admin/users/create.html', form=form)
+
+
+@admin_bp.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = AdminUserEditForm(user.username, obj=user)
+
+    if form.validate_on_submit():
+        user.username = form.username.data
+        user.email = form.email.data
+        user.profession = form.profession.data
+        user.is_admin = form.is_admin.data
+        user.is_active = form.is_active.data
+        user.specialization = form.specialization.data
+        user.experience_years = form.experience_years.data
+        user.institution = form.institution.data
+
+        if form.new_password.data:
+            user.set_password(form.new_password.data)
+
+        # Log the changes
+        changes = []
+        if user.username != form.username.data:
+            changes.append(f"Username changed from {user.username} to {form.username.data}")
+
+        db.session.commit()
+
+        if changes:
+            flash(f"User updated: {', '.join(changes)}", 'info')
+        else:
+            flash('User updated successfully!', 'success')
+
+        return redirect(url_for('admin_user.list_users'))
+
+    return render_template('admin/users/edit.html', form=form, user=user)
+
+
+@admin_bp.route('/users/<int:user_id>/toggle-status', methods=['POST'])
+@login_required
+@admin_required
+def toggle_user_status(user_id):
+    user = User.query.get_or_404(user_id)
+
+    if user.id == current_user.id:
+        return jsonify({'success': False, 'message': 'Cannot deactivate your own account'}), 400
+
+    user.is_active = not user.is_active
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'new_status': 'active' if user.is_active else 'inactive'
+    })
+
+
+@admin_bp.route('/users/<int:user_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+
+    if user.id == current_user.id:
+        return jsonify({'success': False, 'message': 'Cannot delete your own account'}), 400
+
+    # Soft delete user and related data
+    user.is_deleted = True
+    user.deleted_at = datetime.utcnow()
+    db.session.commit()
+
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/users/<int:user_id>/profile')
+@login_required
+@admin_required
+def user_profile(user_id):
+    user = User.query.get_or_404(user_id)
+
+    # Get user statistics
+    stats = {
+        'total_quizzes': QuizResult.query.filter_by(user_id=user.id).count(),
+        'avg_score': db.session.query(func.avg(QuizResult.score)) \
+                         .filter_by(user_id=user.id).scalar() or 0,
+        'achievements': UserAchievement.query.filter_by(user_id=user.id).count(),
+        'last_active': user.last_login or user.created_at
+    }
+
+    # Get recent activity
+    recent_results = QuizResult.query.filter_by(user_id=user.id) \
+        .order_by(QuizResult.completed_at.desc()).limit(5).all()
+
+    recent_achievements = UserAchievement.query.filter_by(user_id=user.id) \
+        .order_by(UserAchievement.earned_at.desc()).limit(5).all()
+
+    return render_template('admin/users/profile.html',
+                           user=user,
+                           stats=stats,
+                           recent_results=recent_results,
+                           recent_achievements=recent_achievements)
+
+
+def send_file(param, mimetype, as_attachment, attachment_filename):
+    pass
+
+
+@admin_bp.route('/users/export')
+@login_required
+@admin_required
+def export_users():
+    from io import StringIO
+    import csv
+
+    # Create CSV data
+    output = StringIO()
+    writer = csv.writer(output)
+
+    # Write headers
+    writer.writerow(['Username', 'Email', 'Profession', 'Institution',
+                     'Created At', 'Last Login', 'Status'])
+
+    # Write user data
+    users = User.query.order_by(User.created_at.desc()).all()
+    for user in users:
+        writer.writerow([
+            user.username,
+            user.email,
+            user.profession,
+            user.institution,
+            user.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'Never',
+            'Active' if user.is_active else 'Inactive'
+        ])
+
+    # Prepare response
+    output.seek(0)
+    return send_file(
+        StringIO(output.getvalue()),
+        mimetype='text/csv',
+        as_attachment=True,
+        attachment_filename=f'users_export_{datetime.now().strftime("%Y%m%d")}.csv'
+    )
 
 
 @admin_bp.route('/settings')

@@ -1,0 +1,302 @@
+<!-- templates/admin/users/edit.html -->
+{% extends "base.html" %}
+
+{% block title %}Edit User - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="fas fa-user-edit"></i> Edit User</h4>
+                    <span class="badge badge-light">{{ user.username }}</span>
+                </div>
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <!-- Email and username-->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Basic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.username.label }}
+                                            {{ form.username(class="form-control") }}
+                                            {% for error in form.username.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                            <small class="form-text text-muted">
+                                                Username can only contain letters, numbers, and dots.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.email.label }}
+                                            {{ form.email(class="form-control") }}
+                                            {% for error in form.email.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Password Change Section -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Change Password</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.new_password.label }}
+                                            <div class="input-group">
+                                                {{ form.new_password(class="form-control") }}
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            onclick="togglePassword('new_password')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            {% for error in form.new_password.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.confirm_password.label }}
+                                            <div class="input-group">
+                                                {{ form.confirm_password(class="form-control") }}
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                            onclick="togglePassword('confirm_password')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            {% for error in form.confirm_password.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Information -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Professional Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.profession.label }}
+                                            {{ form.profession(class="form-control") }}
+                                            {% for error in form.profession.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.specialization.label }}
+                                            {{ form.specialization(class="form-control") }}
+                                            {% for error in form.specialization.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.experience_years.label }}
+                                            {{ form.experience_years(class="form-control") }}
+                                            {% for error in form.experience_years.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.institution.label }}
+                                            {{ form.institution(class="form-control") }}
+                                            {% for error in form.institution.errors %}
+                                                <span class="text-danger">{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Settings -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Account Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="custom-control custom-switch mb-3">
+                                    {{ form.is_active(class="custom-control-input") }}
+                                    {{ form.is_active.label(class="custom-control-label") }}
+                                    <small class="form-text text-muted">
+                                        Enable/disable user account access
+                                    </small>
+                                </div>
+
+                                <div class="custom-control custom-switch">
+                                    {{ form.is_admin(class="custom-control-input") }}
+                                    {{ form.is_admin.label(class="custom-control-label") }}
+                                    <small class="form-text text-muted">
+                                        Grant administrative privileges
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{{ url_for('admin.list_users') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to List
+                                </a>
+                                <a href="{{ url_for('admin.user_profile', user_id=user.id) }}"
+                                   class="btn btn-info">
+                                    <i class="fas fa-user"></i> View Profile
+                                </a>
+                            </div>
+                            <div>
+                                {% if user.id != current_user.id %}
+                                <button type="button" class="btn btn-warning" onclick="toggleStatus()">
+                                    <i class="fas fa-ban"></i>
+                                    {{ 'Deactivate' if user.is_active else 'Activate' }} Account
+                                </button>
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- User Activity Log -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity Log</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in user_logs %}
+                                <tr>
+                                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ log.action }}</td>
+                                    <td>{{ log.details }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const button = field.nextElementSibling.querySelector('i');
+
+    if (field.type === 'password') {
+        field.type = 'text';
+        button.classList.remove('fa-eye');
+        button.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        button.classList.remove('fa-eye-slash');
+        button.classList.add('fa-eye');
+    }
+}
+
+function toggleStatus() {
+    if (confirm('Are you sure you want to {{ "deactivate" if user.is_active else "activate" }} this account?')) {
+        fetch(`/admin/users/{{ user.id }}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'Error updating account status');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating account status');
+        });
+    }
+}
+
+// Password strength validation
+document.getElementById('new_password').addEventListener('input', function(e) {
+    const password = e.target.value;
+    if (password) {
+        const hasLetter = /[A-Za-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasSpecial = /[@$!%*#?&]/.test(password);
+        const isLongEnough = password.length >= 8;
+
+        const requirements = document.getElementById('password-requirements');
+        if (requirements) {
+            requirements.innerHTML = `
+                <div class="mt-2">
+                    <small class="d-block ${hasLetter ? 'text-success' : 'text-danger'}">
+                        <i class="fas fa-${hasLetter ? 'check' : 'times'}"></i> Contains letters
+                    </small>
+                    <small class="d-block ${hasNumber ? 'text-success' : 'text-danger'}">
+                        <i class="fas fa-${hasNumber ? 'check' : 'times'}"></i> Contains numbers
+                    </small>
+                    <small class="d-block ${hasSpecial ? 'text-success' : 'text-danger'}">
+                        <i class="fas fa-${hasSpecial ? 'check' : 'times'}"></i> Contains special characters
+                    </small>
+                    <small class="d-block ${isLongEnough ? 'text-success' : 'text-danger'}">
+                        <i class="fas fa-${isLongEnough ? 'check' : 'times'}"></i> At least 8 characters
+                    </small>
+                </div>
+            `;
+        }
+    }
+});
+</script>
+{% endblock %}

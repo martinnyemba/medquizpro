@@ -6,6 +6,9 @@ Medical quiz and assessment platform designed specifically for healthcare profes
 featuring role-based learning paths, real-time analytics, and comprehensive progress tracking.
 
 ## 🚀 **Project Overview**
+---
+The app can be found at 🚀 **https://creativedigitalzambia.tech**
+--
 
 **MedQuizPro** is an interactive and comprehensive medical education platform designed to help healthcare professionals enhance their knowledge through specialized quizzes. The platform supports role-based learning paths, automated scoring, and progress tracking, ensuring a tailored educational experience for different medical disciplines.
 

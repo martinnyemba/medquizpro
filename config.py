@@ -82,7 +82,7 @@ class TestingConfig(Config):
     Testing configuration class.
     """
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/medical_quiz_test'
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'  # Use in-memory database
     WTF_CSRF_ENABLED = False
 
 

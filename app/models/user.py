@@ -170,6 +170,7 @@ class User(UserMixin, TimestampMixin, SoftDeleteMixin, db.Model):
 
     @property
     def performance_stats(self):
+        """Get performance statistics for the user"""
         results = self.quiz_results.filter_by(is_deleted=False).all()
         if not results:
             return {

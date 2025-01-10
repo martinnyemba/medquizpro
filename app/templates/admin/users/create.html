@@ -14,6 +14,26 @@
                 <div class="card-body">
                     <form method="POST" novalidate>
                         {{ form.hidden_tag() }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.firstname.label }}
+                                    {{ form.firstname(class="form-control") }}
+                                    {% for error in form.firstname.errors %}
+                                        <span class="text-danger">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.lastname.label }}
+                                    {{ form.lastname(class="form-control") }}
+                                    {% for error in form.lastname.errors %}
+                                        <span class="text-danger">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row">
                             <div class="col-md-6">

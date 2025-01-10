@@ -168,6 +168,26 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="form-floating">
+                                            {{ form.firstname(class="form-control" ~ (' is-invalid' if form.firstname.errors else ''),
+                                               placeholder="First Name", id="firstname") }}
+                                            {{ form.firstname.label(for="firstname") }}
+                                            {% for error in form.firstname.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            {{ form.lastname(class="form-control" ~ (' is-invalid' if form.lastname.errors else ''),
+                                               placeholder="Last Name", id="lastname") }}
+                                            {{ form.lastname.label(for="profession") }}
+                                            {% for error in form.lastname.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
                                             {{ form.email(class="form-control" ~ (' is-invalid' if form.email.errors else ''),
                                                placeholder="Email", id="email") }}
                                             {{ form.email.label(for="email") }}

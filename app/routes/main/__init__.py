@@ -117,3 +117,6 @@ def contact():
         flash('Your message has been sent. We will get back to you soon!', 'success')
         return redirect(url_for('main.contact'))
     return render_template('main/contact.html', form=form)
+
+if __name__ == '__main__':
+    print

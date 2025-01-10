@@ -21,6 +21,12 @@ admin_bp = Blueprint('admin', __name__)
 @login_required
 @admin_required
 def dashboard():
+    """
+    Render the admin dashboard with various statistics and charts.
+
+    Returns:
+        Rendered HTML template for the admin dashboard.
+    """
     stats = {
         'total_users': User.query.count(),
         'new_users_today': User.query.filter(
@@ -56,6 +62,12 @@ def dashboard():
 @login_required
 @admin_required
 def quiz_management():
+    """
+    Render the quiz management page with filtering and pagination.
+
+    Returns:
+        Rendered HTML template for quiz management.
+    """
     page = request.args.get('page', 1, type=int)
     query = Quiz.query
 
@@ -90,6 +102,15 @@ def quiz_management():
 @login_required
 @admin_required
 def toggle_publish_quiz(quiz_id):
+    """
+    Toggle the publish status of a quiz.
+
+    Args:
+        quiz_id (int): The ID of the quiz to toggle.
+
+    Returns:
+        JSON response indicating success.
+    """
     quiz = Quiz.query.get_or_404(quiz_id)
     quiz.is_published = not quiz.is_published
     db.session.commit()
@@ -100,7 +121,15 @@ def toggle_publish_quiz(quiz_id):
 @login_required
 @admin_required
 def delete_quiz(quiz_id):
-    """Hard delete a quiz"""
+    """
+    Hard delete a quiz.
+
+    Args:
+        quiz_id (int): The ID of the quiz to delete.
+
+    Returns:
+        JSON response indicating success.
+    """
     quiz = Quiz.query.get_or_404(quiz_id)
     db.session.delete(quiz)
     db.session.commit()
@@ -111,6 +140,16 @@ def delete_quiz(quiz_id):
 @login_required
 @admin_required
 def create_quiz():
+    """
+    Handle the creation of a new quiz.
+
+    This function renders the quiz creation form and processes the form submission.
+    If the form is valid, it creates a new quiz in the database and redirects the user
+    to the edit questions page for the newly created quiz.
+
+    Returns:
+        Rendered HTML template for quiz creation or a redirect to the edit questions page.
+    """
     form = QuizForm()
 
     if form.validate_on_submit():
@@ -140,6 +179,15 @@ def create_quiz():
 @login_required
 @admin_required
 def edit_questions(quiz_id):
+    """
+    Handle the editing of questions for a specific quiz.
+
+    Args:
+        quiz_id (int): The ID of the quiz to edit questions for.
+
+    Returns:
+        Rendered HTML template for editing questions or a redirect to the same page upon form submission.
+    """
     quiz = Quiz.query.get_or_404(quiz_id)
     form = QuestionForm()
 
@@ -258,6 +306,27 @@ def edit_questions(quiz_id):
 @login_required
 @admin_required
 def delete_question(question_id):
+    """
+    Delete a question from the database.
+
+    Args:
+        question_id (int): The ID of the question to delete.
+
+    Returns:
+        JSON response indicating success.
+    """
+    question = Question.query.get_or_404(question_id)
+    quiz_id = question.quiz_id
+
+    if question.image_url:
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], question.image_url)
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+    db.session.delete(question)
+    db.session.commit()
+
+    return jsonify({'success': True})
     question = Question.query.get_or_404(question_id)
     quiz_id = question.quiz_id
 
@@ -276,7 +345,15 @@ def delete_question(question_id):
 @login_required
 @admin_required
 def get_question(question_id):
-    """Get question data for editing"""
+    """
+    Retrieve a specific question by its ID.
+
+    Args:
+        question_id (int): The ID of the question to retrieve.
+
+    Returns:
+        JSON response containing the question details, including content, type, difficulty level, points, explanation, image URL, options, and the correct answer.
+    """
     question = Question.query.get_or_404(question_id)
 
     # Get all options and identify which one is correct based on correct_answer field
@@ -313,7 +390,19 @@ def get_question(question_id):
 @login_required
 @admin_required
 def update_question(question_id):
-    """Update an existing Question"""
+    """
+    Update an existing Question.
+
+    This function handles the update of an existing question in the database.
+    It validates the form submission, updates the question and its options,
+    handles image uploads, and logs changes for audit purposes.
+
+    Args:
+        question_id (int): The ID of the question to update.
+
+    Returns:
+        JSON response indicating success or failure.
+    """
     question = Question.query.get_or_404(question_id)
     form = QuestionForm()
 
@@ -417,6 +506,15 @@ def update_question(question_id):
 @login_required
 @admin_required
 def publish_quiz(quiz_id):
+    """
+    Publish a quiz if it has at least one question.
+
+    Args:
+        quiz_id (int): The ID of the quiz to publish.
+
+    Returns:
+        JSON response indicating success or failure.
+    """
     quiz = Quiz.query.get_or_404(quiz_id)
 
     if quiz.questions.count() < 1:

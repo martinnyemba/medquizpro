@@ -19,7 +19,7 @@ class QuestionSubmission(db.Model):
     content = db.Column(db.Text, nullable=False)
     question_type = db.Column(db.String(20), default='multiple_choice')
     difficulty_level = db.Column(db.String(20), nullable=False)
-    options = db.Column(JSON, nullable=False)  # List of option content
+    options = db.Column(db.JSON, nullable=False)  # List of option content
     correct_option_content = db.Column(db.String(500), nullable=False)
     explanation = db.Column(db.Text)
     reference = db.Column(db.String(500))

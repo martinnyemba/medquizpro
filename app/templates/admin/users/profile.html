@@ -126,11 +126,19 @@
                                     <tr>
                                         <td>{{ result.quiz.title }}</td>
                                         <td>
-                                            <span class="badge badge-{{ 'success' if result.score >= result.quiz.passing_score else 'danger' }}">
-                                                {{ "%.1f"|format(result.score) }}%
+                                            {% set quiz_score = result.score if result.score is not none else 0 %}
+                                            {% set passing_score = result.quiz.passing_score if result.quiz.passing_score is not none else 70 %}
+                                            <span class="badge bg-{{ 'success' if quiz_score >= passing_score else 'danger' }}">
+                                                {{ "%.1f"|format(quiz_score) }}%
                                             </span>
                                         </td>
-                                        <td>{{ result.completed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            {% if result.completed_at %}
+                                                {{ result.completed_at.strftime('%Y-%m-%d %H:%M') }}
+                                            {% else %}
+                                                Pending Completion
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

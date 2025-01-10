@@ -3,6 +3,7 @@ import os
 
 from flask import Blueprint, render_template, request, jsonify, current_app, flash, redirect, url_for
 from flask_login import login_required, current_user
+from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.utils import secure_filename
 
 from app.forms import QuestionForm, QuizForm
@@ -556,6 +557,8 @@ def create_user():
 
     if form.validate_on_submit():
         user = User(
+            first_name=form.firstname.data,
+            last_name=form.lastname.data,
             username=form.username.data,
             email=form.email.data,
             profession=form.profession.data,
@@ -581,36 +584,93 @@ def create_user():
 @admin_required
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
-    form = AdminUserEditForm(user.username, obj=user)
 
-    if form.validate_on_submit():
-        user.username = form.username.data
-        user.email = form.email.data
-        user.profession = form.profession.data
-        user.is_admin = form.is_admin.data
-        user.is_active = form.is_active.data
-        user.specialization = form.specialization.data
-        user.experience_years = form.experience_years.data
-        user.institution = form.institution.data
+    # Initialize form with existing user data
+    if request.method == 'GET':
+        form = AdminUserEditForm(user.username)
+        form.firstname.data = user.first_name
+        form.lastname.data = user.last_name
+        form.username.data = user.username
+        form.email.data = user.email
+        form.profession.data = user.profession
+        form.is_admin.data = user.is_admin
+        form.is_active.data = user.is_active
+        form.specialization.data = user.specialization
+        form.experience_years.data = user.experience_years
+        form.institution.data = user.institution
+    else:
+        form = AdminUserEditForm(user.username, obj=user)
 
-        if form.new_password.data:
-            user.set_password(form.new_password.data)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                # Track changes for logging
+                changes = []
 
-        # Log the changes
-        changes = []
-        if user.username != form.username.data:
-            changes.append(f"Username changed from {user.username} to {form.username.data}")
+                # Basic info changes
+                field_mappings = {
+                    'username': ('Username', form.username.data),
+                    'first_name': ('First Name', form.firstname.data),
+                    'last_name': ('Last Name', form.lastname.data),
+                    'email': ('Email', form.email.data),
+                    'profession': ('Profession', form.profession.data),
+                    'is_admin': ('Admin Status', form.is_admin.data),
+                    'is_active': ('Active Status', form.is_active.data),
+                    'specialization': ('Specialization', form.specialization.data),
+                    'experience_years': ('Experience Years', form.experience_years.data),
+                    'institution': ('Institution', form.institution.data)
+                }
 
-        db.session.commit()
+                # Track and apply changes
+                for field, (display_name, new_value) in field_mappings.items():
+                    old_value = getattr(user, field)
+                    if old_value != new_value:
+                        changes.append(f"{display_name} changed from '{old_value}' to '{new_value}'")
+                        setattr(user, field, new_value)
 
-        if changes:
-            flash(f"User updated: {', '.join(changes)}", 'info')
+                # Handle password change separately
+                if form.new_password.data:
+                    user.set_password(form.new_password.data)
+                    changes.append("Password was updated")
+
+                # Commit changes
+                db.session.commit()
+
+                # Flash appropriate message
+                if changes:
+                    flash('User updated successfully', 'info')
+                else:
+                    flash('No changes were made to the user.', 'info')
+
+                return redirect(url_for('admin.list_users'))
+
+            except SQLAlchemyError as e:
+                db.session.rollback()
+                flash(f'Database error occurred: {str(e)}', 'danger')
+                return render_template('admin/users/edit.html', form=form, user=user)
+
+            except Exception as e:
+                db.session.rollback()
+                flash(f'An unexpected error occurred: {str(e)}', 'danger')
+                current_app.logger.error(f'Error updating user {user_id}: {str(e)}')
+                return render_template('admin/users/edit.html', form=form, user=user)
+
         else:
-            flash('User updated successfully!', 'success')
+            # Form validation failed
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{getattr(form, field).label.text}: {error}', 'danger')
 
-        return redirect(url_for('admin_user.list_users'))
-
-    return render_template('admin/users/edit.html', form=form, user=user)
+    # GET request or form validation failed
+    try:
+        return render_template('admin/users/edit.html',
+                               form=form,
+                               user=user,
+                               title=f"Edit User: {user.username}")
+    except Exception as e:
+        flash(f'Error loading user edit page: {str(e)}', 'danger')
+        current_app.logger.error(f'Error loading edit page for user {user_id}: {str(e)}')
+        return redirect(url_for('admin.list_users'))
 
 
 @admin_bp.route('/users/<int:user_id>/toggle-status', methods=['POST'])

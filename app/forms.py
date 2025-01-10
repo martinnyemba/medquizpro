@@ -98,14 +98,18 @@ class QuizForm(FlaskForm):
         ('anatomy', 'Anatomy'),
         ('pharmacology', 'Pharmacology'),
         ('medicine', 'Medicine'),
+        ('microbiology', 'Microbiology'),
         ('surgery', 'Surgery'),
         ('pediatrics', 'Pediatrics'),
         ('obstetrics', 'Obstetrics & Gynecology'),
         ('emergency_medicine', 'Emergency Medicine'),
+        ('hiv_aids_medicine', 'HIV/AIDS Medicine'),
         ('psychiatry', 'Psychiatry'),
         ('radiology', 'Radiology'),
+        ('neonatology', 'Neonatology'),
         ('pathology', 'Pathology'),
-        ('preventive_medicine', 'Preventive Medicine')
+        ('preventive_medicine', 'Preventive Medicine'),
+        ('leadership_and_management', 'Leadership & Management')
     ], validators=[DataRequired(message="Please select a Course Type")]
                          )
     profession = SelectField('Target Profession', choices=[
@@ -320,6 +324,11 @@ class QuestionForm(FlaskForm):
 
 
 class ProfileForm(FlaskForm):
+    firstname = StringField(
+        label='First Name', validators=[DataRequired()]
+    )
+    lastname = StringField(
+        label='Last Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     current_password = PasswordField('Current Password')
     new_password = PasswordField('New Password', validators=[Optional(), Length(min=8)])
@@ -443,14 +452,18 @@ class QuestionSubmissionForm(FlaskForm):
             ('anatomy', 'Anatomy'),
             ('pharmacology', 'Pharmacology'),
             ('medicine', 'Medicine'),
+            ('microbiology', 'Microbiology'),
             ('surgery', 'Surgery'),
             ('pediatrics', 'Pediatrics'),
             ('obstetrics', 'Obstetrics & Gynecology'),
             ('emergency_medicine', 'Emergency Medicine'),
+            ('hiv_aids_medicine', 'HIV/AIDS Medicine'),
             ('psychiatry', 'Psychiatry'),
             ('radiology', 'Radiology'),
+            ('neonatology', 'Neonatology'),
             ('pathology', 'Pathology'),
-            ('preventive_medicine', 'Preventive Medicine')
+            ('preventive_medicine', 'Preventive Medicine'),
+            ('leadership_and_management', 'Leadership & Management')
         ],
         validators=[DataRequired(message="Please select a course")]
     )
@@ -576,6 +589,14 @@ class ReportReviewForm:
 
 # Admin user management forms
 class AdminUserCreateForm(FlaskForm):
+    firstname = StringField(
+        label='First Name',
+        validators=[DataRequired()]
+    )
+    lastname = StringField(
+        label='Last Name',
+        validators=[DataRequired()]
+    )
     username = StringField('Username', validators=[
         DataRequired(),
         Length(min=4, max=25),
@@ -628,6 +649,12 @@ class AdminUserCreateForm(FlaskForm):
 
 
 class AdminUserEditForm(FlaskForm):
+    firstname = StringField(
+        label='First Name',
+        validators=[DataRequired(), Length(min=2, max=64)])
+    lastname = StringField(
+        label='Last Name',
+        validators=[DataRequired(), Length(min=2, max=64)])
     username = StringField('Username', validators=[
         DataRequired(),
         Length(min=4, max=25),

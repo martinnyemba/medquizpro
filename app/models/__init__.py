@@ -6,7 +6,6 @@ from .question import Question, QuestionTag, QuestionOption
 from .result import QuizResult
 from .study_group import StudyGroup
 from .report import Report
-from .user_session import UserSession
 
 
 # Event listeners

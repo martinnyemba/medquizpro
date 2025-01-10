@@ -19,7 +19,9 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'secure-and-strong-hard-to-guess-string'
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
-    # Database Configuration
+    # CSRF Configuration
+    WTF_CSRF_ENABLED = True
+
     # Database configuration
     HEROKU_POSTGRESQL_WHITE_URL = os.environ.get('DATABASE_URL')
     if HEROKU_POSTGRESQL_WHITE_URL and HEROKU_POSTGRESQL_WHITE_URL.startswith("postgres://"):
@@ -59,6 +61,10 @@ class Config:
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
     UPLOAD_FOLDER = os.path.join(BASEDIR, 'app/static/uploads')
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+    # Create uploads directory if it doesn't exist
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
     # Security Configuration
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT', 'secure-salt')

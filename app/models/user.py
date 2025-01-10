@@ -11,7 +11,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login
 from app.models.base import TimestampMixin, SoftDeleteMixin
-from app.models.user_session import UserSession
 
 
 class UserAchievement(db.Model):
@@ -26,12 +25,12 @@ class UserAchievement(db.Model):
 
 
 class User(UserMixin, TimestampMixin, SoftDeleteMixin, db.Model):
-    """User model with profile and session management features"""
+    """User model with profile management features"""
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
+    first_name = db.Column(db.String(64), nullable=False)
+    last_name = db.Column(db.String(64), nullable=False)
     username = db.Column(db.String(120), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
@@ -39,7 +38,7 @@ class User(UserMixin, TimestampMixin, SoftDeleteMixin, db.Model):
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
     last_login = db.Column(db.DateTime)
-    last_ip_address = db.Column(db.String(45))  # Added for session tracking
+    last_ip_address = db.Column(db.String(45))
     profile_image = db.Column(db.String(256))
     specialization = db.Column(db.String(100))
     experience_years = db.Column(db.Integer)
@@ -49,82 +48,27 @@ class User(UserMixin, TimestampMixin, SoftDeleteMixin, db.Model):
     # Relationships
     quiz_results = db.relationship('QuizResult', backref='user', lazy='dynamic')
     created_quizzes = db.relationship('Quiz', backref='creator', lazy='dynamic',
-                                      foreign_keys='Quiz.created_by_id')
+                                    foreign_keys='Quiz.created_by_id')
     achievements = db.relationship('UserAchievement', backref='user', lazy='dynamic')
     study_groups = db.relationship('StudyGroup', secondary='user_study_groups',
-                                   backref=db.backref('members', lazy='dynamic'))
+                                 backref=db.backref('members', lazy='dynamic'))
 
-    # Regular sessions relationship
-    sessions = db.relationship(
-        'UserSession',
-        backref=db.backref('user', lazy='joined'),
-        lazy='dynamic',
-        cascade='all, delete-orphan'
-    )
+    def verify_update(self):
+        """Verify that changes have been persisted to the database"""
+        db.session.refresh(self)
+        return True
 
-    # Active sessions relationship with overlaps
-    active_sessions = db.relationship(
-        'UserSession',
-        primaryjoin='and_(User.id == UserSession.user_id, '
-                    'UserSession.is_deleted == False, '
-                    'UserSession.is_revoked == False, '
-                    'UserSession.expires_at > func.now())',
-        backref=db.backref('active_user', lazy='joined'),
-        lazy='dynamic',
-        overlaps="sessions,user"
-    )
+    def get_id(self):
+        """Return the user id as a string"""
+        return str(self.id)
 
-    def create_session(self, device_info=None, ip_address=None):
-        """
-        Create a new session for the user.
-
-        Args:
-            device_info (dict): Information about the device
-            ip_address (str): IP address of the client
-
-        Returns:
-            UserSession: The newly created session
-        """
-        from app.models.user_session import UserSession  # Import here to avoid circular import
-
-        session = UserSession(
-            user_id=self.id,
-            device_info=device_info,
-            ip_address=ip_address
-        )
-        self.last_ip_address = ip_address
+    def update_last_login(self, ip_address=None):
+        """Update last login time and IP address"""
         self.last_login = datetime.utcnow()
-
-        db.session.add(session)
+        if ip_address:
+            self.last_ip_address = ip_address
         db.session.commit()
-        return session
 
-    def revoke_all_sessions(self, except_session_id=None):
-        """
-        Revoke all active sessions for the user.
-
-        Args:
-            except_session_id (int): Optional session ID to keep active
-
-        Returns:
-            int: Number of sessions revoked
-        """
-        query = self.active_sessions
-        if except_session_id is not None:
-            query = query.filter(UserSession.id != except_session_id)
-
-        sessions = query.all()
-        for session in sessions:
-            session.revoke()
-
-        return len(sessions)
-
-    @hybrid_property
-    def has_active_session(self):
-        """Check if user has any active sessions."""
-        return self.active_sessions.count() > 0
-
-    # Existing methods remain unchanged
     @validates('email')
     def validate_email(self, key, value):
         if not value or '@' not in value:
@@ -152,7 +96,7 @@ class User(UserMixin, TimestampMixin, SoftDeleteMixin, db.Model):
     def verify_reset_password_token(token):
         try:
             id = jwt.decode(token, current_app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
+                          algorithms=['HS256'])['reset_password']
         except:
             return None
         return User.query.get(id)
@@ -200,34 +144,13 @@ class User(UserMixin, TimestampMixin, SoftDeleteMixin, db.Model):
         }
 
 
-# Update the user loader to handle both User and UserSession
 @login.user_loader
-def load_user(id_str):
-    """
-    Enhanced user loader callback for Flask-Login.
-    Handles both User and UserSession IDs.
-
-    Args:
-        id_str (str): The ID string, which could be either a user ID
-                     or a session ID prefixed with 's_'
-
-    Returns:
-        Union[User, UserSession]: The user or session object, or None if not found
-    """
+def load_user(user_id):
+    """User loader function with legacy session ID handling"""
     try:
-        if isinstance(id_str, str) and id_str.startswith('s_'):
-            from app.models.user_session import UserSession
-            session_id = int(id_str[2:])
-            session = UserSession.query.filter_by(
-                id=session_id,
-                is_revoked=False,
-                is_deleted=False
-            ).filter(UserSession.expires_at > datetime.utcnow()).first()
-
-            if session:
-                session.update_last_accessed()
-                return session
-
-        return User.query.get(int(id_str))
+        # legacy session IDs that start with 's_'
+        if isinstance(user_id, str) and user_id.startswith('s_'):
+            user_id = user_id[2:]
+        return User.query.get(int(user_id))
     except (ValueError, AttributeError):
         return None

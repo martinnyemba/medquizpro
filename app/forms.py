@@ -319,8 +319,19 @@ class QuestionForm(FlaskForm):
         # Filter out empty options for true/false questions
         options = [opt for opt in options if opt]
 
+        # Instead of raising ValidationError, return False
         if len(set(options)) != len(options):
-            raise ValidationError('All options must be unique')
+            self.option1.errors.append('All options must be unique')
+            return False
+        return True
+
+    def validate(self):
+        """Override validate method to include options validation"""
+        if not super().validate():
+            return False
+        if not self.validate_options():
+            return False
+        return True
 
 
 class ProfileForm(FlaskForm):
@@ -356,7 +367,18 @@ class ProfileForm(FlaskForm):
         ('environmental_technologist', 'Environmental Health Technologist')
     ])
     specialization = StringField('Specialization')
-    experience_years = IntegerField('Years of Experience', validators=[Optional(), NumberRange(min=0, max=50)])
+    experience_years = IntegerField('Years of Experience',
+                                    validators=[
+                                        Optional(),
+                                        NumberRange(min=0, max=50, message='Experience years must be between 0 and 50')
+                                    ])
+
+    def validate_experience_years(self, field):
+        """Additional validation for experience years"""
+        if field.data is not None:
+            if not isinstance(field.data, int) or field.data < 0 or field.data > 50:
+                raise ValidationError('Experience years must be between 0 and 50')
+
     institution = StringField('Institution/Hospital')
     bio = TextAreaField('About Me')
     profile_image = FileField('Profile Picture',

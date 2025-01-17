@@ -68,6 +68,22 @@ def quiz_management():
     Returns:
         Rendered HTML template for quiz management.
     """
+    def get_pagination_args():
+        """
+        Creates a dictionary of current URL parameters excluding the page parameter.
+        This helps maintain filters across pagination.
+        """
+        args = {}
+        if request.args.get('course'):
+            args['course'] = request.args.get('course')
+        if request.args.get('status'):
+            args['status'] = request.args.get('status')
+        if request.args.get('profession'):
+            args['profession'] = request.args.get('profession')
+        if request.args.get('search'):
+            args['search'] = request.args.get('search')
+        return args
+
     page = request.args.get('page', 1, type=int)
     query = Quiz.query
 
@@ -93,9 +109,10 @@ def quiz_management():
         page=page, per_page=current_app.config['QUIZZES_PER_PAGE'])
 
     return render_template('admin/quiz/manage.html',
-                           quizzes=quizzes,
-                           courses=get_unique_courses(),
-                           professions=get_unique_professions())
+                         quizzes=quizzes,
+                         courses=get_unique_courses(),
+                         professions=get_unique_professions(),
+                         get_pagination_args=get_pagination_args)
 
 
 @admin_bp.route('/quiz/<int:quiz_id>/toggle-publish', methods=['POST'])

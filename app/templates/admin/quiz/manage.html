@@ -1,6 +1,10 @@
 <!-- templates/admin/quiz/manage.html -->
 {% extends "base.html" %}
 
+{% block title %}
+    Quiz Management
+{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Quiz Management</h1>
@@ -83,7 +87,7 @@
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-hover">
-                <thead>
+                <thead class="">
                     <tr>
                         <th>Title</th>
                         <th>Course</th>
@@ -103,9 +107,9 @@
                                 {{ quiz.title }}
                             </a>
                             <br>
-                            <small class="text-muted">{{ quiz.description|truncate(50) }}</small>
+                            <small class="text-info">{{ quiz.description|truncate(50) }}</small>
                         </td>
-                        <td>{{ quiz.course|title }}</td>
+                        <td class="text-success">{{ quiz.course|title }}</td>
                         <td>
                             <span class="badge badge-info">
                                 {{ quiz.profession|title if quiz.profession != 'all' else 'All Professions' }}
@@ -124,7 +128,7 @@
                         <td>
                             Created by Admin
                             <br>
-                            <small class="text-muted">
+                            <small class="text-secondary">
                                 {{ quiz.created_at.strftime('%Y-%m-%d') }}
                             </small>
                         </td>
@@ -164,15 +168,16 @@
         <nav aria-label="Quiz navigation" class="mt-4">
             <ul class="pagination justify-content-center">
                 <li class="page-item {{ 'disabled' if not quizzes.has_prev }}">
-                    <a class="page-link" href="{{ url_for('admin.quiz_management', page=quizzes.prev_num, **request.args) }}">
+                    <a class="page-link" href="{{ url_for('admin.quiz_management', page=quizzes.prev_num, **get_pagination_args()) }}">
                         Previous
                     </a>
                 </li>
-                {% for page in quizzes.iter_pages() %}
-                    {% if page %}
-                        <li class="page-item {{ 'active' if page == quizzes.page }}">
-                            <a class="page-link" href="{{ url_for('admin.quiz_management', page=page, **request.args) }}">
-                                {{ page }}
+
+                {% for page_num in quizzes.iter_pages() %}
+                    {% if page_num %}
+                        <li class="page-item {{ 'active' if page_num == quizzes.page }}">
+                            <a class="page-link" href="{{ url_for('admin.quiz_management', page=page_num, **get_pagination_args()) }}">
+                                {{ page_num }}
                             </a>
                         </li>
                     {% else %}
@@ -181,8 +186,9 @@
                         </li>
                     {% endif %}
                 {% endfor %}
+
                 <li class="page-item {{ 'disabled' if not quizzes.has_next }}">
-                    <a class="page-link" href="{{ url_for('admin.quiz_management', page=quizzes.next_num, **request.args) }}">
+                    <a class="page-link" href="{{ url_for('admin.quiz_management', page=quizzes.next_num, **get_pagination_args()) }}">
                         Next
                     </a>
                 </li>
